@@ -1,0 +1,22 @@
+name = "csdept-api"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+
+# D1
+[[d1_databases]]
+binding = "csdept_db"
+database_name = "csdept_db"
+database_id = "bef31762-64a1-4091-b35b-10a884669c86"
+
+# R2
+[[r2_buckets]]
+binding = "csdept_assets"
+bucket_name = "csdept-assets"
+
+[vars]
+CORS_ORIGIN = "http://localhost:5173"
+# Set in dashboard or .dev.vars: JWT_SECRET, ADMIN_DEFAULT_USER, ADMIN_DEFAULT_PASS
+
+# Run from repo root: npx wrangler d1 migrations apply csdept_db --remote --config apps/api/wrangler.toml
+# From apps/api: migrations_dir is relative to this file
+migrations_dir = "../db/migrations"

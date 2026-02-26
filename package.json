@@ -1,0 +1,29 @@
+{
+  "name": "csdept-redesign",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev:web & npm run dev:api",
+    "dev:web": "npm run build:shared && npm run dev --workspace=apps/web",
+    "dev:api": "npm run build:shared && npm run dev --workspace=apps/api",
+    "build": "npm run build:shared && npm run build:web && npm run build:api",
+    "build:web": "npm run build --workspace=apps/web",
+    "build:api": "npm run build --workspace=apps/api",
+    "build:shared": "npm run build --workspace=packages/shared",
+    "db:migrate": "wrangler d1 migrations apply csdept_db --remote --config apps/api/wrangler.toml",
+    "db:seed": "node scripts/seed.js",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "eslint": "^9.15.0",
+    "prettier": "^3.3.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

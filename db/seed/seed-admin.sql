@@ -1,0 +1,2 @@
+-- Admin user: run after main seed. Password hash is replaced by scripts/seed.js (bcrypt hash of ADMIN_DEFAULT_PASS).
+-- Default dev: username admin, password admin123

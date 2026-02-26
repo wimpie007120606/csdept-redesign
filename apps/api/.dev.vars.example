@@ -1,0 +1,5 @@
+# Copy to .dev.vars and set values. Do not commit .dev.vars.
+JWT_SECRET=your-32-char-or-longer-secret-here
+ADMIN_DEFAULT_USER=admin
+ADMIN_DEFAULT_PASS=admin123
+CORS_ORIGIN=http://localhost:5173
