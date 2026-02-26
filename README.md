@@ -18,6 +18,10 @@ csdept-redesign/
 └── scripts/          # Seed runner
 ```
 
+## Images
+
+Header/hero background, logo, and people/undergraduate images are served from `apps/web/public/`. If you add or replace images (e.g. in repo root), copy them into `apps/web/public/` so the build can serve them at paths like `/background.jpg`, `/newlogo.jpeg`, `/WillemPeople.jpg`, etc.
+
 ## Prerequisites
 
 - Node.js ≥ 20 (see `.nvmrc`)

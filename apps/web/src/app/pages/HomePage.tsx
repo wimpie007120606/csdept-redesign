@@ -4,7 +4,6 @@ import {
   GraduationCap,
   Award,
   Users,
-  BookOpen,
   Calendar,
   Newspaper,
   ArrowRight,
@@ -15,7 +14,15 @@ import {
   Lock,
   ChevronRight,
 } from 'lucide-react';
-import campusBackground from 'figma:asset/aa35fdae5d39aef96d1ba77e86c445c1cc5e4dc4.png';
+
+const heroBackground = '/background.jpg';
+
+const homePeople = [
+  { name: 'W. H. K. Bester', slug: 'whk-bester', image: '/WillemPeople.jpg', title: 'Technical Officer' },
+  { name: 'Lynette van Zijl', slug: 'lynette-van-zijl', image: '/LynettePeople.webp', title: 'Professor' },
+  { name: 'Prof. Brink van der Merwe', slug: 'brink-van-der-merwe', image: '/BrinkPeople.jpeg', title: 'Professor' },
+  { name: 'Walter Schulze', slug: 'walter-schulze', image: '/WalterPeople.jpeg', title: 'Researcher' },
+];
 
 export function HomePage() {
   const quickAccessTiles = [
@@ -82,75 +89,66 @@ export function HomePage() {
   ];
 
   return (
-    <div className="font-sans">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0B1C2D] via-[#7B1E3A] to-[#0B1C2D] opacity-95" />
-        
-        {/* Overlay Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
-            backgroundSize: '40px 40px'
-          }} />
+    <div className="pt-20">
+      {/* Hero Section - same layout as other pages */}
+      <section className="relative py-32 text-white overflow-hidden min-h-[500px] flex items-center">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${heroBackground})` }}
+        />
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B1C2D]/90 via-[#0B1C2D]/85 to-[#0B1C2D]/80" />
+
+        <div className="container mx-auto px-4 lg:px-8 relative z-10">
+          <div className="max-w-5xl">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+              className="space-y-8"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center gap-6">
+                  <span className="text-[#C8A951] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral']">
+                    Excellence in Education & Research
+                  </span>
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[#C8A951]/40 to-transparent max-w-[200px]" />
+                </div>
+              </div>
+
+              <h1 className="font-['Spectral'] text-6xl md:text-7xl lg:text-8xl font-semibold leading-[1.1] tracking-tight">
+                Shaping the Future of
+                <br />
+                <span className="text-[#C8A951]">Computer Science</span>
+              </h1>
+
+              <p className="text-lg md:text-xl text-white/80 max-w-3xl leading-relaxed font-light">
+                Join a world-class department where innovation meets excellence. Discover cutting-edge
+                research, transformative education, and global impact.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  to="/study/undergraduate"
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl"
+                >
+                  Explore Programmes
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+                <Link
+                  to="/research"
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 rounded-xl font-semibold hover:bg-white hover:text-[#7B1E3A] transition-all duration-300"
+                >
+                  Meet Our Researchers
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </motion.div>
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 container mx-auto px-4 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <div className="inline-block px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-[#C8A951] text-sm font-medium mb-6">
-              Excellence in Education & Research
-            </div>
-            <h1 className="font-['Playfair_Display'] text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Shaping the Future of
-              <br />
-              <span className="bg-gradient-to-r from-[#C8A951] to-[#E0C87A] bg-clip-text text-transparent">
-                Computer Science
-              </span>
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-10 leading-relaxed">
-              Join a world-class department where innovation meets excellence. Discover cutting-edge
-              research, transformative education, and global impact.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                to="/undergraduate"
-                className="group px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl hover:shadow-[#C8A951]/50 flex items-center gap-2"
-              >
-                Explore Programmes
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                to="/research"
-                className="group px-8 py-4 bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 rounded-xl font-semibold hover:bg-white hover:text-[#7B1E3A] transition-all duration-300 flex items-center gap-2"
-              >
-                Meet Our Researchers
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </motion.div>
-
-          {/* Scroll Indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 1 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2"
-          >
-            <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
-              <motion.div
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="w-1 h-2 bg-white/50 rounded-full"
-              />
-            </div>
-          </motion.div>
-        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       {/* Quick Access Tiles */}
@@ -247,84 +245,69 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Faculty Spotlight */}
+      {/* Faculty Spotlight - four people photos */}
       <section className="py-24 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <div className="relative h-[500px] rounded-2xl overflow-hidden shadow-2xl">
-                <img
-                  src="https://images.unsplash.com/photo-1758685848208-e108b6af94cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21wdXRlciUyMHNjaWVuY2UlMjBwcm9mZXNzb3IlMjB0ZWFjaGluZ3xlbnwxfHx8fDE3NzIxMjA5OTl8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                  alt="Faculty"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1C2D]/80 via-transparent to-transparent" />
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-            >
-              <div className="inline-block px-4 py-2 bg-secondary/10 rounded-full text-secondary text-sm font-semibold mb-4">
-                Faculty Excellence
-              </div>
-              <h2 className="font-['Playfair_Display'] text-4xl md:text-5xl font-bold text-foreground mb-6">
-                Learn from World Leaders
-              </h2>
-              <p className="text-lg text-muted-foreground mb-6">
-                Our distinguished faculty includes leading researchers, award-winning educators, and
-                industry pioneers who are shaping the future of computer science.
-              </p>
-              <div className="space-y-4 mb-8">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <div className="w-2 h-2 bg-primary rounded-full" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-foreground">International Recognition</div>
-                    <div className="text-sm text-muted-foreground">
-                      Faculty members with awards and honors from leading global institutions
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <div className="w-2 h-2 bg-primary rounded-full" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-foreground">Cutting-Edge Research</div>
-                    <div className="text-sm text-muted-foreground">
-                      Active research in AI, cybersecurity, robotics, and more
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <div className="w-2 h-2 bg-primary rounded-full" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-foreground">Industry Collaboration</div>
-                    <div className="text-sm text-muted-foreground">
-                      Partnerships with leading tech companies and research institutions
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <Link
-                to="/people"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <div className="inline-block px-4 py-2 bg-secondary/10 rounded-full text-secondary text-sm font-semibold mb-4">
+              Faculty Excellence
+            </div>
+            <h2 className="font-['Playfair_Display'] text-4xl md:text-5xl font-bold text-foreground mb-4">
+              Learn from World Leaders
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+              Our distinguished faculty includes leading researchers, award-winning educators, and
+              industry pioneers who are shaping the future of computer science.
+            </p>
+          </motion.div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            {homePeople.map((person, index) => (
+              <motion.div
+                key={person.slug}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
               >
-                Meet Our Faculty
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </motion.div>
+                <Link
+                  to={`/people/${person.slug}`}
+                  className="group block text-center"
+                >
+                  <div className="relative aspect-square rounded-2xl overflow-hidden shadow-lg mb-4 ring-2 ring-transparent group-hover:ring-[#7B1E3A] transition-all">
+                    <img
+                      src={person.image}
+                      alt={person.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B1C2D]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <h3 className="font-['Spectral'] text-lg font-bold text-foreground group-hover:text-[#7B1E3A] transition-colors">
+                    {person.name}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">{person.title}</p>
+                </Link>
+              </motion.div>
+            ))}
           </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-10"
+          >
+            <Link
+              to="/people"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all"
+            >
+              Meet Our Faculty
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </motion.div>
         </div>
       </section>
 
@@ -466,7 +449,7 @@ export function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
-                to="/undergraduate"
+                to="/study/undergraduate"
                 className="px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl"
               >
                 Apply Now

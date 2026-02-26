@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router';
 import { Menu, X, Moon, Sun, ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'motion/react';
-import suLogo from 'figma:asset/347a6b463ee4b45d24b8d72355624336b98ba649.png';
+const suLogo = '/newlogo.jpeg';
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);

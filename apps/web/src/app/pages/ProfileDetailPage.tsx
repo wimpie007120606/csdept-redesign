@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft, Mail, Phone, MapPin, ExternalLink, Award, BookOpen, GraduationCap, FileText, ChevronDown, ChevronUp } from 'lucide-react';
-import campusBackground from 'figma:asset/aa35fdae5d39aef96d1ba77e86c445c1cc5e4dc4.png';
+const campusBackground = '/background.jpg';
 import willemBesterImage from 'figma:asset/f98a7550d9a9b94939f2edc80d1a6723c3903107.png';
 import lynetteVanZijlImage from 'figma:asset/c21387b7264de2fe2f95847f52f9e5cc1b3ea696.png';
 import brinkVanDerMerweImage from 'figma:asset/167aac506fe75e4de4a2c510ce66dca988aa3039.png';

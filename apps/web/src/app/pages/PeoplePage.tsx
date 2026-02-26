@@ -3,7 +3,9 @@ import { motion } from 'motion/react';
 import { Link } from 'react-router';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { getPeople, assetUrl, type Person } from '../api';
-import { fallbackPeople, campusBg } from '@/content/fallback';
+import { fallbackPeople } from '@/content/fallback';
+
+const campusBg = '/background.jpg';
 
 function mapPersonToCard(p: Person) {
   let researchAreas: string[] = [];

@@ -14,8 +14,8 @@ import {
   Code,
   Briefcase,
 } from 'lucide-react';
-import campusBackground from 'figma:asset/aa35fdae5d39aef96d1ba77e86c445c1cc5e4dc4.png';
-import classroomImage from 'figma:asset/c82bba1b5f14cb57331a391de0a057ec2775de24.png';
+const campusBackground = '/background.jpg';
+const classroomImage = '/first-year-science-student-asking-question-chemistry.jpg';
 
 export function UndergraduatePage() {
   const modules = [

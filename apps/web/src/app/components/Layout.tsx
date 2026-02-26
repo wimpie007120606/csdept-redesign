@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import campusBackground from 'figma:asset/aa35fdae5d39aef96d1ba77e86c445c1cc5e4dc4.png';
+const campusBackground = '/background.jpg';
 
 export function Layout() {
   return (

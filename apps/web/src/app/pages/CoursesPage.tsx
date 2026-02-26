@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { AlertTriangle } from 'lucide-react';
-import campusBackground from 'figma:asset/aa35fdae5d39aef96d1ba77e86c445c1cc5e4dc4.png';
+const campusBackground = '/background.jpg';
 
 export function CoursesPage() {
   const [selectedFocalArea, setSelectedFocalArea] = useState<'general' | 'systems' | 'data'>('general');
