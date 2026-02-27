@@ -1,14 +1,25 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Calendar, MapPin, Clock, Users, ArrowRight } from 'lucide-react';
+import { Calendar, MapPin, Clock, Users, ArrowRight, ChevronDown } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
+import {
+  type CalendarEvent,
+  triggerIcsDownload,
+  buildGoogleCalendarUrl,
+  buildOutlookCalendarUrl,
+} from '../utils/calendar';
 
 const campusBackground = '/realbackground3.jpeg';
 
 export function EventsPage() {
   const { t } = useTranslation();
+  const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
+
   const upcomingEvents = [
     {
+      id: 'ai-ml-symposium-2026',
       date: { day: '5', month: 'Mar' },
+      year: 2026,
       title: 'AI & Machine Learning Symposium 2026',
       time: '09:00 - 17:00',
       location: 'Main Auditorium, Stellenbosch Campus',
@@ -18,7 +29,9 @@ export function EventsPage() {
       type: 'Conference',
     },
     {
+      id: 'phd-research-seminar-mar',
       date: { day: '12', month: 'Mar' },
+      year: 2026,
       title: 'PhD Research Seminar Series',
       time: '14:00 - 16:00',
       location: 'Seminar Room 1',
@@ -28,7 +41,9 @@ export function EventsPage() {
       type: 'Seminar',
     },
     {
+      id: 'industry-career-fair-mar',
       date: { day: '20', month: 'Mar' },
+      year: 2026,
       title: 'Industry Career Fair',
       time: '10:00 - 18:00',
       location: 'Campus Center',
@@ -38,7 +53,9 @@ export function EventsPage() {
       type: 'Career',
     },
     {
+      id: 'cybersecurity-workshop-mar',
       date: { day: '28', month: 'Mar' },
+      year: 2026,
       title: 'Cybersecurity Workshop',
       time: '13:00 - 17:00',
       location: 'Computer Lab 2',
@@ -48,7 +65,9 @@ export function EventsPage() {
       type: 'Workshop',
     },
     {
+      id: 'robotics-competition-finals-apr',
       date: { day: '5', month: 'Apr' },
+      year: 2026,
       title: 'Robotics Competition Finals',
       time: '10:00 - 16:00',
       location: 'Engineering Building',
@@ -58,7 +77,9 @@ export function EventsPage() {
       type: 'Competition',
     },
     {
+      id: 'guest-lecture-quantum-computing-apr',
       date: { day: '15', month: 'Apr' },
+      year: 2026,
       title: 'Guest Lecture: Future of Quantum Computing',
       time: '15:00 - 16:30',
       location: 'Main Auditorium',
@@ -68,6 +89,61 @@ export function EventsPage() {
       type: 'Lecture',
     },
   ];
+
+  type UpcomingEvent = (typeof upcomingEvents)[number];
+
+  const monthMap: Record<string, number> = {
+    Jan: 0,
+    Feb: 1,
+    Mar: 2,
+    Apr: 3,
+    May: 4,
+    Jun: 5,
+    Jul: 6,
+    Aug: 7,
+    Sep: 8,
+    Oct: 9,
+    Nov: 10,
+    Dec: 11,
+  };
+
+  function buildCalendarEvent(event: UpcomingEvent): CalendarEvent | null {
+    const monthIndex = monthMap[event.date.month];
+    const day = parseInt(event.date.day, 10);
+    if (Number.isNaN(day) || monthIndex === undefined) {
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.warn('[events] Invalid date for calendar event', event);
+      }
+      return null;
+    }
+
+    const [startStr, endStr] = event.time.split('-').map((part) => part.trim());
+    const [startHourStr, startMinuteStr] = (startStr ?? '').split(':');
+    const [endHourStr, endMinuteStr] = (endStr ?? '').split(':');
+
+    const startHour = Number.parseInt(startHourStr ?? '0', 10);
+    const startMinute = Number.parseInt(startMinuteStr ?? '0', 10);
+    const endHour = Number.isNaN(Number.parseInt(endHourStr ?? '', 10))
+      ? startHour + 1
+      : Number.parseInt(endHourStr ?? '0', 10);
+    const endMinute = Number.isNaN(Number.parseInt(endMinuteStr ?? '', 10))
+      ? startMinute
+      : Number.parseInt(endMinuteStr ?? '0', 10);
+
+    const start = new Date(event.year, monthIndex, day, startHour, startMinute, 0);
+    const end = new Date(event.year, monthIndex, day, endHour, endMinute, 0);
+
+    return {
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      location: event.location,
+      start,
+      end,
+      timezone: 'Africa/Johannesburg',
+    };
+  }
 
   return (
     <div className="pt-20">
@@ -178,10 +254,84 @@ export function EventsPage() {
                       <button className="px-6 py-2 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all">
                         Register Now
                       </button>
-                      <button className="px-6 py-2 bg-secondary/10 text-secondary rounded-xl font-semibold hover:bg-secondary/20 transition-all inline-flex items-center gap-2">
-                        Add to Calendar
-                        <Calendar className="w-4 h-4" />
-                      </button>
+                      <div className="relative">
+                        <button
+                          type="button"
+                          className="px-6 py-2 bg-secondary/10 text-secondary rounded-xl font-semibold hover:bg-secondary/20 transition-all inline-flex items-center gap-2"
+                          aria-haspopup="true"
+                          aria-expanded={openMenuIndex === index}
+                          onClick={() =>
+                            setOpenMenuIndex(openMenuIndex === index ? null : index)
+                          }
+                        >
+                          {t('events.addToCalendar')}
+                          <Calendar className="w-4 h-4" />
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                        {openMenuIndex === index && (
+                          <div
+                            className="absolute z-20 mt-2 w-56 rounded-xl border border-border bg-card shadow-xl py-2"
+                            role="menu"
+                          >
+                            <button
+                              type="button"
+                              className="w-full px-4 py-2 text-left text-sm hover:bg-secondary/10 flex items-center gap-2"
+                              onClick={() => {
+                                const calEvent = buildCalendarEvent(event);
+                                if (!calEvent) return;
+                                triggerIcsDownload(calEvent);
+                                setOpenMenuIndex(null);
+                              }}
+                            >
+                              {t('events.addToCalendarApple')}
+                            </button>
+                            <a
+                              href={
+                                (() => {
+                                  const calEvent = buildCalendarEvent(event);
+                                  return calEvent ? buildGoogleCalendarUrl(calEvent) : '#';
+                                })()
+                              }
+                              onClick={(e) => {
+                                const calEvent = buildCalendarEvent(event);
+                                if (!calEvent) {
+                                  e.preventDefault();
+                                  return;
+                                }
+                                setOpenMenuIndex(null);
+                              }}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block w-full px-4 py-2 text-left text-sm hover:bg-secondary/10"
+                              role="menuitem"
+                            >
+                              {t('events.addToCalendarGoogle')}
+                            </a>
+                            <a
+                              href={
+                                (() => {
+                                  const calEvent = buildCalendarEvent(event);
+                                  return calEvent ? buildOutlookCalendarUrl(calEvent) : '#';
+                                })()
+                              }
+                              onClick={(e) => {
+                                const calEvent = buildCalendarEvent(event);
+                                if (!calEvent) {
+                                  e.preventDefault();
+                                  return;
+                                }
+                                setOpenMenuIndex(null);
+                              }}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block w-full px-4 py-2 text-left text-sm hover:bg-secondary/10"
+                              role="menuitem"
+                            >
+                              {t('events.addToCalendarOutlook')}
+                            </a>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

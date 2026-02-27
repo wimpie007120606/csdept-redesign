@@ -60,3 +60,25 @@ export const peopleBySlug: Map<string, PersonMeta> = new Map(
     .map((p) => [p.slug as string, p])
 );
 
+// Dev-only validation to prevent inconsistent people data.
+if (typeof import.meta !== 'undefined' && (import.meta as any).env?.DEV) {
+  const ids = new Set<string>();
+  const slugs = new Set<string>();
+
+  for (const p of peopleMeta) {
+    if (ids.has(p.id)) {
+      // eslint-disable-next-line no-console
+      console.warn(`[people] Duplicate person id detected: "${p.id}"`);
+    }
+    ids.add(p.id);
+
+    if (p.slug) {
+      if (slugs.has(p.slug)) {
+        // eslint-disable-next-line no-console
+        console.warn(`[people] Duplicate person slug detected: "${p.slug}"`);
+      }
+      slugs.add(p.slug);
+    }
+  }
+}
+

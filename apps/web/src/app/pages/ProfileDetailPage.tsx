@@ -395,16 +395,45 @@ export function ProfileDetailPage() {
     }).finally(() => setLoaded(true));
   }, [normalizedSlug]);
 
-  // While data is loading, avoid rendering the full profile shell against a null profile.
-  if (!normalizedSlug && !loaded) {
-    return null;
-  }
-
-  if (!normalizedSlug || (loaded && !profile)) {
+  // Guard rendering while loading or when no matching profile exists.
+  if (!normalizedSlug) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center bg-background">
         <div className="text-center px-4">
-          <h1 className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">{t('errors.profileNotFound')}</h1>
+          <h1 className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">
+            {t('errors.profileNotFound')}
+          </h1>
+          <p className="text-muted-foreground mb-6">{t('errors.profileNotFoundSub')}</p>
+          <LocalizedLink
+            to="/people"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            {t('common.backToPeople')}
+          </LocalizedLink>
+        </div>
+      </div>
+    );
+  }
+
+  if (!loaded && !profile) {
+    // Simple loading state; could be replaced with a skeleton.
+    return (
+      <div className="pt-20 min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center px-4">
+          <p className="text-muted-foreground">{t('errors.somethingWrong')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loaded && !profile) {
+    return (
+      <div className="pt-20 min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center px-4">
+          <h1 className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">
+            {t('errors.profileNotFound')}
+          </h1>
           <p className="text-muted-foreground mb-6">{t('errors.profileNotFoundSub')}</p>
           <LocalizedLink
             to="/people"

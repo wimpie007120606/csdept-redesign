@@ -525,7 +525,11 @@
     "subtitle": "Iimeko ezizayo",
     "heroLabel": "Iimeko neeSeminars",
     "heroTitle": "Iimeko ezizayo",
-    "heroSub": "Sijoyinele kwiiseminars, amaworkshop, iinkonzo, nethuba lokunxibelelana"
+    "heroSub": "Sijoyinele kwiiseminars, amaworkshop, iinkonzo, nethuba lokunxibelelana",
+    "addToCalendar": "Yongeza kwikhalenda",
+    "addToCalendarApple": "Apple / iCal (.ics)",
+    "addToCalendarGoogle": "Ikhalenda kaGoogle",
+    "addToCalendarOutlook": "Ikhalenda ye-Outlook"
   },
   "resources": {
     "title": "Izibonelelo",

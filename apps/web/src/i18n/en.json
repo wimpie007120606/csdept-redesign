@@ -525,7 +525,11 @@
     "subtitle": "Upcoming events",
     "heroLabel": "Events & Seminars",
     "heroTitle": "Upcoming Events",
-    "heroSub": "Join us for seminars, workshops, conferences, and networking opportunities"
+    "heroSub": "Join us for seminars, workshops, conferences, and networking opportunities",
+    "addToCalendar": "Add to Calendar",
+    "addToCalendarApple": "Apple / iCal (.ics)",
+    "addToCalendarGoogle": "Google Calendar",
+    "addToCalendarOutlook": "Outlook Calendar"
   },
   "resources": {
     "title": "Resources",

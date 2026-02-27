@@ -525,7 +525,11 @@
     "subtitle": "Komende gebeurtenisse",
     "heroLabel": "Gebeurtenisse en Seminare",
     "heroTitle": "Komende Gebeurtenisse",
-    "heroSub": "Sluit aan by seminare, werkswinkels, konferensies en netwerkmoonlikhede"
+    "heroSub": "Sluit aan by seminare, werkswinkels, konferensies en netwerkmoonlikhede",
+    "addToCalendar": "Voeg by kalender",
+    "addToCalendarApple": "Apple / iCal (.ics)",
+    "addToCalendarGoogle": "Google Kalender",
+    "addToCalendarOutlook": "Outlook-kalender"
   },
   "resources": {
     "title": "Hulpbronne",
