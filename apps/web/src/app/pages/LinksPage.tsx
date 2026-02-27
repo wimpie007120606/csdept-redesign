@@ -3,7 +3,7 @@ import { useTranslation } from '@/i18n/useTranslation';
 import { linksPageCards } from '@/content/links';
 import { LinkCard } from '../components/LinkCard';
 
-const heroBackground = '/background.jpg';
+const heroBackground = '/realbackground2.jpg';
 
 export function LinksPage() {
   const { t } = useTranslation();
@@ -60,8 +60,8 @@ export function LinksPage() {
                 transition={{ delay: index * 0.08 }}
               >
                 <LinkCard
-                  title={card.title}
-                  description={card.description}
+                  title={t(`links.cards.${card.id}.title`)}
+                  description={t(`links.cards.${card.id}.description`)}
                   href={card.href}
                   external={card.external}
                   openLabel={t('links.open')}

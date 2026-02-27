@@ -10,7 +10,7 @@ import {
 } from '../components/ui/accordion';
 import { HonoursRoadmaps } from '../components/HonoursRoadmaps';
 
-const campusBackground = '/background.jpg';
+const campusBackground = '/realbackground3.jpeg';
 
 function BulletList({ text }: { text: string }) {
   const items = text.split('\n').filter(Boolean);

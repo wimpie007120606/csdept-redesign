@@ -3,7 +3,7 @@ import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
 import { LocationMapCard } from '../components/LocationMapCard';
 import { useTranslation } from '@/i18n/useTranslation';
 
-const campusBackground = '/background.jpg';
+const campusBackground = '/realbackground3.jpeg';
 
 export function ContactPage() {
   const { t } = useTranslation();
@@ -168,7 +168,7 @@ export function ContactPage() {
                         type="text"
                         required
                         className="w-full px-4 py-3 bg-input-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                        placeholder="John"
+                        placeholder={t('contact.placeholderFirstName')}
                       />
                     </div>
                     <div>
@@ -179,7 +179,7 @@ export function ContactPage() {
                         type="text"
                         required
                         className="w-full px-4 py-3 bg-input-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                        placeholder="Doe"
+                        placeholder={t('contact.placeholderLastName')}
                       />
                     </div>
                   </div>
@@ -192,7 +192,7 @@ export function ContactPage() {
                       type="email"
                       required
                       className="w-full px-4 py-3 bg-input-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-                      placeholder="john.doe@example.com"
+                      placeholder={t('contact.placeholderEmail')}
                     />
                   </div>
 
@@ -221,7 +221,7 @@ export function ContactPage() {
                       required
                       rows={6}
                       className="w-full px-4 py-3 bg-input-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
-                      placeholder="Tell us how we can help..."
+                      placeholder={t('contact.placeholderMessage')}
                     />
                   </div>
 

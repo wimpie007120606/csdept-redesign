@@ -115,7 +115,7 @@ export function HonoursRoadmaps() {
       <div
         className="flex flex-wrap gap-2"
         role="tablist"
-        aria-label="Study track"
+        aria-label={t('common.studyTrack')}
       >
         {honoursRoadmaps.map((track) => {
           const Icon = TRACK_ICONS[track.trackId] ?? BookOpen;

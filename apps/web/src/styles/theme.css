@@ -3,30 +3,36 @@
 :root {
   --font-size: 16px;
   
-  /* Stellenbosch Brand Colors */
-  --maroon: #7B1E3A;
-  --maroon-dark: #5C1628;
-  --maroon-light: #A33456;
-  --gold: #C8A951;
-  --gold-light: #E0C87A;
+  /* Stellenbosch Brand Colors (SU manual) */
+  --su-maroon: #61223b; /* Confident Maroon */
+  --su-gold: #caa258;   /* Brilliant Gold */
+  --su-black: #2C2A29;  /* Body black */
+  --su-steel: #4d5356;  /* Steel grey */
+
+  /* Legacy semantic tokens mapped to SU brand colours */
+  --maroon: var(--su-maroon);
+  --maroon-dark: #4a1930;
+  --maroon-light: #8a3c5c;
+  --gold: var(--su-gold);
+  --gold-light: #e0c87a;
   --navy: #0B1C2D;
   --navy-dark: #060F19;
   --ivory: #FAF8F3;
   --ivory-dark: #F3F0E8;
   
   --background: #FAF8F3;
-  --foreground: #0B1C2D;
+  --foreground: var(--su-black);
   --card: #ffffff;
   --card-foreground: #0B1C2D;
   --popover: #ffffff;
   --popover-foreground: #0B1C2D;
-  --primary: #7B1E3A;
+  --primary: var(--su-maroon);
   --primary-foreground: #ffffff;
-  --secondary: #C8A951;
+  --secondary: var(--su-gold);
   --secondary-foreground: #0B1C2D;
   --muted: #F3F0E8;
-  --muted-foreground: #5A5A6E;
-  --accent: #0B1C2D;
+  --muted-foreground: var(--su-steel);
+  --accent: var(--su-maroon);
   --accent-foreground: #ffffff;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
@@ -36,21 +42,21 @@
   --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #7B1E3A;
-  --chart-1: #7B1E3A;
-  --chart-2: #C8A951;
+  --ring: var(--su-maroon);
+  --chart-1: var(--su-maroon);
+  --chart-2: var(--su-gold);
   --chart-3: #0B1C2D;
-  --chart-4: #A33456;
-  --chart-5: #E0C87A;
+  --chart-4: #8a3c5c;
+  --chart-5: #e0c87a;
   --radius: 0.75rem;
   --sidebar: #0B1C2D;
   --sidebar-foreground: #FAF8F3;
-  --sidebar-primary: #7B1E3A;
+  --sidebar-primary: var(--su-maroon);
   --sidebar-primary-foreground: #FAF8F3;
   --sidebar-accent: #1A2F43;
   --sidebar-accent-foreground: #FAF8F3;
   --sidebar-border: rgba(250, 248, 243, 0.1);
-  --sidebar-ring: #7B1E3A;
+  --sidebar-ring: var(--su-maroon);
   
   /* Typography scale */
   --text-xs: 0.75rem;
@@ -152,16 +158,17 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'SU Raleway', 'Raleway', 'Trebuchet MS', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
   
-  .font-serif,
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Spectral', Georgia, serif;
-  }
-  
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
   .font-sans {
-    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'SU Raleway', 'Raleway', 'Trebuchet MS', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
   /**

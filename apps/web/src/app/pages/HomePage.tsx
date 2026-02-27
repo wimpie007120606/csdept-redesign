@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 
-const heroBackground = '/background.jpg';
+const heroBackground = '/realbackground2.jpg';
 
 const homePeople = [
   { name: 'W. H. K. Bester', slug: 'whk-bester', image: '/WillemPeople.jpg', title: 'Technical Officer' },

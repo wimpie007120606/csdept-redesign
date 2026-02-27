@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 
-const campusBackground = '/background.jpg';
+const campusBackground = '/realbackground2.jpg';
 const classroomImage = '/first-year-science-student-asking-question-chemistry.jpg';
 
 export function UndergraduatePage() {
@@ -135,7 +135,7 @@ export function UndergraduatePage() {
               <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src={classroomImage}
-                  alt="Students in classroom"
+                  alt={t('common.studentsInClassroom')}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -147,30 +147,27 @@ export function UndergraduatePage() {
               viewport={{ once: true }}
             >
               <h2 className="font-['Playfair_Display'] text-4xl font-bold text-foreground mb-6">
-                Programme Overview
+                {t('study.undergradOverviewTitle')}
               </h2>
               <p className="text-lg text-muted-foreground mb-6">
-                Our undergraduate programme offers a comprehensive education in computer science,
-                blending theoretical knowledge with hands-on experience. Students develop critical
-                thinking, problem-solving, and technical skills essential for success in the modern
-                technology landscape.
+                {t('study.undergradOverviewIntro')}
               </p>
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div className="p-4 bg-card rounded-xl shadow-md">
-                  <div className="text-3xl font-bold text-primary mb-1">3 Years</div>
-                  <div className="text-sm text-muted-foreground">Full-Time</div>
+                  <div className="text-3xl font-bold text-primary mb-1">{t('study.undergradYears')}</div>
+                  <div className="text-sm text-muted-foreground">{t('study.undergradFullTime')}</div>
                 </div>
                 <div className="p-4 bg-card rounded-xl shadow-md">
                   <div className="text-3xl font-bold text-primary mb-1">360</div>
-                  <div className="text-sm text-muted-foreground">Credits</div>
+                  <div className="text-sm text-muted-foreground">{t('study.undergradCredits')}</div>
                 </div>
                 <div className="p-4 bg-card rounded-xl shadow-md">
                   <div className="text-3xl font-bold text-primary mb-1">95%</div>
-                  <div className="text-sm text-muted-foreground">Employment Rate</div>
+                  <div className="text-sm text-muted-foreground">{t('study.undergradEmploymentRate')}</div>
                 </div>
                 <div className="p-4 bg-card rounded-xl shadow-md">
                   <div className="text-3xl font-bold text-primary mb-1">Top 10</div>
-                  <div className="text-sm text-muted-foreground">in Africa</div>
+                  <div className="text-sm text-muted-foreground">{t('study.undergradTopInAfrica')}</div>
                 </div>
               </div>
             </motion.div>
@@ -181,18 +178,18 @@ export function UndergraduatePage() {
             {[
               {
                 icon: Code,
-                title: 'Practical Skills',
-                description: 'Hands-on projects, coding challenges, and real-world applications',
+                titleKey: 'study.undergradPracticalSkills',
+                descKey: 'study.undergradPracticalSkillsDesc',
               },
               {
                 icon: Globe,
-                title: 'Global Standards',
-                description: 'Curriculum aligned with international best practices',
+                titleKey: 'study.undergradGlobalStandards',
+                descKey: 'study.undergradGlobalStandardsDesc',
               },
               {
                 icon: Briefcase,
-                title: 'Industry Ready',
-                description: 'Internships, industry projects, and career preparation',
+                titleKey: 'study.undergradIndustryReady',
+                descKey: 'study.undergradIndustryReadyDesc',
               },
             ].map((item, index) => (
               <motion.div
@@ -207,9 +204,9 @@ export function UndergraduatePage() {
                   <item.icon className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="font-['Playfair_Display'] text-xl font-bold text-foreground mb-2">
-                  {item.title}
+                  {t(item.titleKey)}
                 </h3>
-                <p className="text-muted-foreground">{item.description}</p>
+                <p className="text-muted-foreground">{t(item.descKey)}</p>
               </motion.div>
             ))}
           </div>
@@ -226,10 +223,10 @@ export function UndergraduatePage() {
             className="text-center mb-12"
           >
             <h2 className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">
-              Curriculum Roadmap
+              {t('study.undergradRoadmapTitle')}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              A structured 3-year journey from fundamentals to advanced topics
+              {t('study.undergradRoadmapIntro')}
             </p>
           </motion.div>
 
@@ -243,7 +240,7 @@ export function UndergraduatePage() {
                 className="bg-card rounded-2xl shadow-lg overflow-hidden"
               >
                 <div className="bg-[#7B1E3A] text-white p-6">
-                  <h3 className="font-['Spectral'] text-2xl font-bold">Year {year}</h3>
+                  <h3 className="font-['Spectral'] text-2xl font-bold">{t('study.undergradYearLabel')} {year}</h3>
                 </div>
                 <div className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -259,7 +256,7 @@ export function UndergraduatePage() {
                             <div className="font-semibold text-foreground">
                               {module.code}: {module.name}
                             </div>
-                            <div className="text-sm text-muted-foreground">{module.credits} Credits</div>
+                            <div className="text-sm text-muted-foreground">{module.credits} {t('study.undergradCredits')}</div>
                           </div>
                         </div>
                       ))}

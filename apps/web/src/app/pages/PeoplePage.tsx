@@ -6,7 +6,7 @@ import { getPeople, assetUrl, type Person } from '../api';
 import { fallbackPeople } from '@/content/fallback';
 import { useTranslation } from '@/i18n/useTranslation';
 
-const campusBg = '/background.jpg';
+const campusBg = '/realbackground2.jpg';
 
 /** Normalize slug for routing: lowercase, trim, replace spaces with hyphens. */
 function toCanonicalSlug(s: string): string {

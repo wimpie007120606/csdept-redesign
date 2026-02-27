@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { AlertTriangle } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 
-const campusBackground = '/background.jpg';
+const campusBackground = '/realbackground3.jpeg';
 
 export function CoursesPage() {
   const { t } = useTranslation();

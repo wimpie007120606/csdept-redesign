@@ -16,6 +16,8 @@ interface DayAccordionProps {
   copiedLabel: string;
   sortAZLabel: string;
   sortZALabel: string;
+  expandLabel: string;
+  collapseLabel: string;
   visiblePrograms: BridgingDayProgram[];
   onCopyFilename: (filename: string) => void;
   copiedFilename: string | null;
@@ -29,6 +31,8 @@ export function DayAccordion({
   copiedLabel,
   sortAZLabel,
   sortZALabel,
+  expandLabel,
+  collapseLabel,
   visiblePrograms,
   onCopyFilename,
   copiedFilename,
@@ -63,7 +67,7 @@ export function DayAccordion({
       <AccordionItem value={day.dayId} className="border border-border rounded-xl overflow-hidden mb-4">
         <AccordionTrigger
           className="px-4 py-4 hover:no-underline font-['Playfair_Display'] font-semibold text-foreground [&[data-state=open]>svg]:rotate-180"
-          aria-label={`${day.dayLabel}, click to ${defaultOpen ? 'collapse' : 'expand'}`}
+          aria-label={`${day.dayLabel}, click to ${defaultOpen ? collapseLabel : expandLabel}`}
         >
           <span className="flex items-center gap-2">
             <Code2 className="w-5 h-5 text-[#7B1E3A]" aria-hidden />

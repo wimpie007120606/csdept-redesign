@@ -13,8 +13,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
-import { researchGroups } from '@/content/researchGroups';
-import { getSlugForMemberName } from '../utils/researchPeople';
+import { researchGroups, type ResearchGroup } from '@/content/researchGroups';
 import { MemberAvatar } from '../components/MemberAvatar';
 import { PLACEHOLDER_IMAGE } from '../placeholder';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -23,8 +22,9 @@ import {
   getPeopleWithPublications,
   type NormalizedPublication,
 } from '@/content/publications';
+import { peopleMeta, peopleById, peopleBySlug, type PersonMeta } from '@/content/people';
 
-const campusBackground = '/background.jpg';
+const campusBackground = '/realbackground3.jpeg';
 
 const impactMetricKeys = [
   { value: '850+', labelKey: 'research.metrics.publications', icon: FileText },
@@ -39,6 +39,13 @@ const SLUG_TO_NAME: Record<string, string> = {
   'brink-van-der-merwe': 'Prof. Brink van der Merwe',
   'walter-schulze': 'Walter Schulze',
 };
+
+interface GroupMemberView {
+  id: string;
+  name: string;
+  role?: string;
+  slug?: string;
+}
 
 function filterPublications(
   list: NormalizedPublication[],
@@ -63,7 +70,49 @@ function filterPublications(
   return out;
 }
 
+function buildGroupMembers(group: ResearchGroup): (GroupMemberView & { photo?: string | null })[] {
+  return group.memberIds.map((id) => {
+    const meta: PersonMeta | undefined = peopleById.get(id);
+      if (!meta) {
+      if (typeof import.meta !== 'undefined' && (import.meta as any).env?.DEV) {
+        // eslint-disable-next-line no-console
+        console.warn(`[research] Missing personMeta for id="${id}" in group "${group.slug}"`);
+      }
+      return {
+        id,
+        name: id,
+        role: group.memberRoles?.[id],
+        slug: undefined,
+        photo: null,
+      };
+    }
+    return {
+      id: meta.id,
+      name: meta.name,
+      role: group.memberRoles?.[meta.id],
+      slug: meta.slug,
+      photo: meta.photo ?? null,
+    };
+  });
+}
+
+function validateResearchData(): void {
+  if (typeof import.meta === 'undefined' || !(import.meta as any).env?.DEV) return;
+
+  const knownIds = new Set(peopleMeta.map((p) => p.id));
+
+  for (const group of researchGroups) {
+    for (const id of group.memberIds) {
+      if (!knownIds.has(id)) {
+        // eslint-disable-next-line no-console
+        console.warn(`[research] memberId "${id}" in group "${group.slug}" has no matching PersonMeta.`);
+      }
+    }
+  }
+}
+
 export function ResearchPage() {
+  validateResearchData();
   const containerRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const [pubSearch, setPubSearch] = useState('');
@@ -297,11 +346,17 @@ export function ResearchPage() {
                         {t('research.currentMembers')}
                       </h4>
                       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {group.members.map((member) => {
-                          const slug = getSlugForMemberName(member.name);
+                        {buildGroupMembers(group).map((member) => {
+                          const hasProfile = Boolean(member.slug);
+                          const slug = member.slug;
                           const content = (
                             <>
-                              <MemberAvatar displayName={member.name} size="md" className="mx-auto sm:mx-0" />
+                              <MemberAvatar
+                                displayName={member.name}
+                                photo={member.photo}
+                                size="md"
+                                className="mx-auto sm:mx-0"
+                              />
                               <div className="text-center sm:text-left min-w-0">
                                 <span className="font-semibold text-foreground block truncate">{member.name}</span>
                                 {member.role && (
@@ -312,7 +367,7 @@ export function ResearchPage() {
                           );
                           return (
                             <li key={member.name}>
-                              {slug ? (
+                              {hasProfile && slug ? (
                                 <LocalizedLink
                                   to={`/people/${slug}`}
                                   className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-border hover:border-[#7B1E3A]/50 hover:bg-muted/50 transition-all focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
@@ -340,16 +395,26 @@ export function ResearchPage() {
                         <h4 className="font-['Spectral'] text-lg font-semibold text-foreground mb-3">{t('research.resourcesLinks')}</h4>
                         <div className="flex flex-wrap gap-3">
                           {group.links.map((link) => (
-                            <a
-                              key={link.url}
-                              href={link.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted text-foreground font-medium hover:bg-[#7B1E3A] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
-                            >
-                              {link.label}
-                              <ExternalLink className="w-4 h-4" />
-                            </a>
+                            link.external ?? link.url.startsWith('http') ? (
+                              <a
+                                key={link.url}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted text-foreground font-medium hover:bg-[#7B1E3A] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                              >
+                                {link.label}
+                                <ExternalLink className="w-4 h-4" />
+                              </a>
+                            ) : (
+                              <LocalizedLink
+                                key={link.url}
+                                to={link.url}
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted text-foreground font-medium hover:bg-[#7B1E3A] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                              >
+                                {link.label}
+                              </LocalizedLink>
+                            )
                           ))}
                         </div>
                       </div>
@@ -474,7 +539,9 @@ export function ResearchPage() {
                                   {/* Author headshot(s) + name(s) */}
                                   <div className="flex flex-col items-center gap-2 flex-shrink-0">
                                     {pub.personSlugs.slice(0, 2).map((slug) => {
-                                      const name = SLUG_TO_NAME[slug] ?? slug;
+                                      const meta = peopleBySlug.get(slug);
+                                      const name = meta?.name ?? SLUG_TO_NAME[slug] ?? slug;
+                                      const photo = meta?.photo ?? null;
                                       return (
                                         <LocalizedLink
                                           key={slug}
@@ -482,8 +549,15 @@ export function ResearchPage() {
                                           className="flex flex-col items-center gap-1 group"
                                           aria-label={`${name} ${t('common.viewProfile')}`}
                                         >
-                                          <MemberAvatar displayName={name} size="sm" className="ring-2 ring-transparent group-hover:ring-[#7B1E3A]" />
-                                          <span className="text-xs font-medium text-foreground group-hover:text-[#7B1E3A] max-w-[80px] truncate text-center">{name.split(' ').pop()}</span>
+                                          <MemberAvatar
+                                            displayName={name}
+                                            photo={photo}
+                                            size="sm"
+                                            className="ring-2 ring-transparent group-hover:ring-[#7B1E3A]"
+                                          />
+                                          <span className="text-xs font-medium text-foreground group-hover:text-[#7B1E3A] max-w-[80px] truncate text-center">
+                                            {name.split(' ').pop()}
+                                          </span>
                                         </LocalizedLink>
                                       );
                                     })}

@@ -95,7 +95,7 @@ export function LocationMapCard({
           />
         </div>
 
-        <p className="mt-3 text-sm text-muted-foreground font-mono" aria-label="Coordinates in degrees minutes seconds">
+        <p className="mt-3 text-sm text-muted-foreground font-mono" aria-label={t('common.coordinatesLabel')}>
           {COORDINATES_DISPLAY.lat}<br />
           {COORDINATES_DISPLAY.lng}
         </p>

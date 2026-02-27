@@ -1,12 +1,13 @@
 /**
  * Single source of truth for research groups.
  * Category images: place in public/images/research/ (e.g. automata-grammars.jpg).
- * Member photos: place in public/ with naming NameSurnamePeople.jpg (e.g. LynetteVanZijlPeople.jpg).
  */
 
 export interface ResearchGroupLink {
   label: string;
   url: string;
+  /** True for external links (open in new tab). */
+  external?: boolean;
 }
 
 export interface ResearchGroup {
@@ -15,8 +16,15 @@ export interface ResearchGroup {
   /** Path under public/ e.g. /images/research/automata-grammars.jpg */
   categoryImage: string;
   summary: string;
-  /** Full display names; match to People by name for profile links. */
-  members: Array<{ name: string; role?: string }>;
+  /**
+   * Member identifiers referencing PersonMeta.id from content/people.ts.
+   * This avoids name matching at render time.
+   */
+  memberIds: string[];
+  /**
+   * Optional per-member roles for display, keyed by member id.
+   */
+  memberRoles?: Record<string, string>;
   links?: ResearchGroupLink[];
 }
 
@@ -29,13 +37,28 @@ export const researchGroups: ResearchGroup[] = [
     categoryImage: `${RESEARCH_IMAGE_DIR}/automata-grammars.jpg`,
     summary:
       'We work on formal languages, automata theory, and their applications—including descriptional complexity, symmetric difference NFAs, and connections to verification and natural language processing.',
-    members: [
-      { name: 'Lynette van Zijl', role: 'Professor' },
-      { name: 'Prof. Brink van der Merwe', role: 'Professor' },
-      { name: 'W. H. K. Bester', role: 'Junior Lecturer' },
-      { name: 'Walter Schulze', role: 'Researcher' },
+    memberIds: [
+      'whk-bester',
+      'walter-schulze',
+      'brink-van-der-merwe',
+      'steyn-van-litsenborgh',
+      'lynette-van-zijl',
     ],
-    links: [],
+    memberRoles: {
+      'whk-bester': 'Junior Lecturer',
+      'walter-schulze': 'Researcher',
+      'brink-van-der-merwe': 'Professor',
+      'steyn-van-litsenborgh': 'Researcher',
+      'lynette-van-zijl': 'Professor',
+    },
+    links: [
+      {
+        label: 'Theory and Applications of Automata and Grammars',
+        url: '#automata-grammars',
+        external: false,
+      },
+      // Keep regular-expression project description link here if/when a stable URL exists.
+    ],
   },
   {
     slug: 'software-verification',
@@ -43,12 +66,31 @@ export const researchGroups: ResearchGroup[] = [
     categoryImage: `${RESEARCH_IMAGE_DIR}/software-verification.jpg`,
     summary:
       'Research in program verification, testing, and software engineering—including symbolic execution, regular expression matching, and tools for correctness and security.',
-    members: [
-      { name: 'Prof. Brink van der Merwe', role: 'Professor' },
-      { name: 'W. H. K. Bester', role: 'Junior Lecturer' },
-      { name: 'Prof. David Chen', role: 'Professor' },
+    memberIds: [
+      'andrew-collett',
+      'bernd-fischer',
+      'jaco-geldenhuys',
+      'cornelia-inggs',
+      'zhunaid-mohamed',
+      'jan-taljaard',
+      'phillip-van-heerden',
+      'willem-visser',
     ],
-    links: [],
+    memberRoles: {
+      'andrew-collett': 'Lecturer',
+      'bernd-fischer': 'Professor',
+      'jaco-geldenhuys': 'Senior Lecturer',
+      'cornelia-inggs': 'Senior Lecturer',
+      'zhunaid-mohamed': 'Lecturer',
+      'jan-taljaard': 'Lecturer',
+      'phillip-van-heerden': 'Lecturer',
+      'willem-visser': 'Professor',
+    },
+    links: [
+      { label: 'COASTAL', url: 'https://deepseaplatform.github.io/coastal/', external: true },
+      { label: 'ESBMC', url: 'https://esbmc.github.io/', external: true },
+      { label: 'CSeq', url: 'https://www.southampton.ac.uk/~gp1y10/cseq/', external: true },
+    ],
   },
   {
     slug: 'ml-ai',
@@ -56,21 +98,31 @@ export const researchGroups: ResearchGroup[] = [
     categoryImage: `${RESEARCH_IMAGE_DIR}/ml-ai.jpg`,
     summary:
       'Advancing artificial intelligence through deep learning, reinforcement learning, and neural architecture search. Applications in vision, NLP, and data analytics.',
-    members: [
-      { name: 'Prof. Sarah Anderson', role: 'Professor' },
-      { name: 'Dr. Robert Taylor', role: 'Senior Researcher' },
+    memberIds: [
+      'burger-becker',
+      'marc-christoph',
+      'dirko-coetsee',
+      'trienko-grobler',
+      'steve-kroon',
+      'jordan-masakuna',
+      'arnu-pretorius',
+      'charl-steyl',
+      'elan-van-biljon',
     ],
     links: [],
   },
   {
     slug: 'networks-broadband',
-    title: 'Broadband and Mobile Networks',
+    title: 'Telkom–Siemens Centre of Excellence in ATM and Broadband Networks and their Applications',
     categoryImage: `${RESEARCH_IMAGE_DIR}/networks-broadband.jpg`,
     summary:
-      'Research on scalable distributed systems, cloud and edge computing, and mobile and broadband network technologies.',
-    members: [
-      { name: 'Dr. James Wilson', role: 'Senior Lecturer' },
-    ],
+      'Research on scalable distributed systems, cloud and edge computing, and broadband network technologies with strong industry collaboration.',
+    memberIds: ['jaco-geldenhuys', 'anthony-e-krzesinski', 'willem-visser'],
+    memberRoles: {
+      'jaco-geldenhuys': 'Researcher',
+      'anthony-e-krzesinski': 'Professor',
+      'willem-visser': 'Professor',
+    },
     links: [],
   },
   {
@@ -79,9 +131,7 @@ export const researchGroups: ResearchGroup[] = [
     categoryImage: `${RESEARCH_IMAGE_DIR}/robotics-vision.jpg`,
     summary:
       'Developing intelligent robots and autonomous systems: perception, path planning, human–robot interaction, and manipulation for real-world applications.',
-    members: [
-      { name: 'Prof. Michael Lee', role: 'Professor' },
-    ],
+    memberIds: [],
     links: [],
   },
   {
@@ -90,9 +140,10 @@ export const researchGroups: ResearchGroup[] = [
     categoryImage: `${RESEARCH_IMAGE_DIR}/nlp.jpg`,
     summary:
       'Work on natural language processing, computational linguistics, and assistive technologies that bridge language and computation.',
-    members: [
-      { name: 'Lynette van Zijl', role: 'Professor' },
-    ],
+    memberIds: ['lynette-van-zijl'],
+    memberRoles: {
+      'lynette-van-zijl': 'Professor',
+    },
     links: [],
   },
 ];

@@ -9,7 +9,7 @@ import { AchievementsTimeline, type YearGroup } from '../components/Achievements
 import { lynetteAchievementsByYear } from '@/content/lynette-achievements';
 import { useTranslation } from '@/i18n/useTranslation';
 
-const campusBackground = '/background.jpg';
+const campusBackground = '/realbackground3.jpeg';
 const STATIC_IMAGES: Record<string, string> = {
   'whk-bester': '/WillemPeople.jpg',
   'lynette-van-zijl': '/LynettePeople.webp',
@@ -395,6 +395,11 @@ export function ProfileDetailPage() {
     }).finally(() => setLoaded(true));
   }, [normalizedSlug]);
 
+  // While data is loading, avoid rendering the full profile shell against a null profile.
+  if (!normalizedSlug && !loaded) {
+    return null;
+  }
+
   if (!normalizedSlug || (loaded && !profile)) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center bg-background">
@@ -462,8 +467,8 @@ export function ProfileDetailPage() {
               <p className="text-[#C8A951] text-2xl font-semibold mb-2">
                 {profile?.primaryTitle}
               </p>
-              {profile.secondaryTitle && (
-                <p className="text-white/70 text-lg mb-4">{profile.secondaryTitle}</p>
+              {profile && (profile as any).secondaryTitle && (
+                <p className="text-white/70 text-lg mb-4">{(profile as any).secondaryTitle}</p>
               )}
               <p className="text-white/60 mb-8">{profile?.department}</p>
 

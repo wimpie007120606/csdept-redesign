@@ -7,7 +7,7 @@ import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from '@/i18n/useTranslation';
 
-const suLogo = '/newlogo.jpeg';
+const suLogo = '/brand/stellenbosch/su-logo-primary.jpeg';
 
 const navStructure = [
   { key: 'study', items: [{ key: 'undergraduate', href: '/study/undergraduate' }, { key: 'postgraduate', href: '/study/postgraduate' }, { key: 'courseCatalogue', href: '/courses' }] },
@@ -58,21 +58,21 @@ export function Header() {
       }`}
     >
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <LocalizedLink to="/" className="flex items-center space-x-3 group">
-            <img 
-              src={suLogo} 
-              alt="Stellenbosch University" 
-              className="w-12 h-12 object-contain transition-transform group-hover:scale-105"
+        <div className="flex items-center justify-between h-24">
+          {/* Logo + Brand */}
+          <LocalizedLink to="/" className="flex items-center gap-4 group" aria-label={t('nav.stellenboschUniversity')}>
+            <img
+              src={suLogo}
+              alt="Stellenbosch University logo"
+              className="w-14 h-14 object-contain transition-transform group-hover:scale-105"
             />
-            <div className="hidden md:block">
-              <div className="font-['Playfair_Display'] font-bold text-lg text-[#0B1C2D] dark:text-[#FAF8F3]">
-                {t('nav.computerScience')}
-              </div>
-              <div className="text-xs text-[#5A5A6E] dark:text-[#C4C4D1]">
+            <div className="hidden md:flex flex-col leading-tight">
+              <span className="text-xs font-semibold tracking-[0.18em] uppercase text-[color:var(--su-steel)]">
                 {t('nav.stellenboschUniversity')}
-              </div>
+              </span>
+              <span className="text-xl lg:text-2xl font-bold text-primary">
+                {t('nav.computerScience')}
+              </span>
             </div>
           </LocalizedLink>
 
@@ -83,7 +83,7 @@ export function Header() {
                 <LocalizedLink
                   key={item.key}
                   to={item.href}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-foreground dark:text-primary-foreground hover:bg-muted dark:hover:bg-[#1A2F43] transition-colors"
                 >
                   {t(`nav.${item.key}`)}
                 </LocalizedLink>
@@ -94,7 +94,7 @@ export function Header() {
                   onMouseEnter={() => setActiveDropdown(item.key)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
-                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors flex items-center gap-1">
+                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-foreground dark:text-primary-foreground hover:bg-muted dark:hover:bg-[#1A2F43] transition-colors flex items-center gap-1">
                     {t(`nav.${item.key}`)}
                     <ChevronDown className="w-4 h-4" />
                   </button>
@@ -127,16 +127,16 @@ export function Header() {
           {/* Right Side Actions: Language + Theme + Mobile menu */}
           <div className="flex items-center gap-2">
             <div
-              className="flex rounded-lg overflow-hidden border border-[#0B1C2D]/10 dark:border-[#FAF8F3]/10"
+              className="flex rounded-lg overflow-hidden border border-border"
               role="group"
-              aria-label="Language"
+              aria-label={t('common.language')}
             >
               <button
                 onClick={() => handleLanguageChange('en')}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'en'
-                    ? 'bg-[#7B1E3A] text-white dark:bg-[#A33456]'
-                    : 'bg-transparent text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43]'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-transparent text-foreground dark:text-primary-foreground hover:bg-muted dark:hover:bg-[#1A2F43]'
                 }`}
                 aria-label={t('nav.english')}
                 aria-pressed={language === 'en'}
@@ -147,8 +147,8 @@ export function Header() {
                 onClick={() => handleLanguageChange('af')}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'af'
-                    ? 'bg-[#7B1E3A] text-white dark:bg-[#A33456]'
-                    : 'bg-transparent text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43]'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-transparent text-foreground dark:text-primary-foreground hover:bg-muted dark:hover:bg-[#1A2F43]'
                 }`}
                 aria-label={t('nav.afrikaans')}
                 aria-pressed={language === 'af'}
@@ -159,8 +159,8 @@ export function Header() {
                 onClick={() => handleLanguageChange('xh')}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'xh'
-                    ? 'bg-[#7B1E3A] text-white dark:bg-[#A33456]'
-                    : 'bg-transparent text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43]'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-transparent text-foreground dark:text-primary-foreground hover:bg-muted dark:hover:bg-[#1A2F43]'
                 }`}
                 aria-label={t('nav.isiXhosa')}
                 aria-pressed={language === 'xh'}
@@ -170,15 +170,15 @@ export function Header() {
             </div>
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-lg hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
-              aria-label="Toggle theme"
+              className="p-2 rounded-lg hover:bg-muted dark:hover:bg-[#1A2F43] transition-colors"
+              aria-label={t('common.toggleTheme')}
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
-              aria-label="Toggle menu"
+              className="lg:hidden p-2 rounded-lg hover:bg-muted dark:hover:bg-[#1A2F43] transition-colors"
+              aria-label={t('common.toggleMenu')}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>

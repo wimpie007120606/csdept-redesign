@@ -6,7 +6,7 @@ import { ScrollToTop } from './ScrollToTop';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { isSupportedLang } from '../utils/langPath';
 
-const campusBackground = '/background.jpg';
+const campusBackground = '/realbackground2.jpg';
 
 export function Layout() {
   const { lang } = useParams<{ lang: string }>();

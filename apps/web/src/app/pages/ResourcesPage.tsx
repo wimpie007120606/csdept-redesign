@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { FileText, HelpCircle, Download, ExternalLink, BookOpen, Users, Briefcase } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 
-const campusBackground = '/background.jpg';
+const campusBackground = '/realbackground2.jpg';
 
 export function ResourcesPage() {
   const { t } = useTranslation();

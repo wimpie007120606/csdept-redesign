@@ -11,7 +11,7 @@ import { useTranslation } from '@/i18n/useTranslation';
 import { bridgingCourseManifest } from '@/content/bridgingCourse';
 import { ResourceCard, FilterBar, DayAccordion, type ResourceTypeFilter, type DayFilter } from '../components/bridging';
 
-const heroBackground = '/background.jpg';
+const heroBackground = '/realbackground2.jpg';
 
 function filterBySearch(query: string, ...texts: (string | undefined)[]): boolean {
   const q = query.trim().toLowerCase();
@@ -210,6 +210,8 @@ export function BridgingCoursePage() {
                     copiedLabel={t('bridging.copied')}
                     sortAZLabel={t('bridging.sortAZ')}
                     sortZALabel={t('bridging.sortZA')}
+                    expandLabel={t('bridging.dayAccordionExpand')}
+                    collapseLabel={t('bridging.dayAccordionCollapse')}
                     visiblePrograms={visibleDay1}
                     onCopyFilename={setCopiedFilename}
                     copiedFilename={copiedFilename}
@@ -224,6 +226,8 @@ export function BridgingCoursePage() {
                     copiedLabel={t('bridging.copied')}
                     sortAZLabel={t('bridging.sortAZ')}
                     sortZALabel={t('bridging.sortZA')}
+                    expandLabel={t('bridging.dayAccordionExpand')}
+                    collapseLabel={t('bridging.dayAccordionCollapse')}
                     visiblePrograms={visibleDay2}
                     onCopyFilename={setCopiedFilename}
                     copiedFilename={copiedFilename}

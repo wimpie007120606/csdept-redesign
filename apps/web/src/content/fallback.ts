@@ -1,7 +1,7 @@
-const willemBesterImage = '/WillemPeople.jpg';
-const lynetteVanZijlImage = '/LynettePeople.webp';
-const brinkVanDerMerweImage = '/BrinkPeople.jpeg';
-const walterSchulzeImage = '/WalterPeople.jpeg';
+const willemBesterImage = '/people/WillemPeople.jpg';
+const lynetteVanZijlImage = '/people/LynettePeople.webp';
+const brinkVanDerMerweImage = '/people/BrinkPeople.jpeg';
+const walterSchulzeImage = '/people/WalterPeople.jpeg';
 
 /** Canonical slugs — single source of truth for list/detail routing. */
 export const PEOPLE_SLUGS = ['whk-bester', 'lynette-van-zijl', 'brink-van-der-merwe', 'walter-schulze'] as const;

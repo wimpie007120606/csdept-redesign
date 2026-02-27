@@ -10,6 +10,7 @@ import {
 import type { Language } from './types';
 import { DEFAULT_LANGUAGE, STORAGE_KEY } from './types';
 import { getNestedTranslation } from './i18n';
+import { reportMissingTranslationKeys } from './reportMissingKeys';
 
 // Import JSON translations (Vite supports JSON import)
 import en from './en.json';
@@ -48,6 +49,12 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (mounted && typeof import.meta.env !== 'undefined' && import.meta.env.DEV) {
+      reportMissingTranslationKeys();
+    }
+  }, [mounted]);
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
