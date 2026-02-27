@@ -1,11 +1,14 @@
 import { Outlet } from 'react-router';
 import { Header } from './Header';
 import { Footer } from './Footer';
+import { ScrollToTop } from './ScrollToTop';
+
 const campusBackground = '/background.jpg';
 
 export function Layout() {
   return (
     <div className="min-h-screen flex flex-col font-sans relative">
+      <ScrollToTop />
       {/* Background Image */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.03] dark:opacity-[0.02]"

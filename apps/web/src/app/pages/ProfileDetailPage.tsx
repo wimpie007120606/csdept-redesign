@@ -8,6 +8,7 @@ import lynetteVanZijlImage from 'figma:asset/c21387b7264de2fe2f95847f52f9e5cc1b3
 import brinkVanDerMerweImage from 'figma:asset/167aac506fe75e4de4a2c510ce66dca988aa3039.png';
 import walterSchulzeImage from 'figma:asset/567a1a3e7e9b54908d05e37c3d9a5e76c8aa5b54.png';
 import { getPerson, assetUrl, type PersonDetail } from '../api';
+import { PLACEHOLDER_IMAGE } from '../placeholder';
 
 export function ProfileDetailPage() {
   const { slug } = useParams();
@@ -449,11 +450,16 @@ export function ProfileDetailPage() {
 
   if (!slug || (loaded && !profile)) {
     return (
-      <div className="pt-20 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="font-['Spectral'] text-4xl font-bold mb-4">Profile Not Found</h1>
-          <Link to="/people" className="text-primary hover:underline">
-            Return to People
+      <div className="pt-20 min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center px-4">
+          <h1 className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">Profile Not Found</h1>
+          <p className="text-muted-foreground mb-6">The person you're looking for doesn't exist or the link may be incorrect.</p>
+          <Link
+            to="/people"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to People
           </Link>
         </div>
       </div>
@@ -488,8 +494,9 @@ export function ProfileDetailPage() {
             >
               <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10">
                 <img
-                  src={profile.image}
-                  alt={profile.name}
+                  src={profile?.image ?? PLACEHOLDER_IMAGE}
+                  alt={profile?.name ?? 'Profile'}
+                  loading="lazy"
                   className="w-full h-auto"
                 />
               </div>

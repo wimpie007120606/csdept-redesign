@@ -137,7 +137,7 @@ export function HomePage() {
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
-                  to="/research"
+                  to="/people"
                   className="group inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 rounded-xl font-semibold hover:bg-white hover:text-[#7B1E3A] transition-all duration-300"
                 >
                   Meet Our Researchers
@@ -212,8 +212,9 @@ export function HomePage() {
                   {/* Image */}
                   <div className="relative h-48 overflow-hidden">
                     <img
-                      src={highlight.image}
-                      alt={highlight.title}
+                      src={highlight?.image ?? ''}
+                      alt={highlight?.title ?? 'Research'}
+                      loading="lazy"
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />

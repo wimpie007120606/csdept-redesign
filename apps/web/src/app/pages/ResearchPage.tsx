@@ -1,6 +1,8 @@
 import { motion } from 'motion/react';
 import { Link } from 'react-router';
 import { Brain, Bot, Network, Lock, Database, Globe, TrendingUp, ArrowRight, Users, FileText } from 'lucide-react';
+import { PLACEHOLDER_IMAGE } from '../placeholder';
+
 const campusBackground = '/background.jpg';
 
 export function ResearchPage() {
@@ -191,8 +193,9 @@ export function ResearchPage() {
               >
                 <div className="lg:w-1/2 h-80 lg:h-96">
                   <img
-                    src={group.image}
-                    alt={group.name}
+                    src={group?.image ?? PLACEHOLDER_IMAGE}
+                    alt={group?.name ?? 'Research group'}
+                    loading="lazy"
                     className="w-full h-full object-cover"
                   />
                 </div>

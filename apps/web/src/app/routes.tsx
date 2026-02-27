@@ -12,11 +12,13 @@ import { CoursesPage } from "./pages/CoursesPage";
 import { ResourcesPage } from "./pages/ResourcesPage";
 import { ContactPage } from "./pages/ContactPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { RouteErrorPage } from "./pages/RouteErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     Component: Layout,
+    errorElement: <RouteErrorPage />,
     children: [
       { index: true, Component: HomePage },
       { path: "study", element: <Navigate to="/study/undergraduate" replace /> },
