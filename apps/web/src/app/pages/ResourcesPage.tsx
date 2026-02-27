@@ -1,8 +1,11 @@
 import { motion } from 'motion/react';
 import { FileText, HelpCircle, Download, ExternalLink, BookOpen, Users, Briefcase } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
+
 const campusBackground = '/background.jpg';
 
 export function ResourcesPage() {
+  const { t } = useTranslation();
   const faqs = [
     {
       question: 'How do I register for courses?',
@@ -80,12 +83,12 @@ export function ResourcesPage() {
 
               {/* Main Heading */}
               <h1 className="font-['Spectral'] text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight">
-                Resources & Support
+                {t('resources.heroTitle')}
               </h1>
 
               {/* Description */}
               <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed font-light">
-                Everything you need for a successful academic journey
+                {t('resources.heroSub')}
               </p>
             </motion.div>
           </div>

@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { AlertTriangle } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
+
 const campusBackground = '/background.jpg';
 
 export function CoursesPage() {
+  const { t } = useTranslation();
   const [selectedFocalArea, setSelectedFocalArea] = useState<'general' | 'systems' | 'data'>('general');
 
   return (
@@ -27,18 +30,18 @@ export function CoursesPage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-6">
                   <span className="text-[#C8A951] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral']">
-                    Course Catalogue
+                    {t('courses.heroLabel')}
                   </span>
                   <div className="h-[1px] flex-1 bg-gradient-to-r from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
                 </div>
               </div>
 
               <h1 className="font-['Spectral'] text-6xl md:text-7xl lg:text-8xl font-semibold leading-[1.1] tracking-tight">
-                BSc Computer Science
+                {t('courses.heroTitle')}
               </h1>
 
               <p className="text-lg md:text-xl text-white/80 max-w-3xl leading-relaxed font-light">
-                Official module structure for the Bachelor of Science in Computer Science degree programme.
+                {t('courses.heroSub')}
               </p>
             </motion.div>
           </div>

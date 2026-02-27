@@ -1,9 +1,12 @@
 import { Link } from 'react-router';
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube, Instagram } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
+
 const suLogo = '/newlogo.jpeg';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const { t } = useTranslation();
 
   return (
     <footer className="bg-white dark:bg-[#000000] text-[#0B1C2D] dark:text-[#FAF8F3] pt-16 pb-8 border-t border-[#0B1C2D]/10 dark:border-[#FAF8F3]/10">
@@ -15,14 +18,13 @@ export function Footer() {
             <div className="flex items-center space-x-3 mb-4">
               <img 
                 src={suLogo} 
-                alt="Stellenbosch University" 
+                alt={t('nav.stellenboschUniversity')} 
                 className="w-10 h-10 object-contain"
               />
-              <div className="font-['Playfair_Display'] font-bold text-lg">Computer Science</div>
+              <div className="font-['Playfair_Display'] font-bold text-lg">{t('footer.computerScience')}</div>
             </div>
             <p className="text-sm text-[#5A5A6E] dark:text-[#C4C4D1] mb-4">
-              Shaping the future of Computer Science through world-class research, innovation, and
-              education.
+              {t('footer.tagline')}
             </p>
             <div className="flex gap-3">
               <a
@@ -65,31 +67,31 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-['Playfair_Display'] font-semibold text-lg mb-4">Quick Links</h3>
+            <h3 className="font-['Playfair_Display'] font-semibold text-lg mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/undergraduate" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  Undergraduate
+                <Link to="/study/undergraduate" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                  {t('nav.undergraduate')}
                 </Link>
               </li>
               <li>
-                <Link to="/postgraduate" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  Postgraduate
+                <Link to="/study/postgraduate" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                  {t('nav.postgraduate')}
                 </Link>
               </li>
               <li>
                 <Link to="/research" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  Research
+                  {t('nav.research')}
                 </Link>
               </li>
               <li>
                 <Link to="/people" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  People
+                  {t('nav.people')}
                 </Link>
               </li>
               <li>
                 <Link to="/courses" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  Course Catalogue
+                  {t('nav.courseCatalogue')}
                 </Link>
               </li>
             </ul>
@@ -97,31 +99,31 @@ export function Footer() {
 
           {/* Resources */}
           <div>
-            <h3 className="font-['Playfair_Display'] font-semibold text-lg mb-4">Resources</h3>
+            <h3 className="font-['Playfair_Display'] font-semibold text-lg mb-4">{t('footer.resources')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/resources" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  Student Resources
+                  {t('nav.studentResources')}
                 </Link>
               </li>
               <li>
                 <Link to="/resources#faq" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  FAQs
+                  {t('nav.faqs')}
                 </Link>
               </li>
               <li>
                 <Link to="/resources#forms" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  Forms & Documents
+                  {t('footer.formsDocuments')}
                 </Link>
               </li>
               <li>
                 <a href="#" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  Academic Calendar
+                  {t('footer.academicCalendar')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  Accessibility
+                  {t('footer.accessibility')}
                 </a>
               </li>
             </ul>
@@ -129,16 +131,16 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="font-['Playfair_Display'] font-semibold text-lg mb-4">Contact Us</h3>
+            <h3 className="font-['Playfair_Display'] font-semibold text-lg mb-4">{t('footer.contactUs')}</h3>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[#C8A951] flex-shrink-0 mt-0.5" />
                 <span className="text-[#5A5A6E] dark:text-[#C4C4D1]">
-                  Department of Computer Science
+                  {t('footer.addressLine1')}
                   <br />
-                  Stellenbosch University
+                  {t('footer.addressLine2')}
                   <br />
-                  Private Bag X1, Matieland, 7602
+                  {t('footer.addressLine3')}
                 </span>
               </li>
               <li className="flex items-center gap-3">
@@ -159,17 +161,17 @@ export function Footer() {
         <div className="pt-8 border-t border-[#0B1C2D]/10 dark:border-white/10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#5A5A6E] dark:text-[#C4C4D1]">
             <div>
-              © {currentYear} Stellenbosch University Computer Science. All rights reserved.
+              © {currentYear} {t('nav.stellenboschUniversity')} {t('footer.computerScience')}. {t('footer.copyright')}
             </div>
             <div className="flex gap-6">
               <a href="#" className="hover:text-[#C8A951] transition-colors">
-                Privacy Policy
+                {t('footer.privacyPolicy')}
               </a>
               <a href="#" className="hover:text-[#C8A951] transition-colors">
-                Terms of Use
+                {t('footer.termsOfUse')}
               </a>
               <a href="#" className="hover:text-[#C8A951] transition-colors">
-                Accessibility
+                {t('footer.accessibility')}
               </a>
             </div>
           </div>

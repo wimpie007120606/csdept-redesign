@@ -1,150 +1,229 @@
-import { motion } from 'motion/react';
+import { useRef, useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router';
-import { Brain, Bot, Network, Lock, Database, Globe, TrendingUp, ArrowRight, Users, FileText } from 'lucide-react';
+import {
+  FileText,
+  TrendingUp,
+  Globe,
+  Users,
+  ArrowRight,
+  ArrowUp,
+  ExternalLink,
+  Search,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
+import { researchGroups } from '@/content/researchGroups';
+import { getSlugForMemberName } from '../utils/researchPeople';
+import { MemberAvatar } from '../components/MemberAvatar';
 import { PLACEHOLDER_IMAGE } from '../placeholder';
+import { useTranslation } from '@/i18n/useTranslation';
+import {
+  getAllPublications,
+  getPeopleWithPublications,
+  type NormalizedPublication,
+} from '@/content/publications';
 
 const campusBackground = '/background.jpg';
 
+const impactMetricKeys = [
+  { value: '850+', labelKey: 'research.metrics.publications', icon: FileText },
+  { value: 'R45M', labelKey: 'research.metrics.funding', icon: TrendingUp },
+  { value: '35+', labelKey: 'research.metrics.partners', icon: Globe },
+  { value: '120+', labelKey: 'research.metrics.researchers', icon: Users },
+];
+
+const SLUG_TO_NAME: Record<string, string> = {
+  'lynette-van-zijl': 'Lynette van Zijl',
+  'whk-bester': 'W. H. K. Bester',
+  'brink-van-der-merwe': 'Prof. Brink van der Merwe',
+  'walter-schulze': 'Walter Schulze',
+};
+
+function filterPublications(
+  list: NormalizedPublication[],
+  searchQuery: string,
+  authorSlug: string
+): NormalizedPublication[] {
+  let out = list;
+  const q = searchQuery.trim().toLowerCase();
+  if (q) {
+    out = out.filter((p) => {
+      const citation = (p.citation ?? '').toLowerCase();
+      const title = (p.title ?? '').toLowerCase();
+      const authors = (p.authors ?? '').toLowerCase();
+      const venue = (p.venue ?? '').toLowerCase();
+      const note = (p.note ?? '').toLowerCase();
+      return citation.includes(q) || title.includes(q) || authors.includes(q) || venue.includes(q) || note.includes(q);
+    });
+  }
+  if (authorSlug) {
+    out = out.filter((p) => p.personSlugs.includes(authorSlug));
+  }
+  return out;
+}
+
 export function ResearchPage() {
-  const researchGroups = [
-    {
-      icon: Brain,
-      name: 'AI & Machine Learning Lab',
-      lead: 'Prof. Sarah Anderson',
-      members: 15,
-      description: 'Advancing the frontiers of artificial intelligence through deep learning, reinforcement learning, and neural architecture search.',
-      focus: ['Deep Learning', 'Computer Vision', 'NLP', 'Reinforcement Learning'],
-      image: 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlJTIwbWFjaGluZSUyMGxlYXJuaW5nfGVufDF8fHx8MTc3MjA4MjY4OHww&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-    {
-      icon: Lock,
-      name: 'Cybersecurity Research Group',
-      lead: 'Prof. David Chen',
-      members: 12,
-      description: 'Protecting digital infrastructure through advanced cryptography, network security, and privacy technologies.',
-      focus: ['Cryptography', 'Network Security', 'Privacy', 'Blockchain'],
-      image: 'https://images.unsplash.com/photo-1768224656445-33d078c250b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuZXR3b3JrJTIwY3liZXJzZWN1cml0eSUyMHRlY2hub2xvZ3l8ZW58MXx8fHwxNzcyMDQ0MTkyfDA&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-    {
-      icon: Bot,
-      name: 'Robotics & Autonomous Systems',
-      lead: 'Prof. Michael Lee',
-      members: 10,
-      description: 'Developing intelligent robots and autonomous systems for real-world applications.',
-      focus: ['Robot Perception', 'Path Planning', 'Human-Robot Interaction', 'Manipulation'],
-      image: 'https://images.unsplash.com/photo-1758295746012-41650245a9bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyb2JvdGljcyUyMGVuZ2luZWVyaW5nJTIwbGFib3JhdG9yeXxlbnwxfHx8fDE3NzIxMjEwMDB8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-    {
-      icon: Network,
-      name: 'Distributed Systems Lab',
-      lead: 'Dr. James Wilson',
-      members: 9,
-      description: 'Researching scalable, reliable distributed systems and cloud computing architectures.',
-      focus: ['Cloud Computing', 'Edge Computing', 'Microservices', 'Consensus Algorithms'],
-      image: 'https://images.unsplash.com/photo-1767319257862-e5c5aeb1c628?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1bml2ZXJzaXR5JTIwY29tcHV0ZXIlMjBzY2llbmNlJTIwcmVzZWFyY2glMjB0ZWNobm9sb2d5fGVufDF8fHx8MTc3MjEyMDk5OHww&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-    {
-      icon: Database,
-      name: 'Data Science & Analytics',
-      lead: 'Dr. Robert Taylor',
-      members: 11,
-      description: 'Extracting insights from big data using advanced analytics and visualization techniques.',
-      focus: ['Big Data', 'Machine Learning', 'Data Visualization', 'Predictive Analytics'],
-      image: 'https://images.unsplash.com/photo-1762279389083-abf71f22d338?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwc2NpZW5jZSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzcyMDg3ODI3fDA&ixlib=rb-4.1.0&q=80&w=1080',
-    },
-  ];
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
+  const [pubSearch, setPubSearch] = useState('');
+  const [pubAuthorFilter, setPubAuthorFilter] = useState('');
+  const [expandedYears, setExpandedYears] = useState<Set<number>>(() => {
+    const all = getAllPublications();
+    const years = [...new Set(all.map((p) => p.year))].sort((a, b) => b - a);
+    return new Set(years.slice(0, 5)); // default expand recent 5 years
+  });
 
-  const impactMetrics = [
-    { value: '850+', label: 'Publications (2024)', icon: FileText },
-    { value: 'R45M', label: 'Research Funding', icon: TrendingUp },
-    { value: '35+', label: 'Industry Partners', icon: Globe },
-    { value: '120+', label: 'Active Researchers', icon: Users },
-  ];
+  const allPublications = useMemo(() => getAllPublications(), []);
+  const peopleWithPubs = useMemo(() => getPeopleWithPublications(), []);
+  const filteredPublications = useMemo(
+    () => filterPublications(allPublications, pubSearch, pubAuthorFilter),
+    [allPublications, pubSearch, pubAuthorFilter]
+  );
+  const byYear = useMemo(() => {
+    const map = new Map<number, NormalizedPublication[]>();
+    for (const p of filteredPublications) {
+      const arr = map.get(p.year) ?? [];
+      arr.push(p);
+      map.set(p.year, arr);
+    }
+    return Array.from(map.entries()).sort((a, b) => b[0] - a[0]);
+  }, [filteredPublications]);
 
-  const recentPublications = [
-    {
-      title: 'Neural Architecture Search with Evolutionary Algorithms',
-      authors: 'Anderson, S., et al.',
-      venue: 'Nature Machine Intelligence',
-      year: 2026,
-      citations: 42,
-    },
-    {
-      title: 'Privacy-Preserving Federated Learning in Healthcare',
-      authors: 'Chen, D., Wilson, J., et al.',
-      venue: 'IEEE Transactions on Information Forensics and Security',
-      year: 2026,
-      citations: 28,
-    },
-    {
-      title: 'Autonomous Navigation in Dynamic Environments',
-      authors: 'Lee, M., Santos, M., et al.',
-      venue: 'Robotics: Science and Systems',
-      year: 2025,
-      citations: 65,
-    },
-    {
-      title: 'Scalable Distributed Consensus for Blockchain Systems',
-      authors: 'Wilson, J., Chen, D., et al.',
-      venue: 'ACM Symposium on Cloud Computing',
-      year: 2025,
-      citations: 51,
-    },
-  ];
+  const toggleYear = (year: number) => {
+    setExpandedYears((prev) => {
+      const next = new Set(prev);
+      if (next.has(year)) next.delete(year);
+      else next.add(year);
+      return next;
+    });
+  };
+  const expandAllYears = () => setExpandedYears(new Set(byYear.map(([y]) => y)));
+  const collapseAllYears = () => setExpandedYears(new Set());
 
   return (
-    <div className="pt-20">
-      {/* Hero Section */}
-      <section className="relative py-32 text-white overflow-hidden min-h-[650px] flex items-center">
-        {/* Background Image */}
-        <div 
+    <div ref={containerRef} className="pt-20">
+      {/* Hero */}
+      <section className="relative py-32 text-white overflow-hidden min-h-[500px] flex items-center">
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${campusBackground})` }}
         />
-        {/* Refined Dark Overlay - more neutral, less pink/red */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#0B1C2D]/90 via-[#0B1C2D]/85 to-[#0B1C2D]/80" />
-        
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="max-w-5xl mx-auto text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
               className="space-y-8"
             >
-              {/* Editorial Label with Divider */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-center gap-6">
-                  <div className="h-[1px] flex-1 bg-gradient-to-l from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
-                  <span className="text-[#C8A951] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral']">
-                    Research Excellence
-                  </span>
-                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
-                </div>
+              <div className="flex items-center justify-center gap-6">
+                <div className="h-[1px] flex-1 bg-gradient-to-l from-[#C8A951]/40 to-transparent max-w-[200px]" />
+                <span className="text-[#C8A951] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral']">
+                  {t('research.heroLabel')}
+                </span>
+                <div className="h-[1px] flex-1 bg-gradient-to-r from-[#C8A951]/40 to-transparent max-w-[200px]" />
               </div>
-
-              {/* Main Heading */}
               <h1 className="font-['Spectral'] text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight">
-                Advancing the Frontiers<br />of Computer Science
+                {t('research.heroTitle')}
               </h1>
-
-              {/* Description */}
               <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed font-light">
-                World-class research tackling the most challenging problems in technology and society
+                {t('research.heroSubtitle')}
               </p>
             </motion.div>
           </div>
         </div>
-
-        {/* Subtle bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
       </section>
 
-      {/* Impact Metrics */}
-      <section className="py-16 bg-background border-b border-border">
+      {/* Sticky sub-nav: Research categories */}
+      <nav
+        aria-label="Research categories"
+        className="sticky top-0 z-30 bg-background/95 backdrop-blur border-b border-border py-3"
+      >
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex flex-wrap justify-center gap-2 md:gap-4">
+            {researchGroups.map((group) => {
+              const title = t(`research.groups.${group.slug}.title`);
+              const truncated = title.includes(' and ') ? title.split(' and ')[0] + '…' : title;
+              return (
+              <a
+                key={group.slug}
+                href={`#${group.slug}`}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground px-3 py-2 rounded-lg hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+              >
+                {truncated}
+              </a>
+            );})}
+          </div>
+        </div>
+      </nav>
+
+      {/* Research Overview: intro + grid of category cards */}
+      <section className="py-20 bg-background" aria-labelledby="research-overview-heading">
+        <div className="container mx-auto px-4 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 id="research-overview-heading" className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">
+              {t('research.overviewTitle')}
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              {t('research.overviewSub')}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {researchGroups.map((group, index) => (
+              <motion.article
+                key={group.slug}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                viewport={{ once: true }}
+                className="group bg-card rounded-2xl border border-border shadow-lg overflow-hidden hover:shadow-xl hover:border-[#7B1E3A]/30 transition-all duration-300"
+              >
+                <a href={`#${group.slug}`} className="block focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-inset rounded-2xl">
+                  <div className="aspect-[16/10] overflow-hidden bg-muted">
+                    <img
+                      src={group.categoryImage}
+                      alt=""
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        const el = e.currentTarget;
+                        el.onerror = null;
+                        el.src = PLACEHOLDER_IMAGE;
+                      }}
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-['Spectral'] text-xl font-bold text-foreground mb-2 line-clamp-2">
+                      {t(`research.groups.${group.slug}.title`)}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 mb-4">
+                      {t(`research.groups.${group.slug}.summary`)}
+                    </p>
+                    <span className="inline-flex items-center gap-2 text-[#7B1E3A] font-semibold text-sm group-hover:gap-3 transition-all">
+                      {t('research.exploreGroup')}
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
+                  </div>
+                </a>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Impact metrics */}
+      <section className="py-16 bg-muted/50 border-y border-border">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {impactMetrics.map((metric, index) => (
+            {impactMetricKeys.map((metric, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -154,160 +233,336 @@ export function ResearchPage() {
                 className="text-center p-6 bg-[#7B1E3A] rounded-2xl shadow-lg"
               >
                 <metric.icon className="w-10 h-10 text-[#C8A951] mx-auto mb-3" />
-                <div className="text-4xl font-bold font-['Spectral'] text-white mb-1">
-                  {metric.value}
-                </div>
-                <div className="text-sm text-white/70">{metric.label}</div>
+                <div className="text-4xl font-bold font-['Spectral'] text-white mb-1">{metric.value}</div>
+                <div className="text-sm text-white/70">{t(metric.labelKey)}</div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Research Groups */}
-      <section id="groups" className="py-20 bg-background">
+      {/* Research Groups: full section per group */}
+      <section className="py-20 bg-background" aria-labelledby="research-groups-heading">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-16"
           >
-            <h2 className="font-['Playfair_Display'] text-4xl font-bold text-foreground mb-4">
-              Research Groups
+            <h2 id="research-groups-heading" className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">
+              {t('research.groupsTitle')}
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Collaborative teams pushing boundaries in specialized areas
+              {t('research.groupsSub')}
             </p>
           </motion.div>
 
-          <div className="space-y-8">
-            {researchGroups.map((group, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
+          <div className="space-y-24 max-w-5xl mx-auto">
+            {researchGroups.map((group, groupIndex) => (
+              <motion.section
+                key={group.slug}
+                id={group.slug}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 items-center bg-card rounded-2xl shadow-xl overflow-hidden`}
+                viewport={{ once: true, margin: '-50px' }}
+                className="scroll-mt-24"
               >
-                <div className="lg:w-1/2 h-80 lg:h-96">
-                  <img
-                    src={group?.image ?? PLACEHOLDER_IMAGE}
-                    alt={group?.name ?? 'Research group'}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
+                <div className="bg-card rounded-2xl border border-border shadow-xl overflow-hidden">
+                  {/* Banner image */}
+                  <div className="aspect-[21/9] min-h-[200px] bg-muted">
+                    <img
+                      src={group.categoryImage}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const el = e.currentTarget;
+                        el.onerror = null;
+                        el.src = PLACEHOLDER_IMAGE;
+                      }}
+                    />
+                  </div>
+                  <div className="p-8 lg:p-10">
+                    <h3 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6">
+                      {t(`research.groups.${group.slug}.title`)}
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-8 max-w-3xl">
+                      {t(`research.groups.${group.slug}.summary`)}
+                    </p>
+
+                    {/* Current members */}
+                    <div className="mb-8">
+                      <h4 className="font-['Spectral'] text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
+                        <Users className="w-5 h-5 text-[#7B1E3A]" />
+                        {t('research.currentMembers')}
+                      </h4>
+                      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {group.members.map((member) => {
+                          const slug = getSlugForMemberName(member.name);
+                          const content = (
+                            <>
+                              <MemberAvatar displayName={member.name} size="md" className="mx-auto sm:mx-0" />
+                              <div className="text-center sm:text-left min-w-0">
+                                <span className="font-semibold text-foreground block truncate">{member.name}</span>
+                                {member.role && (
+                                  <span className="text-sm text-muted-foreground block truncate">{member.role}</span>
+                                )}
+                              </div>
+                            </>
+                          );
+                          return (
+                            <li key={member.name}>
+                              {slug ? (
+                                <Link
+                                  to={`/people/${slug}`}
+                                  className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-border hover:border-[#7B1E3A]/50 hover:bg-muted/50 transition-all focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                                >
+                                  {content}
+                                </Link>
+                              ) : (
+                                <div
+                                  className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-border bg-muted/30"
+                                  title={t('research.profileComingSoon')}
+                                >
+                                  {content}
+                                  <span className="text-xs text-muted-foreground sm:ml-auto">{t('research.profileComingSoon')}</span>
+                                </div>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+
+                    {/* Links */}
+                    {group.links && group.links.length > 0 && (
+                      <div>
+                        <h4 className="font-['Spectral'] text-lg font-semibold text-foreground mb-3">{t('research.resourcesLinks')}</h4>
+                        <div className="flex flex-wrap gap-3">
+                          {group.links.map((link) => (
+                            <a
+                              key={link.url}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted text-foreground font-medium hover:bg-[#7B1E3A] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                            >
+                              {link.label}
+                              <ExternalLink className="w-4 h-4" />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Back to top */}
+                    <div className="mt-8 pt-6 border-t border-border">
+                      <a
+                        href="#research-overview-heading"
+                        className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2 rounded-lg py-2"
+                      >
+                        <ArrowUp className="w-4 h-4" />
+                        {t('research.backToTop')}
+                      </a>
+                    </div>
+                  </div>
                 </div>
-                <div className="lg:w-1/2 p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
-                      <group.icon className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-['Playfair_Display'] text-2xl font-bold text-foreground">
-                        {group.name}
-                      </h3>
-                      <p className="text-sm text-muted-foreground">Led by {group.lead}</p>
-                    </div>
-                  </div>
-                  <p className="text-muted-foreground mb-6">{group.description}</p>
-                  <div className="mb-6">
-                    <div className="text-sm font-semibold text-foreground mb-2">Research Focus:</div>
-                    <div className="flex flex-wrap gap-2">
-                      {group.focus.map((item, i) => (
-                        <span key={i} className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      {group.members} Members
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              </motion.section>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Publications */}
-      <section id="publications" className="py-20 bg-muted">
+      {/* Publications — auto-generated from People profiles only */}
+      <section id="publications" className="py-20 bg-muted/50">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-8"
           >
-            <h2 className="font-['Playfair_Display'] text-4xl font-bold text-foreground mb-4">
-              Recent Publications
-            </h2>
+            <h2 className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">{t('research.publicationsTitle')}</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Cutting-edge research published in top-tier venues
+              {t('research.publicationsSub')}
             </p>
           </motion.div>
+
+          {/* Search and filters */}
+          <div className="max-w-4xl mx-auto mb-8 flex flex-col sm:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" aria-hidden />
+              <input
+                type="search"
+                value={pubSearch}
+                onChange={(e) => setPubSearch(e.target.value)}
+                placeholder={t('research.publicationsSearchPlaceholder')}
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                aria-label={t('research.publicationsSearchPlaceholder')}
+              />
+            </div>
+            <select
+              value={pubAuthorFilter}
+              onChange={(e) => setPubAuthorFilter(e.target.value)}
+              className="px-4 py-3 rounded-xl border border-border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2 min-w-[200px]"
+              aria-label={t('research.publicationsFilterByAuthor')}
+            >
+              <option value="">{t('research.publicationsFilterByAuthor')}</option>
+              {peopleWithPubs.map((person) => (
+                <option key={person.slug} value={person.slug}>
+                  {person.name} ({person.publicationCount})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Year controls */}
+          <div className="max-w-4xl mx-auto mb-4 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={expandAllYears}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg hover:bg-muted transition-colors"
+            >
+              {t('achievements.expandAll')}
+            </button>
+            <button
+              type="button"
+              onClick={collapseAllYears}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-lg hover:bg-muted transition-colors"
+            >
+              {t('achievements.collapseAll')}
+            </button>
+          </div>
 
           <div className="max-w-4xl mx-auto space-y-4">
-            {recentPublications.map((pub, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="p-6 bg-card rounded-2xl shadow-lg hover:shadow-xl transition-all"
-              >
-                <h3 className="font-['Playfair_Display'] text-xl font-bold text-foreground mb-2">
-                  {pub.title}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-3">{pub.authors}</p>
-                <div className="flex flex-wrap gap-4 text-sm">
-                  <span className="text-primary font-medium">{pub.venue}</span>
-                  <span className="text-muted-foreground">{pub.year}</span>
-                  <span className="text-muted-foreground">{pub.citations} citations</span>
-                </div>
-              </motion.div>
-            ))}
+            {byYear.length === 0 ? (
+              <p className="text-center text-muted-foreground py-12">{t('research.publicationsNoResults')}</p>
+            ) : (
+              byYear.map(([year, pubs]) => {
+                const isExpanded = expandedYears.has(year);
+                return (
+                  <motion.div
+                    key={year}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="rounded-2xl border border-border bg-card shadow-lg overflow-hidden"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => toggleYear(year)}
+                      className="w-full flex items-center justify-between px-6 py-4 bg-[#7B1E3A] text-white hover:bg-[#7B1E3A]/90 transition-colors text-left focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                      aria-expanded={isExpanded}
+                    >
+                      <span className="font-['Spectral'] text-xl font-bold">{year}</span>
+                      <span className="text-white/80 text-sm">{pubs.length} {pubs.length === 1 ? t('research.publication') : t('research.publicationsCount')}</span>
+                      {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <ul className="divide-y divide-border">
+                            {pubs.map((pub) => (
+                              <li key={pub.id} className="p-6 hover:bg-muted/30 transition-colors">
+                                <div className="flex gap-4">
+                                  {/* Author headshot(s) + name(s) */}
+                                  <div className="flex flex-col items-center gap-2 flex-shrink-0">
+                                    {pub.personSlugs.slice(0, 2).map((slug) => {
+                                      const name = SLUG_TO_NAME[slug] ?? slug;
+                                      return (
+                                        <Link
+                                          key={slug}
+                                          to={`/people/${slug}`}
+                                          className="flex flex-col items-center gap-1 group"
+                                          aria-label={`${name} ${t('common.viewProfile')}`}
+                                        >
+                                          <MemberAvatar displayName={name} size="sm" className="ring-2 ring-transparent group-hover:ring-[#7B1E3A]" />
+                                          <span className="text-xs font-medium text-foreground group-hover:text-[#7B1E3A] max-w-[80px] truncate text-center">{name.split(' ').pop()}</span>
+                                        </Link>
+                                      );
+                                    })}
+                                  </div>
+                                  <div className="min-w-0 flex-1">
+                                    {pub.citation ? (
+                                      <>
+                                        <p className="text-foreground leading-relaxed">{pub.citation}</p>
+                                        {pub.note && (
+                                          <p className="mt-2 text-sm text-[#7B1E3A] font-medium">{pub.note}</p>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <>
+                                        <h3 className="font-['Spectral'] text-lg font-bold text-foreground mb-1">{pub.title}</h3>
+                                        {pub.authors && <p className="text-sm text-muted-foreground mb-1">{pub.authors}</p>}
+                                        <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
+                                          {pub.venue && <span className="text-[#7B1E3A] font-medium">{pub.venue}</span>}
+                                          {pub.details && <span>{pub.details}</span>}
+                                          {pub.note && <span className="text-[#7B1E3A]">{pub.note}</span>}
+                                        </div>
+                                      </>
+                                    )}
+                                    {pub.links && pub.links.length > 0 && (
+                                      <div className="mt-3 flex flex-wrap gap-2">
+                                        {pub.links.map((link) => (
+                                          <a
+                                            key={link.url}
+                                            href={link.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-foreground text-sm font-medium hover:bg-[#7B1E3A] hover:text-white transition-colors"
+                                          >
+                                            {link.label}
+                                            <ExternalLink className="w-3.5 h-3.5" />
+                                          </a>
+                                        ))}
+                                      </div>
+                                    )}
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                      {pub.personSlugs.map((slug) => (
+                                        <Link
+                                          key={slug}
+                                          to={`/people/${slug}`}
+                                          className="text-sm text-[#7B1E3A] hover:underline font-medium"
+                                        >
+                                          {SLUG_TO_NAME[slug] ?? slug}
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })
+            )}
           </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-center mt-8"
-          >
-            <button className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all">
-              View All Publications
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </motion.div>
         </div>
       </section>
 
       {/* CTA */}
       <section className="py-20 bg-gradient-to-br from-[#7B1E3A] to-[#0B1C2D] text-white">
         <div className="container mx-auto px-4 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="font-['Playfair_Display'] text-4xl md:text-5xl font-bold mb-6">
-              Join Our Research Community
-            </h2>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <h2 className="font-['Spectral'] text-4xl md:text-5xl font-bold mb-6">{t('research.ctaTitle')}</h2>
             <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
-              Collaborate with leading researchers and contribute to groundbreaking discoveries
+              {t('research.ctaSub')}
             </p>
             <Link
-              to="/postgraduate"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl"
+              to="/study/postgraduate"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent"
             >
-              Explore Postgraduate Programmes
+              {t('research.explorePostgrad')}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </motion.div>

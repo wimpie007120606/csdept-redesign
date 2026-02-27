@@ -1,8 +1,12 @@
 import { motion } from 'motion/react';
 import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
+import { LocationMapCard } from '../components/LocationMapCard';
+import { useTranslation } from '@/i18n/useTranslation';
+
 const campusBackground = '/background.jpg';
 
 export function ContactPage() {
+  const { t } = useTranslation();
   return (
     <div className="pt-20">
       {/* Hero Section */}
@@ -28,7 +32,7 @@ export function ContactPage() {
                 <div className="flex items-center justify-center gap-6">
                   <div className="h-[1px] flex-1 bg-gradient-to-l from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
                   <span className="text-[#C8A951] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral']">
-                    Get in Touch
+                    {t('contact.heroLabel')}
                   </span>
                   <div className="h-[1px] flex-1 bg-gradient-to-r from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
                 </div>
@@ -36,12 +40,12 @@ export function ContactPage() {
 
               {/* Main Heading */}
               <h1 className="font-['Spectral'] text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight">
-                Contact Us
+                {t('contact.heroTitle')}
               </h1>
 
               {/* Description */}
               <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed font-light">
-                We're here to answer your questions and support your journey
+                {t('contact.heroSub')}
               </p>
             </motion.div>
           </div>
@@ -62,10 +66,10 @@ export function ContactPage() {
               viewport={{ once: true }}
             >
               <h2 className="font-['Playfair_Display'] text-3xl font-bold text-foreground mb-6">
-                Get In Touch
+                {t('contact.getInTouch')}
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Whether you're a prospective student, current student, or industry partner, we'd love to hear from you.
+                {t('contact.getInTouchSub')}
               </p>
 
               <div className="space-y-6">
@@ -75,10 +79,10 @@ export function ContactPage() {
                     <MapPin className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground mb-2">Department Office</h3>
+                    <h3 className="font-semibold text-foreground mb-2">{t('contact.departmentOffice')}</h3>
                     <p className="text-muted-foreground text-sm">
-                      Department of Computer Science<br />
-                      Stellenbosch University<br />
+                      {t('footer.addressLine1')}<br />
+                      {t('footer.addressLine2')}<br />
                       Private Bag X1<br />
                       Matieland, 7602<br />
                       South Africa
@@ -92,22 +96,22 @@ export function ContactPage() {
                     <Mail className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground mb-2">Email Contacts</h3>
+                    <h3 className="font-semibold text-foreground mb-2">{t('contact.emailContacts')}</h3>
                     <div className="space-y-1 text-sm">
                       <div>
-                        <span className="text-muted-foreground">General:</span>{' '}
+                        <span className="text-muted-foreground">{t('contact.general')}:</span>{' '}
                         <a href="mailto:cs@sun.ac.za" className="text-primary hover:underline">
                           cs@sun.ac.za
                         </a>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Undergraduate:</span>{' '}
+                        <span className="text-muted-foreground">{t('contact.undergraduate')}:</span>{' '}
                         <a href="mailto:undergrad.cs@sun.ac.za" className="text-primary hover:underline">
                           undergrad.cs@sun.ac.za
                         </a>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Postgraduate:</span>{' '}
+                        <span className="text-muted-foreground">{t('contact.postgraduate')}:</span>{' '}
                         <a href="mailto:postgrad.cs@sun.ac.za" className="text-primary hover:underline">
                           postgrad.cs@sun.ac.za
                         </a>
@@ -122,7 +126,7 @@ export function ContactPage() {
                     <Phone className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground mb-2">Phone</h3>
+                    <h3 className="font-semibold text-foreground mb-2">{t('contact.phone')}</h3>
                     <p className="text-muted-foreground text-sm">+27 21 808 4232</p>
                   </div>
                 </div>
@@ -133,10 +137,10 @@ export function ContactPage() {
                     <Clock className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-foreground mb-2">Office Hours</h3>
+                    <h3 className="font-semibold text-foreground mb-2">{t('contact.officeHours')}</h3>
                     <p className="text-muted-foreground text-sm">
-                      Monday - Friday: 08:00 - 16:30<br />
-                      Closed on weekends and public holidays
+                      {t('contact.officeHoursDetail')}<br />
+                      {t('contact.closedHours')}
                     </p>
                   </div>
                 </div>
@@ -151,14 +155,14 @@ export function ContactPage() {
             >
               <div className="bg-card rounded-2xl shadow-xl p-8">
                 <h2 className="font-['Playfair_Display'] text-3xl font-bold text-foreground mb-6">
-                  Send us a Message
+                  {t('contact.sendMessage')}
                 </h2>
                 
                 <form className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-foreground mb-2">
-                        First Name *
+                        {t('contact.firstName')} *
                       </label>
                       <input
                         type="text"
@@ -169,7 +173,7 @@ export function ContactPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-foreground mb-2">
-                        Last Name *
+                        {t('contact.lastName')} *
                       </label>
                       <input
                         type="text"
@@ -182,7 +186,7 @@ export function ContactPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">
-                      Email Address *
+                      {t('contact.emailAddress')} *
                     </label>
                     <input
                       type="email"
@@ -194,24 +198,24 @@ export function ContactPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">
-                      Enquiry Type *
+                      {t('contact.enquiryType')} *
                     </label>
                     <select
                       required
                       className="w-full px-4 py-3 bg-input-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                     >
-                      <option value="">Select an option</option>
-                      <option value="undergraduate">Undergraduate Admissions</option>
-                      <option value="postgraduate">Postgraduate Admissions</option>
-                      <option value="research">Research Collaboration</option>
-                      <option value="general">General Enquiry</option>
-                      <option value="other">Other</option>
+                      <option value="">{t('contact.selectOption')}</option>
+                      <option value="undergraduate">{t('contact.enquiryUndergraduate')}</option>
+                      <option value="postgraduate">{t('contact.enquiryPostgraduate')}</option>
+                      <option value="research">{t('contact.enquiryResearch')}</option>
+                      <option value="general">{t('contact.enquiryGeneral')}</option>
+                      <option value="other">{t('contact.enquiryOther')}</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">
-                      Message *
+                      {t('contact.message')} *
                     </label>
                     <textarea
                       required
@@ -226,7 +230,7 @@ export function ContactPage() {
                     className="w-full px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all shadow-lg inline-flex items-center justify-center gap-2"
                   >
                     <Send className="w-5 h-5" />
-                    Send Message
+                    {t('contact.sendButton')}
                   </button>
                 </form>
               </div>
@@ -236,7 +240,7 @@ export function ContactPage() {
       </section>
 
       {/* Map Section */}
-      <section className="py-20 bg-muted">
+      <section className="py-20 bg-muted" aria-labelledby="find-us-heading">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -244,11 +248,11 @@ export function ContactPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="font-['Playfair_Display'] text-4xl font-bold text-foreground mb-4">
-              Find Us
+            <h2 id="find-us-heading" className="font-['Playfair_Display'] text-4xl font-bold text-foreground mb-4">
+              {t('contact.findUs')}
             </h2>
             <p className="text-lg text-muted-foreground">
-              Located in the heart of Stellenbosch
+              {t('contact.findUsSub')}
             </p>
           </motion.div>
 
@@ -256,24 +260,9 @@ export function ContactPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-card rounded-2xl shadow-xl overflow-hidden"
+            className="max-w-4xl mx-auto"
           >
-            <div className="aspect-video bg-muted relative">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="w-16 h-16 text-primary mx-auto mb-4" />
-                  <p className="text-muted-foreground">Interactive map would be embedded here</p>
-                  <a
-                    href="https://www.google.com/maps/place/Stellenbosch+University"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block mt-4 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all"
-                  >
-                    Open in Google Maps
-                  </a>
-                </div>
-              </div>
-            </div>
+            <LocationMapCard />
           </motion.div>
         </div>
       </section>

@@ -14,10 +14,13 @@ import {
   Code,
   Briefcase,
 } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
+
 const campusBackground = '/background.jpg';
 const classroomImage = '/first-year-science-student-asking-question-chemistry.jpg';
 
 export function UndergraduatePage() {
+  const { t } = useTranslation();
   const modules = [
     // First Year - General CS (92 compulsory + 32-48 elective = 124-140 total)
     { year: 1, code: 'CS 114', name: 'Computer Science 114', credits: 16, type: 'compulsory' },
@@ -97,7 +100,7 @@ export function UndergraduatePage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-6">
                   <span className="text-[#C8A951] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral'] letter-spacing-wide">
-                    Undergraduate Programme
+                    {t('study.undergradHeroLabel')}
                   </span>
                   <div className="h-[1px] flex-1 bg-gradient-to-r from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
                 </div>
@@ -105,13 +108,12 @@ export function UndergraduatePage() {
 
               {/* Main Heading */}
               <h1 className="font-['Spectral'] text-6xl md:text-7xl lg:text-8xl font-semibold leading-[1.1] tracking-tight">
-                BSc in Computer<br />Science
+                {t('study.undergradHeroTitle')}
               </h1>
 
               {/* Description */}
               <p className="text-lg md:text-xl text-white/80 max-w-3xl leading-relaxed font-light">
-                Build a strong foundation in computer science and prepare for a successful career in
-                technology. Join a programme that combines theoretical excellence with practical skills.
+                {t('study.undergradHeroSub')}
               </p>
             </motion.div>
           </div>

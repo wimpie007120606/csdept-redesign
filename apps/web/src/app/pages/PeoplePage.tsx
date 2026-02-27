@@ -4,17 +4,29 @@ import { Link } from 'react-router';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { getPeople, assetUrl, type Person } from '../api';
 import { fallbackPeople } from '@/content/fallback';
+import { useTranslation } from '@/i18n/useTranslation';
 
 const campusBg = '/background.jpg';
+
+/** Normalize slug for routing: lowercase, trim, replace spaces with hyphens. */
+function toCanonicalSlug(s: string): string {
+  return s
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '');
+}
 
 function mapPersonToCard(p: Person) {
   let researchAreas: string[] = [];
   try {
     if (p.research_interests_json) researchAreas = JSON.parse(p.research_interests_json);
   } catch {}
+  const rawSlug = p.slug && String(p.slug).trim();
+  const slug = rawSlug ? toCanonicalSlug(rawSlug) : String(p.id);
   return {
-    id: p.slug,
-    slug: p.slug,
+    id: slug,
+    slug,
     name: p.full_name,
     primaryTitle: p.title ?? '',
     secondaryTitle: p.role ?? null,
@@ -30,6 +42,7 @@ function mapPersonToCard(p: Person) {
 }
 
 export function PeoplePage() {
+  const { t } = useTranslation();
   const [people, setPeople] = useState<typeof fallbackPeople>(fallbackPeople);
   const bg = campusBg;
 
@@ -73,7 +86,7 @@ export function PeoplePage() {
               <div className="space-y-4">
                 <div className="flex items-center gap-6">
                   <span className="text-[#C8A951] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral']">
-                    Our People
+                    {t('people.heroLabel')}
                   </span>
                   <div className="h-[1px] flex-1 bg-gradient-to-r from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
                 </div>
@@ -81,12 +94,12 @@ export function PeoplePage() {
 
               {/* Main Heading */}
               <h1 className="font-['Spectral'] text-6xl md:text-7xl lg:text-8xl font-semibold leading-[1.1] tracking-tight">
-                Meet the People
+                {t('people.heroTitle')}
               </h1>
 
               {/* Description */}
               <p className="text-lg md:text-xl text-white/80 max-w-3xl leading-relaxed font-light">
-                Distinguished faculty members and researchers driving innovation in computer science at Stellenbosch University.
+                {t('people.heroSub')}
               </p>
             </motion.div>
           </div>
@@ -168,7 +181,7 @@ export function PeoplePage() {
 
                           {/* Research Areas */}
                           <div>
-                            <p className="text-white/60 text-xs uppercase tracking-wider mb-3">Research Areas</p>
+                            <p className="text-white/60 text-xs uppercase tracking-wider mb-3">{t('people.researchAreas')}</p>
                             <div className="flex flex-wrap gap-2">
                               {person.researchAreas.map((area, i) => (
                                 <span
@@ -184,7 +197,7 @@ export function PeoplePage() {
                           {/* View Profile Link */}
                           <div className="pt-2">
                             <span className="inline-flex items-center gap-2 text-[#C8A951] font-semibold group-hover:gap-3 transition-all">
-                              View Full Profile
+                              {t('people.viewFullProfile')}
                               <ArrowRight className="w-5 h-5" />
                             </span>
                           </div>

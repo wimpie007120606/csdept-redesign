@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Calendar, Tag, Search, ArrowRight } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
+
 const campusBackground = '/background.jpg';
 
 export function NewsPage() {
+  const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const categories = ['all', 'Award', 'Publication', 'Event', 'Collaboration', 'Achievement'];
@@ -82,7 +85,7 @@ export function NewsPage() {
                 <div className="flex items-center justify-center gap-6">
                   <div className="h-[1px] flex-1 bg-gradient-to-l from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
                   <span className="text-[#C8A951] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral']">
-                    Latest Updates
+                    {t('news.heroLabel')}
                   </span>
                   <div className="h-[1px] flex-1 bg-gradient-to-r from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
                 </div>
@@ -90,12 +93,12 @@ export function NewsPage() {
 
               {/* Main Heading */}
               <h1 className="font-['Spectral'] text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight">
-                News & Announcements
+                {t('news.heroTitle')}
               </h1>
 
               {/* Description */}
               <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed font-light">
-                Stay updated with the latest developments, achievements, and events
+                {t('news.heroSub')}
               </p>
             </motion.div>
           </div>

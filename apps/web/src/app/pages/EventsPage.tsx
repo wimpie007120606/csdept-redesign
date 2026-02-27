@@ -1,8 +1,11 @@
 import { motion } from 'motion/react';
 import { Calendar, MapPin, Clock, Users, ArrowRight } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
+
 const campusBackground = '/background.jpg';
 
 export function EventsPage() {
+  const { t } = useTranslation();
   const upcomingEvents = [
     {
       date: { day: '5', month: 'Mar' },
@@ -99,12 +102,12 @@ export function EventsPage() {
 
               {/* Main Heading */}
               <h1 className="font-['Spectral'] text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight">
-                Upcoming Events
+                {t('events.heroTitle')}
               </h1>
 
               {/* Description */}
               <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed font-light">
-                Join us for seminars, workshops, conferences, and networking opportunities
+                {t('events.heroSub')}
               </p>
             </motion.div>
           </div>

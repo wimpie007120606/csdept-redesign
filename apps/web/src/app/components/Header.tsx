@@ -3,7 +3,21 @@ import { Link, useLocation } from 'react-router';
 import { Menu, X, Moon, Sun, ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'motion/react';
+import { useTranslation } from '@/i18n/useTranslation';
+
 const suLogo = '/newlogo.jpeg';
+
+const navStructure = [
+  { key: 'study', items: [{ key: 'undergraduate', href: '/study/undergraduate' }, { key: 'postgraduate', href: '/study/postgraduate' }, { key: 'courseCatalogue', href: '/courses' }] },
+  { key: 'research', items: [{ key: 'researchOverview', href: '/research' }, { key: 'researchGroups', href: '/research#groups' }, { key: 'publications', href: '/research#publications' }] },
+  { key: 'people', href: '/people' },
+  { key: 'news', href: '/news' },
+  { key: 'events', href: '/events' },
+  { key: 'resources', items: [{ key: 'studentResources', href: '/resources' }, { key: 'faqs', href: '/resources#faq' }, { key: 'forms', href: '/resources#forms' }] },
+  { key: 'bridging', href: '/bridging' },
+  { key: 'links', href: '/links' },
+  { key: 'contact', href: '/contact' },
+] as const;
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -11,6 +25,7 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { theme, setTheme } = useTheme();
   const location = useLocation();
+  const { t, language, setLanguage } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,37 +39,6 @@ export function Header() {
     setIsMobileMenuOpen(false);
     setActiveDropdown(null);
   }, [location]);
-
-  const navigationItems = [
-    {
-      label: 'Study',
-      items: [
-        { label: 'Undergraduate', href: '/study/undergraduate' },
-        { label: 'Postgraduate', href: '/study/postgraduate' },
-        { label: 'Course Catalogue', href: '/courses' },
-      ],
-    },
-    {
-      label: 'Research',
-      items: [
-        { label: 'Research Overview', href: '/research' },
-        { label: 'Research Groups', href: '/research#groups' },
-        { label: 'Publications', href: '/research#publications' },
-      ],
-    },
-    { label: 'People', href: '/people' },
-    { label: 'News', href: '/news' },
-    { label: 'Events', href: '/events' },
-    {
-      label: 'Resources',
-      items: [
-        { label: 'Student Resources', href: '/resources' },
-        { label: 'FAQs', href: '/resources#faq' },
-        { label: 'Forms', href: '/resources#forms' },
-      ],
-    },
-    { label: 'Contact', href: '/contact' },
-  ];
 
   return (
     <header
@@ -75,38 +59,38 @@ export function Header() {
             />
             <div className="hidden md:block">
               <div className="font-['Playfair_Display'] font-bold text-lg text-[#0B1C2D] dark:text-[#FAF8F3]">
-                Computer Science
+                {t('nav.computerScience')}
               </div>
               <div className="text-xs text-[#5A5A6E] dark:text-[#C4C4D1]">
-                Stellenbosch University
+                {t('nav.stellenboschUniversity')}
               </div>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-1">
-            {navigationItems.map((item) =>
-              item.href ? (
+            {navStructure.map((item) =>
+              'href' in item && item.href ? (
                 <Link
-                  key={item.label}
+                  key={item.key}
                   to={item.href}
                   className="px-4 py-2 rounded-lg text-sm font-medium text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
                 >
-                  {item.label}
+                  {t(`nav.${item.key}`)}
                 </Link>
               ) : (
                 <div
-                  key={item.label}
+                  key={item.key}
                   className="relative"
-                  onMouseEnter={() => setActiveDropdown(item.label)}
+                  onMouseEnter={() => setActiveDropdown(item.key)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
                   <button className="px-4 py-2 rounded-lg text-sm font-medium text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors flex items-center gap-1">
-                    {item.label}
+                    {t(`nav.${item.key}`)}
                     <ChevronDown className="w-4 h-4" />
                   </button>
                   <AnimatePresence>
-                    {activeDropdown === item.label && (
+                    {activeDropdown === item.key && 'items' in item && item.items && (
                       <motion.div
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -114,13 +98,13 @@ export function Header() {
                         transition={{ duration: 0.2 }}
                         className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-[#1A2F43] rounded-xl shadow-2xl border border-[#0B1C2D]/10 dark:border-[#FAF8F3]/10 overflow-hidden"
                       >
-                        {item.items?.map((subItem) => (
+                        {item.items.map((subItem) => (
                           <Link
-                            key={subItem.label}
+                            key={subItem.key}
                             to={subItem.href}
                             className="block px-4 py-3 text-sm text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#0B1C2D] transition-colors"
                           >
-                            {subItem.label}
+                            {t(`nav.${subItem.key}`)}
                           </Link>
                         ))}
                       </motion.div>
@@ -131,8 +115,34 @@ export function Header() {
             )}
           </nav>
 
-          {/* Right Side Actions */}
+          {/* Right Side Actions: Language + Theme + Mobile menu */}
           <div className="flex items-center gap-2">
+            <div className="flex rounded-lg overflow-hidden border border-[#0B1C2D]/10 dark:border-[#FAF8F3]/10">
+              <button
+                onClick={() => setLanguage('en')}
+                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                  language === 'en'
+                    ? 'bg-[#7B1E3A] text-white dark:bg-[#A33456]'
+                    : 'bg-transparent text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43]'
+                }`}
+                aria-label="English"
+                aria-pressed={language === 'en'}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => setLanguage('af')}
+                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                  language === 'af'
+                    ? 'bg-[#7B1E3A] text-white dark:bg-[#A33456]'
+                    : 'bg-transparent text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43]'
+                }`}
+                aria-label="Afrikaans"
+                aria-pressed={language === 'af'}
+              >
+                AF
+              </button>
+            </div>
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               className="p-2 rounded-lg hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
@@ -162,29 +172,30 @@ export function Header() {
             className="lg:hidden bg-white dark:bg-[#0B1C2D] border-t border-[#0B1C2D]/10 dark:border-[#FAF8F3]/10"
           >
             <nav className="container mx-auto px-4 py-4 space-y-1">
-              {navigationItems.map((item) =>
-                item.href ? (
+              {navStructure.map((item) =>
+                'href' in item && item.href ? (
                   <Link
-                    key={item.label}
+                    key={item.key}
                     to={item.href}
                     className="block px-4 py-3 rounded-lg text-sm font-medium text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
                   >
-                    {item.label}
+                    {t(`nav.${item.key}`)}
                   </Link>
                 ) : (
-                  <div key={item.label} className="space-y-1">
+                  <div key={item.key} className="space-y-1">
                     <div className="px-4 py-3 text-sm font-bold text-[#7B1E3A] dark:text-[#A33456]">
-                      {item.label}
+                      {t(`nav.${item.key}`)}
                     </div>
-                    {item.items?.map((subItem) => (
-                      <Link
-                        key={subItem.label}
-                        to={subItem.href}
-                        className="block pl-8 pr-4 py-2 rounded-lg text-sm text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
-                      >
-                        {subItem.label}
-                      </Link>
-                    ))}
+                    {'items' in item &&
+                      item.items.map((subItem) => (
+                        <Link
+                          key={subItem.key}
+                          to={subItem.href}
+                          className="block pl-8 pr-4 py-2 rounded-lg text-sm text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
+                        >
+                          {t(`nav.${subItem.key}`)}
+                        </Link>
+                      ))}
                   </div>
                 )
               )}

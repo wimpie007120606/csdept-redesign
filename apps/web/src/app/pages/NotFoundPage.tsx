@@ -1,8 +1,10 @@
 import { motion } from 'motion/react';
 import { Link } from 'react-router';
-import { Home, ArrowLeft, Search } from 'lucide-react';
+import { Home, ArrowLeft } from 'lucide-react';
+import { useTranslation } from '@/i18n/useTranslation';
 
 export function NotFoundPage() {
+  const { t } = useTranslation();
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0B1C2D] via-[#7B1E3A] to-[#0B1C2D] text-white relative overflow-hidden">
       {/* Background Pattern */}
@@ -26,10 +28,10 @@ export function NotFoundPage() {
 
           {/* Message */}
           <h1 className="font-['Playfair_Display'] text-4xl md:text-5xl font-bold mb-6">
-            Page Not Found
+            {t('errors.pageNotFound')}
           </h1>
           <p className="text-xl text-white/90 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Sorry, the page you're looking for doesn't exist or has been moved.
+            {t('errors.pageNotFoundSub')}
           </p>
 
           {/* Actions */}
@@ -39,39 +41,39 @@ export function NotFoundPage() {
               className="group px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl inline-flex items-center gap-2"
             >
               <Home className="w-5 h-5" />
-              Go Home
+              {t('errors.goHome')}
             </Link>
             <button
               onClick={() => window.history.back()}
               className="group px-8 py-4 bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 rounded-xl font-semibold hover:bg-white hover:text-[#7B1E3A] transition-all duration-300 inline-flex items-center gap-2"
             >
               <ArrowLeft className="w-5 h-5" />
-              Go Back
+              {t('errors.goBack')}
             </button>
           </div>
 
           {/* Quick Links */}
           <div className="mt-16 pt-8 border-t border-white/20">
-            <p className="text-sm text-white/70 mb-4">You might be looking for:</p>
+            <p className="text-sm text-white/70 mb-4">{t('errors.youMightBeLookingFor')}</p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <Link to="/undergraduate" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
-                Undergraduate
+              <Link to="/study/undergraduate" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
+                {t('nav.undergraduate')}
               </Link>
               <span className="text-white/30">•</span>
-              <Link to="/postgraduate" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
-                Postgraduate
+              <Link to="/study/postgraduate" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
+                {t('nav.postgraduate')}
               </Link>
               <span className="text-white/30">•</span>
               <Link to="/research" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
-                Research
+                {t('nav.research')}
               </Link>
               <span className="text-white/30">•</span>
               <Link to="/people" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
-                People
+                {t('nav.people')}
               </Link>
               <span className="text-white/30">•</span>
               <Link to="/contact" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
-                Contact
+                {t('nav.contact')}
               </Link>
             </div>
           </div>
