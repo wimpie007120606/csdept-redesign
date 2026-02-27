@@ -51,10 +51,8 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/80 dark:bg-[#0B1C2D]/80 backdrop-blur-xl shadow-lg'
-          : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[color:var(--su-maroon)] ${
+        isScrolled ? 'shadow-lg' : ''
       }`}
     >
       <div className="container mx-auto px-4 lg:px-8">
@@ -67,23 +65,23 @@ export function Header() {
               className="w-14 h-14 object-contain transition-transform group-hover:scale-105"
             />
             <div className="hidden md:flex flex-col leading-tight">
-              <span className="text-xs font-semibold tracking-[0.18em] uppercase text-[color:var(--su-steel)]">
+              <span className="text-xs font-semibold tracking-[0.18em] uppercase text-white dark:text-black">
                 {t('nav.stellenboschUniversity')}
               </span>
-              <span className="text-xl lg:text-2xl font-bold text-primary">
+              <span className="text-xl lg:text-2xl font-bold text-white dark:text-black">
                 {t('nav.computerScience')}
               </span>
             </div>
           </LocalizedLink>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1">
+          <nav className="hidden lg:flex items-center space-x-1 text-white dark:text-black">
             {navStructure.map((item) =>
               'href' in item && item.href ? (
                 <LocalizedLink
                   key={item.key}
                   to={item.href}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-foreground dark:text-primary-foreground hover:bg-muted dark:hover:bg-[#1A2F43] transition-colors"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-white dark:text-black hover:bg-white/10 dark:hover:bg-white/10 transition-colors"
                 >
                   {t(`nav.${item.key}`)}
                 </LocalizedLink>
@@ -94,7 +92,7 @@ export function Header() {
                   onMouseEnter={() => setActiveDropdown(item.key)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
-                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-foreground dark:text-primary-foreground hover:bg-muted dark:hover:bg-[#1A2F43] transition-colors flex items-center gap-1">
+                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-white dark:text-black hover:bg-white/10 dark:hover:bg-white/10 transition-colors flex items-center gap-1">
                     {t(`nav.${item.key}`)}
                     <ChevronDown className="w-4 h-4" />
                   </button>
@@ -105,13 +103,13 @@ export function Header() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-[#1A2F43] rounded-xl shadow-2xl border border-[#0B1C2D]/10 dark:border-[#FAF8F3]/10 overflow-hidden"
+                        className="absolute top-full left-0 mt-2 w-56 bg-white text-[#0B1C2D] dark:bg-white dark:text-black rounded-xl shadow-2xl border border-[#0B1C2D]/10 overflow-hidden"
                       >
                         {item.items.map((subItem) => (
                           <LocalizedLink
                             key={subItem.key}
                             to={subItem.href}
-                            className="block px-4 py-3 text-sm text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#0B1C2D] transition-colors"
+                            className="block px-4 py-3 text-sm hover:bg-[#F3F0E8] dark:hover:bg-[#F3F0E8] transition-colors"
                           >
                             {t(`nav.${subItem.key}`)}
                           </LocalizedLink>
@@ -125,7 +123,7 @@ export function Header() {
           </nav>
 
           {/* Right Side Actions: Language + Theme + Mobile menu */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-white dark:text-black">
             <div
               className="flex rounded-lg overflow-hidden border border-border"
               role="group"
@@ -135,8 +133,8 @@ export function Header() {
                 onClick={() => handleLanguageChange('en')}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'en'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-transparent text-foreground dark:text-primary-foreground hover:bg-muted dark:hover:bg-[#1A2F43]'
+                    ? 'bg-white text-[color:var(--su-maroon)]'
+                    : 'bg-transparent text-white dark:text-black hover:bg-white/10 dark:hover:bg-white/10'
                 }`}
                 aria-label={t('nav.english')}
                 aria-pressed={language === 'en'}
@@ -147,8 +145,8 @@ export function Header() {
                 onClick={() => handleLanguageChange('af')}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'af'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-transparent text-foreground dark:text-primary-foreground hover:bg-muted dark:hover:bg-[#1A2F43]'
+                    ? 'bg-white text-[color:var(--su-maroon)]'
+                    : 'bg-transparent text-white dark:text-black hover:bg-white/10 dark:hover:bg-white/10'
                 }`}
                 aria-label={t('nav.afrikaans')}
                 aria-pressed={language === 'af'}
@@ -159,8 +157,8 @@ export function Header() {
                 onClick={() => handleLanguageChange('xh')}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'xh'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-transparent text-foreground dark:text-primary-foreground hover:bg-muted dark:hover:bg-[#1A2F43]'
+                    ? 'bg-white text-[color:var(--su-maroon)]'
+                    : 'bg-transparent text-white dark:text-black hover:bg-white/10 dark:hover:bg-white/10'
                 }`}
                 aria-label={t('nav.isiXhosa')}
                 aria-pressed={language === 'xh'}
@@ -170,14 +168,14 @@ export function Header() {
             </div>
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-lg hover:bg-muted dark:hover:bg-[#1A2F43] transition-colors"
+              className="p-2 rounded-lg hover:bg-white/10 dark:hover:bg-white/10 transition-colors"
               aria-label={t('common.toggleTheme')}
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg hover:bg-muted dark:hover:bg-[#1A2F43] transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-white/10 dark:hover:bg-white/10 transition-colors"
               aria-label={t('common.toggleMenu')}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -194,7 +192,7 @@ export function Header() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden bg-white dark:bg-[#0B1C2D] border-t border-[#0B1C2D]/10 dark:border-[#FAF8F3]/10"
+            className="lg:hidden bg-white dark:bg-white border-t border-[#0B1C2D]/10"
           >
             <nav className="container mx-auto px-4 py-4 space-y-1">
               {navStructure.map((item) =>
@@ -208,7 +206,7 @@ export function Header() {
                   </LocalizedLink>
                 ) : (
                   <div key={item.key} className="space-y-1">
-                    <div className="px-4 py-3 text-sm font-bold text-[#7B1E3A] dark:text-[#A33456]">
+                    <div className="px-4 py-3 text-sm font-bold text-[color:var(--su-maroon)] dark:text-[color:var(--su-maroon)]">
                       {t(`nav.${item.key}`)}
                     </div>
                     {'items' in item &&

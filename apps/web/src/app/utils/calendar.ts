@@ -71,8 +71,31 @@ export function triggerIcsDownload(event: CalendarEvent): void {
 
   const content = createIcsContent(event);
   const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
   const filename = `SU-CS-${event.id}.ics`;
+
+  try {
+    const file = new File([blob], filename, { type: 'text/calendar;charset=utf-8' });
+    const nav = navigator as Navigator & {
+      canShare?: (data: { files: File[] }) => boolean;
+      share?: (data: { files?: File[]; title?: string; text?: string }) => Promise<void>;
+    };
+    if (nav.share && nav.canShare && nav.canShare({ files: [file] })) {
+      void nav
+        .share({
+          files: [file],
+          title: event.title,
+          text: event.description ?? '',
+        })
+        .catch(() => {
+          // fall through to download behaviour on failure
+        });
+      return;
+    }
+  } catch {
+    // If File or share APIs are not available, fall back to download behaviour.
+  }
+
+  const url = URL.createObjectURL(blob);
 
   const isIOS =
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||

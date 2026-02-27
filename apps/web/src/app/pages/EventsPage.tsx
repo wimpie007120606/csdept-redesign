@@ -148,7 +148,7 @@ export function EventsPage() {
   return (
     <div className="pt-20">
       {/* Hero Section */}
-      <section className="relative py-32 text-white overflow-hidden min-h-[650px] flex items-center">
+      <section className="relative py-32 text-white min-h-[650px] flex items-center">
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -168,11 +168,11 @@ export function EventsPage() {
               {/* Editorial Label with Divider */}
               <div className="space-y-4">
                 <div className="flex items-center justify-center gap-6">
-                  <div className="h-[1px] flex-1 bg-gradient-to-l from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
-                  <span className="text-[#C8A951] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral']">
+                  <div className="h-[1px] flex-1 bg-gradient-to-l from-[color:var(--su-gold)]/40 to-transparent max-w-[200px]"></div>
+                  <span className="text-[color:var(--su-gold)] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral']">
                     Events & Seminars
                   </span>
-                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
+                  <div className="h-[1px] flex-1 bg-gradient-to-r from-[color:var(--su-gold)]/40 to-transparent max-w-[200px]"></div>
                 </div>
               </div>
 
@@ -204,7 +204,7 @@ export function EventsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="group bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                className="group bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
               >
                 <div className="flex flex-col lg:flex-row">
                   {/* Date Badge */}
@@ -250,7 +250,7 @@ export function EventsPage() {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-3">
+                    <div className="flex flex-col sm:flex-row flex-wrap gap-3">
                       <button className="px-6 py-2 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all">
                         Register Now
                       </button>
@@ -270,7 +270,7 @@ export function EventsPage() {
                         </button>
                         {openMenuIndex === index && (
                           <div
-                            className="absolute z-20 mt-2 w-56 rounded-xl border border-border bg-card shadow-xl py-2"
+                            className="mt-2 w-full sm:w-64 rounded-xl border border-border bg-card shadow-xl py-2"
                             role="menu"
                           >
                             <button
@@ -342,7 +342,7 @@ export function EventsPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 bg-gradient-to-br from-[#7B1E3A] to-[#0B1C2D] text-white">
+      <section className="py-20 bg-gradient-to-br from-[color:var(--su-maroon)] to-[#0B1C2D] text-white">
         <div className="container mx-auto px-4 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -355,7 +355,7 @@ export function EventsPage() {
             <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
               Subscribe to our calendar to stay updated on all upcoming events and seminars
             </p>
-            <button className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl">
+            <button className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[color:var(--su-maroon)] rounded-xl font-semibold hover:bg-[color:var(--su-gold)] hover:text-white transition-all duration-300 shadow-2xl">
               Subscribe to Calendar
               <ArrowRight className="w-5 h-5" />
             </button>
