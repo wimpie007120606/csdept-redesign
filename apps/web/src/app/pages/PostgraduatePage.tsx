@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Link } from 'react-router';
+import { LocalizedLink } from '../components/LocalizedLink';
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 import {
@@ -98,7 +98,7 @@ export function PostgraduatePage() {
       {/* Prospective Students CTA */}
       <section className="py-8 bg-background border-b border-border">
         <div className="container mx-auto px-4 lg:px-8 max-w-4xl">
-          <Link
+          <LocalizedLink
             to="/study/postgraduate/prospective-students"
             className="flex items-center justify-between gap-4 p-6 rounded-xl bg-[#7B1E3A] text-white shadow-lg hover:shadow-xl transition-all hover:opacity-95"
           >
@@ -106,7 +106,7 @@ export function PostgraduatePage() {
               {t('study.postgrad.prospectiveStudentsCta')}
             </span>
             <ArrowRight className="w-6 h-6 flex-shrink-0" />
-          </Link>
+          </LocalizedLink>
         </div>
       </section>
 
@@ -146,12 +146,12 @@ export function PostgraduatePage() {
               </p>
               <p className="text-muted-foreground leading-relaxed">
                 {t('study.postgrad.honoursDesc2Before')}
-                <Link
+                <LocalizedLink
                   to="/study/postgraduate/prospective-students"
                   className="text-primary font-medium hover:underline"
                 >
                   {t('study.postgrad.prospectiveLinkText')}
-                </Link>
+                </LocalizedLink>
                 {t('study.postgrad.honoursDesc2After')}
               </p>
             </div>
@@ -306,12 +306,12 @@ export function PostgraduatePage() {
               <ul className="list-disc pl-6 space-y-1 my-3 text-muted-foreground">
                 <li>
                   {t('study.postgrad.mastersAdmissionBulletFurtherPrefix')}
-                  <Link
+                  <LocalizedLink
                     to="/study/postgraduate/prospective-students"
                     className="text-primary font-medium hover:underline"
                   >
                     {t('study.postgrad.prospectiveLinkText')}
-                  </Link>
+                  </LocalizedLink>
                   {t('study.postgrad.mastersAdmissionBulletFurtherSuffix')}
                 </li>
               </ul>
@@ -359,12 +359,12 @@ export function PostgraduatePage() {
               </h3>
               <p className="text-muted-foreground leading-relaxed">
                 {t('study.postgrad.doctorateAdmissionTextBefore')}
-                <Link
+                <LocalizedLink
                   to="/study/postgraduate/prospective-students"
                   className="text-primary font-medium hover:underline"
                 >
                   {t('study.postgrad.prospectiveLinkText')}
-                </Link>
+                </LocalizedLink>
                 {t('study.postgrad.doctorateAdmissionTextAfter')}
               </p>
             </div>
@@ -632,13 +632,13 @@ export function PostgraduatePage() {
                 {t('study.postgrad.applyOnline')}
                 <ArrowRight className="w-5 h-5" />
               </a>
-              <Link
+              <LocalizedLink
                 to="/contact"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 rounded-xl font-semibold hover:bg-white hover:text-[#7B1E3A] transition-all duration-300"
               >
                 {t('study.postgrad.contactAdmissions')}
                 <ArrowRight className="w-5 h-5" />
-              </Link>
+              </LocalizedLink>
             </div>
           </motion.div>
         </div>

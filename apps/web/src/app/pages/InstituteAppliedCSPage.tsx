@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Link } from 'react-router';
+import { LocalizedLink } from '../components/LocalizedLink';
 
 const heroBackground = '/background.jpg';
 
@@ -49,12 +49,12 @@ export function InstituteAppliedCSPage() {
               transition={{ duration: 0.6 }}
               className="space-y-4"
             >
-              <Link
+              <LocalizedLink
                 to="/links"
                 className="text-sm text-white/80 hover:text-white transition-colors inline-block mb-2"
               >
                 ← Links
-              </Link>
+              </LocalizedLink>
               <h1
                 id="institute-hero-title"
                 className="font-['Spectral'] text-4xl md:text-5xl font-semibold leading-tight"

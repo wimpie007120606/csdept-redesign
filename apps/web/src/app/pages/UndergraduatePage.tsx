@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Link } from 'react-router';
+import { LocalizedLink } from '../components/LocalizedLink';
 import {
   BookOpen,
   Award,
@@ -348,13 +348,13 @@ export function UndergraduatePage() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Application deadline: <strong>30 September 2026</strong>
                 </p>
-                <Link
+                <LocalizedLink
                   to="/contact"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all"
                 >
                   Contact Admissions
                   <ArrowRight className="w-5 h-5" />
-                </Link>
+                </LocalizedLink>
               </div>
             </motion.div>
           </div>
@@ -400,13 +400,13 @@ export function UndergraduatePage() {
               viewport={{ once: true }}
               className="mt-8 text-center"
             >
-              <Link
+              <LocalizedLink
                 to="/resources#faq"
                 className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
               >
                 View All FAQs
                 <ArrowRight className="w-5 h-5" />
-              </Link>
+              </LocalizedLink>
             </motion.div>
           </div>
         </div>

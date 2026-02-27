@@ -1,4 +1,5 @@
-import { useRouteError, isRouteErrorResponse, Link } from 'react-router';
+import { useRouteError, isRouteErrorResponse } from 'react-router';
+import { LocalizedLink } from '../components/LocalizedLink';
 import { Home } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 
@@ -24,13 +25,13 @@ export function RouteErrorPage() {
         <p className="text-lg text-white/90 max-w-md mx-auto mb-8">
           {message}
         </p>
-        <Link
+        <LocalizedLink
           to="/"
           className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl"
         >
           <Home className="w-5 h-5" />
           {t('common.backToHome')}
-        </Link>
+        </LocalizedLink>
       </div>
     </div>
   );

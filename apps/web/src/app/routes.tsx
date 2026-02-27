@@ -1,5 +1,10 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { Layout } from "./components/Layout";
+import {
+  RedirectToStudyUndergraduate,
+  RedirectToStudyPostgraduate,
+  RedirectStudyToUndergraduate,
+} from "./components/LangRedirects";
 import { HomePage } from "./pages/HomePage";
 import { UndergraduatePage } from "./pages/UndergraduatePage";
 import { PostgraduatePage } from "./pages/PostgraduatePage";
@@ -19,18 +24,19 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 import { RouteErrorPage } from "./pages/RouteErrorPage";
 
 export const router = createBrowserRouter([
+  { path: "/", element: <Navigate to="/en" replace /> },
   {
-    path: "/",
+    path: "/:lang",
     Component: Layout,
     errorElement: <RouteErrorPage />,
     children: [
       { index: true, Component: HomePage },
-      { path: "study", element: <Navigate to="/study/undergraduate" replace /> },
+      { path: "study", element: <RedirectStudyToUndergraduate /> },
       { path: "study/undergraduate", Component: UndergraduatePage },
       { path: "study/postgraduate", Component: PostgraduatePage },
       { path: "study/postgraduate/prospective-students", Component: ProspectiveStudentsPage },
-      { path: "undergraduate", element: <Navigate to="/study/undergraduate" replace /> },
-      { path: "postgraduate", element: <Navigate to="/study/postgraduate" replace /> },
+      { path: "undergraduate", element: <RedirectToStudyUndergraduate /> },
+      { path: "postgraduate", element: <RedirectToStudyPostgraduate /> },
       { path: "people", Component: PeoplePage },
       { path: "people/:slug", Component: ProfileDetailPage },
       { path: "research", Component: ResearchPage },

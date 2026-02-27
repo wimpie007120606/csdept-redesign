@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { LocalizedLink } from './LocalizedLink';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Cpu,
@@ -62,13 +62,13 @@ function ModuleCard({
           {m.lecturers.map((name) => {
             const slug = slugFor(name);
             return slug ? (
-              <Link
+              <LocalizedLink
                 key={name}
                 to={`/people/${slug}`}
                 className="text-primary hover:underline"
               >
                 {name}
-              </Link>
+              </LocalizedLink>
             ) : (
               <span key={name} className="text-muted-foreground">
                 {name}

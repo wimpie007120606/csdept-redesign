@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Link } from 'react-router';
+import { LocalizedLink } from '../components/LocalizedLink';
 import { Home, ArrowLeft } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 
@@ -36,13 +36,13 @@ export function NotFoundPage() {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link
+            <LocalizedLink
               to="/"
               className="group px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl inline-flex items-center gap-2"
             >
               <Home className="w-5 h-5" />
               {t('errors.goHome')}
-            </Link>
+            </LocalizedLink>
             <button
               onClick={() => window.history.back()}
               className="group px-8 py-4 bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 rounded-xl font-semibold hover:bg-white hover:text-[#7B1E3A] transition-all duration-300 inline-flex items-center gap-2"
@@ -56,25 +56,25 @@ export function NotFoundPage() {
           <div className="mt-16 pt-8 border-t border-white/20">
             <p className="text-sm text-white/70 mb-4">{t('errors.youMightBeLookingFor')}</p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <Link to="/study/undergraduate" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
+              <LocalizedLink to="/study/undergraduate" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
                 {t('nav.undergraduate')}
-              </Link>
+              </LocalizedLink>
               <span className="text-white/30">•</span>
-              <Link to="/study/postgraduate" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
+              <LocalizedLink to="/study/postgraduate" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
                 {t('nav.postgraduate')}
-              </Link>
+              </LocalizedLink>
               <span className="text-white/30">•</span>
-              <Link to="/research" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
+              <LocalizedLink to="/research" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
                 {t('nav.research')}
-              </Link>
+              </LocalizedLink>
               <span className="text-white/30">•</span>
-              <Link to="/people" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
+              <LocalizedLink to="/people" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
                 {t('nav.people')}
-              </Link>
+              </LocalizedLink>
               <span className="text-white/30">•</span>
-              <Link to="/contact" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
+              <LocalizedLink to="/contact" className="text-sm text-white/90 hover:text-[#C8A951] transition-colors">
                 {t('nav.contact')}
-              </Link>
+              </LocalizedLink>
             </div>
           </div>
         </motion.div>

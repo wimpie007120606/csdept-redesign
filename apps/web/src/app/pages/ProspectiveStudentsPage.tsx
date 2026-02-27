@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Link } from 'react-router';
+import { LocalizedLink } from '../components/LocalizedLink';
 import { useTranslation } from '@/i18n/useTranslation';
 import {
   Accordion,
@@ -35,12 +35,12 @@ export function ProspectiveStudentsPage() {
             viewport={{ once: true }}
             className="mb-10"
           >
-            <Link
+            <LocalizedLink
               to="/study/postgraduate"
               className="text-sm text-muted-foreground hover:text-foreground mb-4 inline-block"
             >
               {t('prospectivePage.backToPostgraduate')}
-            </Link>
+            </LocalizedLink>
             <h1
               id="prospective-title"
               className="font-['Playfair_Display'] text-3xl md:text-4xl font-bold text-foreground mb-2"

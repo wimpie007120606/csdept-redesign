@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { LocalizedLink } from '../components/LocalizedLink';
 import { motion } from 'motion/react';
 import {
   GraduationCap,
@@ -98,20 +98,20 @@ export function HomePage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link
+<LocalizedLink 
                   to="/study/undergraduate"
                   className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl"
                 >
                   {t('home.exploreProgrammes')}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link
+                </LocalizedLink>
+<LocalizedLink 
                   to="/people"
                   className="group inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 rounded-xl font-semibold hover:bg-white hover:text-[#7B1E3A] transition-all duration-300"
                 >
                   {t('home.meetResearchers')}
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
+                </LocalizedLink>
               </div>
             </motion.div>
           </div>
@@ -163,7 +163,7 @@ export function HomePage() {
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Link
+<LocalizedLink 
                   to={tile.href}
                   className="group block p-6 bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
                 >
@@ -171,7 +171,7 @@ export function HomePage() {
                     <tile.icon className="w-6 h-6 text-white" />
                   </div>
                   <div className="font-semibold text-sm text-foreground">{t(tile.labelKey)}</div>
-                </Link>
+                </LocalizedLink>
               </motion.div>
             ))}
           </div>
@@ -231,13 +231,13 @@ export function HomePage() {
                       {t(highlight.titleKey)}
                     </h3>
                     <p className="text-muted-foreground text-sm mb-4">{t(highlight.descKey)}</p>
-                    <Link
+<LocalizedLink 
                       to="/research"
                       className="inline-flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all"
                     >
                       {t('home.learnMore')}
                       <ArrowRight className="w-4 h-4" />
-                    </Link>
+                    </LocalizedLink>
                   </div>
                 </div>
               </motion.div>
@@ -274,7 +274,7 @@ export function HomePage() {
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Link
+<LocalizedLink 
                   to={`/people/${person.slug}`}
                   className="group block text-center"
                 >
@@ -290,7 +290,7 @@ export function HomePage() {
                     {person.name}
                   </h3>
                   <p className="text-sm text-muted-foreground">{person.title}</p>
-                </Link>
+                </LocalizedLink>
               </motion.div>
             ))}
           </div>
@@ -300,13 +300,13 @@ export function HomePage() {
             viewport={{ once: true }}
             className="text-center mt-10"
           >
-            <Link
+<LocalizedLink 
               to="/people"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all"
             >
               {t('home.meetFaculty')}
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </LocalizedLink>
           </motion.div>
         </div>
       </section>
@@ -323,13 +323,13 @@ export function HomePage() {
                 {t('home.newsAnnouncements')}
               </h2>
             </div>
-            <Link
+<LocalizedLink 
               to="/news"
               className="hidden md:inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
             >
               {t('home.viewAllNews')}
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </LocalizedLink>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -352,13 +352,13 @@ export function HomePage() {
                     {t(item.titleKey)}
                   </h3>
                   <p className="text-muted-foreground text-sm mb-4">{t(item.descKey)}</p>
-                  <Link
+<LocalizedLink 
                     to="/news"
                     className="inline-flex items-center gap-2 text-primary font-semibold text-sm hover:gap-3 transition-all"
                   >
                     {t('home.readMore')}
                     <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  </LocalizedLink>
                 </div>
               </motion.div>
             ))}
@@ -378,13 +378,13 @@ export function HomePage() {
                 {t('home.joinEvents')}
               </h2>
             </div>
-            <Link
+<LocalizedLink 
               to="/events"
               className="hidden md:inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
             >
               {t('home.viewAllEvents')}
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </LocalizedLink>
           </div>
 
           <div className="space-y-4">
@@ -451,18 +451,18 @@ export function HomePage() {
               {t('home.readySub')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
+<LocalizedLink 
                 to="/study/undergraduate"
                 className="px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl"
               >
                 {t('home.applyNow')}
-              </Link>
-              <Link
+              </LocalizedLink>
+<LocalizedLink 
                 to="/contact"
                 className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 rounded-xl font-semibold hover:bg-white hover:text-[#7B1E3A] transition-all duration-300"
               >
                 {t('home.collaborateWithUs')}
-              </Link>
+              </LocalizedLink>
             </div>
           </motion.div>
         </div>

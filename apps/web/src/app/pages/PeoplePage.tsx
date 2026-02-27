@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Link } from 'react-router';
+import { LocalizedLink } from '../components/LocalizedLink';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { getPeople, assetUrl, type Person } from '../api';
 import { fallbackPeople } from '@/content/fallback';
@@ -122,7 +122,7 @@ export function PeoplePage() {
                   transition={{ delay: index * 0.1 }}
                   viewport={{ once: true }}
                 >
-                  <Link
+                  <LocalizedLink
                     to={`/people/${person.slug}`}
                     className="group block bg-[#7B1E3A] rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
                   >
@@ -204,7 +204,7 @@ export function PeoplePage() {
                         </div>
                       </div>
                     </div>
-                  </Link>
+                  </LocalizedLink>
                 </motion.div>
               ))}
             </div>

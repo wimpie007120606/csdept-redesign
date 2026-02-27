@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Link, useParams } from 'react-router';
+import { useParams } from 'react-router';
+import { LocalizedLink } from '../components/LocalizedLink';
 import { ArrowLeft, Mail, Phone, MapPin, GraduationCap } from 'lucide-react';
 import { getPerson, assetUrl, type PersonDetail } from '../api';
 import { PLACEHOLDER_IMAGE } from '../placeholder';
@@ -400,13 +401,13 @@ export function ProfileDetailPage() {
         <div className="text-center px-4">
           <h1 className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">{t('errors.profileNotFound')}</h1>
           <p className="text-muted-foreground mb-6">{t('errors.profileNotFoundSub')}</p>
-          <Link
+          <LocalizedLink
             to="/people"
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all"
           >
             <ArrowLeft className="w-5 h-5" />
             {t('common.backToPeople')}
-          </Link>
+          </LocalizedLink>
         </div>
       </div>
     );
@@ -423,13 +424,13 @@ export function ProfileDetailPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0B1C2D]/95 via-[#7B1E3A]/90 to-[#0B1C2D]/95" />
         
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
-          <Link 
+          <LocalizedLink 
             to="/people"
             className="inline-flex items-center gap-2 text-[#C8A951] hover:text-[#C8A951]/80 transition-colors mb-8"
           >
             <ArrowLeft className="w-5 h-5" />
             {t('common.backToPeople')}
-          </Link>
+          </LocalizedLink>
 
           <div className="flex flex-col lg:flex-row gap-12 items-start">
             {/* Profile Image */}

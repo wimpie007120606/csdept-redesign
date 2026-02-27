@@ -14,8 +14,9 @@ import { getNestedTranslation } from './i18n';
 // Import JSON translations (Vite supports JSON import)
 import en from './en.json';
 import af from './af.json';
+import xh from './xh.json';
 
-const dictionaries: Record<Language, Record<string, unknown>> = { en, af };
+const dictionaries: Record<Language, Record<string, unknown>> = { en, af, xh };
 
 type LanguageContextValue = {
   language: Language;
@@ -29,7 +30,7 @@ function readStoredLanguage(): Language {
   if (typeof window === 'undefined') return DEFAULT_LANGUAGE;
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === 'en' || stored === 'af') return stored;
+    if (stored === 'en' || stored === 'af' || stored === 'xh') return stored;
   } catch {}
   return DEFAULT_LANGUAGE;
 }
@@ -54,13 +55,13 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
       localStorage.setItem(STORAGE_KEY, lang);
     } catch {}
     if (typeof document !== 'undefined') {
-      document.documentElement.lang = lang === 'af' ? 'af' : 'en';
+      document.documentElement.lang = lang === 'af' ? 'af' : lang === 'xh' ? 'xh' : 'en';
     }
   }, []);
 
   useEffect(() => {
     if (!mounted) return;
-    document.documentElement.lang = language === 'af' ? 'af' : 'en';
+    document.documentElement.lang = language === 'af' ? 'af' : language === 'xh' ? 'xh' : 'en';
   }, [language, mounted]);
 
   const t = useCallback(

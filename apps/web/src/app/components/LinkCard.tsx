@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { LocalizedLink } from './LocalizedLink';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 
 interface LinkCardProps {
@@ -43,10 +43,10 @@ export function LinkCard({
           <ExternalLink className="w-4 h-4" aria-hidden />
         </a>
       ) : (
-        <Link to={href} className={baseClass} aria-label={`${openLabel}: ${title}`}>
+        <LocalizedLink to={href} className={baseClass} aria-label={`${openLabel}: ${title}`}>
           {openLabel}
           <ArrowRight className="w-4 h-4" aria-hidden />
-        </Link>
+        </LocalizedLink>
       )}
     </article>
   );

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
+import { LocalizedLink } from './LocalizedLink';
+import { pathWithoutLang } from '../utils/langPath';
 import { Menu, X, Moon, Sun, ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'motion/react';
@@ -25,7 +27,14 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const { theme, setTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
   const { t, language, setLanguage } = useTranslation();
+
+  const handleLanguageChange = (lang: 'en' | 'af' | 'xh') => {
+    setLanguage(lang);
+    const path = pathWithoutLang(location.pathname);
+    navigate(`/${lang}${path}`);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,7 +60,7 @@ export function Header() {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
+          <LocalizedLink to="/" className="flex items-center space-x-3 group">
             <img 
               src={suLogo} 
               alt="Stellenbosch University" 
@@ -65,19 +74,19 @@ export function Header() {
                 {t('nav.stellenboschUniversity')}
               </div>
             </div>
-          </Link>
+          </LocalizedLink>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-1">
             {navStructure.map((item) =>
               'href' in item && item.href ? (
-                <Link
+                <LocalizedLink
                   key={item.key}
                   to={item.href}
                   className="px-4 py-2 rounded-lg text-sm font-medium text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
                 >
                   {t(`nav.${item.key}`)}
-                </Link>
+                </LocalizedLink>
               ) : (
                 <div
                   key={item.key}
@@ -99,13 +108,13 @@ export function Header() {
                         className="absolute top-full left-0 mt-2 w-56 bg-white dark:bg-[#1A2F43] rounded-xl shadow-2xl border border-[#0B1C2D]/10 dark:border-[#FAF8F3]/10 overflow-hidden"
                       >
                         {item.items.map((subItem) => (
-                          <Link
+                          <LocalizedLink
                             key={subItem.key}
                             to={subItem.href}
                             className="block px-4 py-3 text-sm text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#0B1C2D] transition-colors"
                           >
                             {t(`nav.${subItem.key}`)}
-                          </Link>
+                          </LocalizedLink>
                         ))}
                       </motion.div>
                     )}
@@ -117,30 +126,46 @@ export function Header() {
 
           {/* Right Side Actions: Language + Theme + Mobile menu */}
           <div className="flex items-center gap-2">
-            <div className="flex rounded-lg overflow-hidden border border-[#0B1C2D]/10 dark:border-[#FAF8F3]/10">
+            <div
+              className="flex rounded-lg overflow-hidden border border-[#0B1C2D]/10 dark:border-[#FAF8F3]/10"
+              role="group"
+              aria-label="Language"
+            >
               <button
-                onClick={() => setLanguage('en')}
+                onClick={() => handleLanguageChange('en')}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'en'
                     ? 'bg-[#7B1E3A] text-white dark:bg-[#A33456]'
                     : 'bg-transparent text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43]'
                 }`}
-                aria-label="English"
+                aria-label={t('nav.english')}
                 aria-pressed={language === 'en'}
               >
                 EN
               </button>
               <button
-                onClick={() => setLanguage('af')}
+                onClick={() => handleLanguageChange('af')}
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'af'
                     ? 'bg-[#7B1E3A] text-white dark:bg-[#A33456]'
                     : 'bg-transparent text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43]'
                 }`}
-                aria-label="Afrikaans"
+                aria-label={t('nav.afrikaans')}
                 aria-pressed={language === 'af'}
               >
                 AF
+              </button>
+              <button
+                onClick={() => handleLanguageChange('xh')}
+                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                  language === 'xh'
+                    ? 'bg-[#7B1E3A] text-white dark:bg-[#A33456]'
+                    : 'bg-transparent text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43]'
+                }`}
+                aria-label={t('nav.isiXhosa')}
+                aria-pressed={language === 'xh'}
+              >
+                XH
               </button>
             </div>
             <button
@@ -174,13 +199,13 @@ export function Header() {
             <nav className="container mx-auto px-4 py-4 space-y-1">
               {navStructure.map((item) =>
                 'href' in item && item.href ? (
-                  <Link
+                  <LocalizedLink
                     key={item.key}
                     to={item.href}
                     className="block px-4 py-3 rounded-lg text-sm font-medium text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
                   >
                     {t(`nav.${item.key}`)}
-                  </Link>
+                  </LocalizedLink>
                 ) : (
                   <div key={item.key} className="space-y-1">
                     <div className="px-4 py-3 text-sm font-bold text-[#7B1E3A] dark:text-[#A33456]">
@@ -188,13 +213,13 @@ export function Header() {
                     </div>
                     {'items' in item &&
                       item.items.map((subItem) => (
-                        <Link
+                        <LocalizedLink
                           key={subItem.key}
                           to={subItem.href}
                           className="block pl-8 pr-4 py-2 rounded-lg text-sm text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
                         >
                           {t(`nav.${subItem.key}`)}
-                        </Link>
+                        </LocalizedLink>
                       ))}
                   </div>
                 )

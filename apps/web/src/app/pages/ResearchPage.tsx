@@ -1,6 +1,6 @@
 import { useRef, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Link } from 'react-router';
+import { LocalizedLink } from '../components/LocalizedLink';
 import {
   FileText,
   TrendingUp,
@@ -313,12 +313,12 @@ export function ResearchPage() {
                           return (
                             <li key={member.name}>
                               {slug ? (
-                                <Link
+                                <LocalizedLink
                                   to={`/people/${slug}`}
                                   className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-border hover:border-[#7B1E3A]/50 hover:bg-muted/50 transition-all focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
                                 >
                                   {content}
-                                </Link>
+                                </LocalizedLink>
                               ) : (
                                 <div
                                   className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-border bg-muted/30"
@@ -476,7 +476,7 @@ export function ResearchPage() {
                                     {pub.personSlugs.slice(0, 2).map((slug) => {
                                       const name = SLUG_TO_NAME[slug] ?? slug;
                                       return (
-                                        <Link
+                                        <LocalizedLink
                                           key={slug}
                                           to={`/people/${slug}`}
                                           className="flex flex-col items-center gap-1 group"
@@ -484,7 +484,7 @@ export function ResearchPage() {
                                         >
                                           <MemberAvatar displayName={name} size="sm" className="ring-2 ring-transparent group-hover:ring-[#7B1E3A]" />
                                           <span className="text-xs font-medium text-foreground group-hover:text-[#7B1E3A] max-w-[80px] truncate text-center">{name.split(' ').pop()}</span>
-                                        </Link>
+                                        </LocalizedLink>
                                       );
                                     })}
                                   </div>
@@ -525,13 +525,13 @@ export function ResearchPage() {
                                     )}
                                     <div className="mt-2 flex flex-wrap gap-2">
                                       {pub.personSlugs.map((slug) => (
-                                        <Link
+                                        <LocalizedLink
                                           key={slug}
                                           to={`/people/${slug}`}
                                           className="text-sm text-[#7B1E3A] hover:underline font-medium"
                                         >
                                           {SLUG_TO_NAME[slug] ?? slug}
-                                        </Link>
+                                        </LocalizedLink>
                                       ))}
                                     </div>
                                   </div>
@@ -558,13 +558,13 @@ export function ResearchPage() {
             <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
               {t('research.ctaSub')}
             </p>
-            <Link
+            <LocalizedLink
               to="/study/postgraduate"
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-transparent"
             >
               {t('research.explorePostgrad')}
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </LocalizedLink>
           </motion.div>
         </div>
       </section>

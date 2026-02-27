@@ -15,6 +15,9 @@ export function getNestedTranslation(
     if (current != null && typeof current === 'object' && part in (current as Record<string, unknown>)) {
       current = (current as Record<string, unknown>)[part];
     } else {
+      if (typeof import.meta.env !== 'undefined' && import.meta.env.DEV) {
+        console.warn(`[i18n] Missing key: "${keyPath}"`);
+      }
       if (fallbackDict) return getNestedTranslation(fallbackDict, keyPath);
       return keyPath;
     }

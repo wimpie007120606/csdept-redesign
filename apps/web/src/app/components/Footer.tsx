@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { LocalizedLink } from './LocalizedLink';
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube, Instagram } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 
@@ -70,29 +70,29 @@ export function Footer() {
             <h3 className="font-['Playfair_Display'] font-semibold text-lg mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/study/undergraduate" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                <LocalizedLink to="/study/undergraduate" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
                   {t('nav.undergraduate')}
-                </Link>
+                </LocalizedLink>
               </li>
               <li>
-                <Link to="/study/postgraduate" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                <LocalizedLink to="/study/postgraduate" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
                   {t('nav.postgraduate')}
-                </Link>
+                </LocalizedLink>
               </li>
               <li>
-                <Link to="/research" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                <LocalizedLink to="/research" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
                   {t('nav.research')}
-                </Link>
+                </LocalizedLink>
               </li>
               <li>
-                <Link to="/people" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                <LocalizedLink to="/people" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
                   {t('nav.people')}
-                </Link>
+                </LocalizedLink>
               </li>
               <li>
-                <Link to="/courses" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                <LocalizedLink to="/courses" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
                   {t('nav.courseCatalogue')}
-                </Link>
+                </LocalizedLink>
               </li>
             </ul>
           </div>
@@ -102,19 +102,19 @@ export function Footer() {
             <h3 className="font-['Playfair_Display'] font-semibold text-lg mb-4">{t('footer.resources')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/resources" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                <LocalizedLink to="/resources" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
                   {t('nav.studentResources')}
-                </Link>
+                </LocalizedLink>
               </li>
               <li>
-                <Link to="/resources#faq" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                <LocalizedLink to="/resources#faq" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
                   {t('nav.faqs')}
-                </Link>
+                </LocalizedLink>
               </li>
               <li>
-                <Link to="/resources#forms" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                <LocalizedLink to="/resources#forms" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
                   {t('footer.formsDocuments')}
-                </Link>
+                </LocalizedLink>
               </li>
               <li>
                 <a href="#" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">

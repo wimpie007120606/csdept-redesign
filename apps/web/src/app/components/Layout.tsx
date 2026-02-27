@@ -1,11 +1,25 @@
-import { Outlet } from 'react-router';
+import { useEffect } from 'react';
+import { Outlet, useParams, Navigate } from 'react-router';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { ScrollToTop } from './ScrollToTop';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { isSupportedLang } from '../utils/langPath';
 
 const campusBackground = '/background.jpg';
 
 export function Layout() {
+  const { lang } = useParams<{ lang: string }>();
+  const { setLanguage } = useLanguage();
+
+  useEffect(() => {
+    if (lang && isSupportedLang(lang)) setLanguage(lang);
+  }, [lang, setLanguage]);
+
+  if (lang && !isSupportedLang(lang)) {
+    return <Navigate to="/en" replace />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col font-sans relative">
       <ScrollToTop />
