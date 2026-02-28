@@ -1,18 +1,20 @@
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-async function sendWelcomeEmail(
-  env: any,
-  to: string,
+function buildWelcomeEmailContent(
   unsubscribeUrl: string,
-  isResubscribe: boolean,
-): Promise<void> {
-  const apiKey = env.RESEND_API_KEY as string | undefined;
-  const from = env.RESEND_FROM as string | undefined;
-  if (!apiKey || !from) return;
-
+  siteUrl: string,
+  outcome: 'new' | 'resubscribed',
+): { subject: string; html: string; text: string } {
+  const isResubscribe = outcome === 'resubscribed';
   const subject = isResubscribe
     ? "You're back – Stellenbosch University Computer Science Updates"
     : 'Welcome to Stellenbosch University Computer Science Updates';
+
+  const message = isResubscribe
+    ? "You're back on our list. We'll send you updates about events, seminars and news from the Computer Science Division."
+    : 'Thank you for subscribing. You’ll receive updates about events, seminars and news from the Computer Science Division.';
+
+  const siteLabel = siteUrl ? siteUrl.replace(/^https?:\/\//, '').replace(/\/+$/, '') : 'our website';
 
   const html = `<!DOCTYPE html>
 <html>
@@ -24,8 +26,10 @@ async function sendWelcomeEmail(
       <p style="margin:8px 0 0;font-size:0.95rem;opacity:0.95;">Computer Science Division</p>
     </div>
     <div style="padding:28px;">
-      <p style="margin:0 0 16px;line-height:1.6;">${isResubscribe ? "You're back on our list. We'll send you updates about events, seminars and news from the Computer Science Division." : 'Thank you for subscribing. You’ll receive updates about events, seminars and news from the Computer Science Division.'}</p>
-      <p style="margin:0;line-height:1.6;">If you no longer wish to receive these emails, you can <a href="${unsubscribeUrl}" style="color:#61223b;font-weight:600;">unsubscribe here</a>.</p>
+      <p style="margin:0 0 16px;line-height:1.6;">${message}</p>
+      <p style="margin:0 0 20px;line-height:1.6;">Visit ${siteLabel} for the latest events and news.</p>
+      <p style="margin:0 0 20px;"><a href="${siteUrl || 'https://www.sun.ac.za'}" style="display:inline-block;padding:12px 24px;background:#caa258;color:#fff;text-decoration:none;font-weight:600;border-radius:8px;">Visit site</a></p>
+      <p style="margin:0;line-height:1.6;font-size:0.9rem;">If you no longer wish to receive these emails, you can <a href="${unsubscribeUrl}" style="color:#61223b;font-weight:600;">unsubscribe here</a>.</p>
     </div>
     <div style="border-top:1px solid #eee;padding:16px 28px;font-size:12px;color:#666;">
       Stellenbosch University · Computer Science Division
@@ -34,6 +38,32 @@ async function sendWelcomeEmail(
 </body>
 </html>`;
 
+  const text = `${message}\n\nVisit ${siteUrl || 'https://www.sun.ac.za'} for the latest events and news.\n\nTo unsubscribe: ${unsubscribeUrl}\n\n— Stellenbosch University · Computer Science Division`;
+
+  return { subject, html, text };
+}
+
+async function sendWelcomeEmail(
+  env: any,
+  to: string,
+  unsubscribeUrl: string,
+  outcome: 'new' | 'resubscribed',
+): Promise<void> {
+  const apiKey = env.RESEND_API_KEY as string | undefined;
+  const from = env.RESEND_FROM as string | undefined;
+
+  if (!apiKey || !from) {
+    console.log('subscribe_welcome_skip', { reason: !apiKey ? 'RESEND_API_KEY missing' : 'RESEND_FROM missing' });
+    return;
+  }
+
+  const publicUrl = (env.PUBLIC_SITE_URL as string | undefined) ?? '';
+  const siteUrl = publicUrl.replace(/\/+$/, '') || '';
+
+  console.log('welcome_email_attempt', { email: to, outcome });
+
+  const { subject, html, text } = buildWelcomeEmailContent(unsubscribeUrl, siteUrl, outcome);
+
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -41,17 +71,18 @@ async function sendWelcomeEmail(
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ from, to: [to], subject, html }),
+      body: JSON.stringify({ from, to: [to], subject, html, text }),
     });
-    if (!res.ok && env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.error('Welcome email failed', res.status, await res.text());
+
+    console.log('welcome_email_result', { status: res.status, ok: res.ok });
+
+    if (!res.ok) {
+      const body = await res.text();
+      const truncated = body.length > 300 ? body.slice(0, 300) + '…' : body;
+      console.log('welcome_email_error_body', { body: truncated });
     }
   } catch (err: any) {
-    if (env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.error('Welcome email error', err);
-    }
+    console.log('welcome_email_exception', { message: err?.message || String(err) });
   }
 }
 
@@ -81,6 +112,8 @@ export const onRequestOptions = async ({ request, env }: any) => {
 };
 
 export const onRequestPost = async ({ request, env }: any) => {
+  console.log('subscribe_request', { hasOrigin: !!request.headers.get('Origin') });
+
   const db = (env as any).DB;
 
   let body: any;
@@ -116,9 +149,11 @@ export const onRequestPost = async ({ request, env }: any) => {
 
     const publicUrl = (env.PUBLIC_SITE_URL as string | undefined) ?? '';
     const baseUrl = publicUrl.replace(/\/+$/, '');
+    const unsubscribeBase = baseUrl ? `${baseUrl}/api/unsubscribe` : '/api/unsubscribe';
 
     if (existing) {
       if (existing.status === 'active') {
+        console.log('subscribe_outcome', { email, outcome: 'already_active' });
         return new Response(
           JSON.stringify({ ok: true, message: 'Already subscribed' }),
           { status: 200, headers },
@@ -132,8 +167,10 @@ export const onRequestPost = async ({ request, env }: any) => {
         .bind(existing.id)
         .run();
 
-      const unsubUrl = `${baseUrl}/api/unsubscribe?token=${encodeURIComponent((existing as any).token)}`;
-      void sendWelcomeEmail(env, email, unsubUrl, true);
+      const token = (existing as any).token;
+      const unsubUrl = `${unsubscribeBase}?token=${encodeURIComponent(token)}`;
+      console.log('subscribe_outcome', { email, outcome: 'resubscribed' });
+      await sendWelcomeEmail(env, email, unsubUrl, 'resubscribed');
 
       return new Response(
         JSON.stringify({ ok: true, message: 'Resubscribed' }),
@@ -148,8 +185,9 @@ export const onRequestPost = async ({ request, env }: any) => {
       .bind(email, token)
       .run();
 
-    const unsubUrl = `${baseUrl}/api/unsubscribe?token=${encodeURIComponent(token)}`;
-    void sendWelcomeEmail(env, email, unsubUrl, false);
+    const unsubUrl = `${unsubscribeBase}?token=${encodeURIComponent(token)}`;
+    console.log('subscribe_outcome', { email, outcome: 'new' });
+    await sendWelcomeEmail(env, email, unsubUrl, 'new');
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 201,
