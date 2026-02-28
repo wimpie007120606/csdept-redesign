@@ -51,7 +51,7 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handleClose();
+      if (e.key === 'Escape' && status !== 'success') handleClose();
     };
 
     document.addEventListener('keydown', handleKeyDown);
@@ -61,7 +61,7 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
       document.removeEventListener('keydown', handleKeyDown);
       document.body.style.overflow = '';
     };
-  }, [isOpen, handleClose]);
+  }, [isOpen, handleClose, status]);
 
   useEffect(() => {
     if (isOpen && closeRef.current) {
@@ -97,7 +97,6 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
       if (data?.ok) {
         markSubscribed();
         setStatus('success');
-        setTimeout(handleClose, 2000);
       } else {
         setErrorMessage(data?.error ?? 'Could not subscribe. Please try again.');
         setStatus('error');
