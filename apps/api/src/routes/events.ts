@@ -118,6 +118,9 @@ events.get('/registrations/count', async (c) => {
   return c.json({ count });
 });
 
+// GET /api/events/register -> 405 (must be before /:slug so "register" is not captured)
+events.get('/register', (c) => c.json({ error: 'Method Not Allowed' }, 405));
+
 events.post('/register', async (c) => {
   const ip = c.req.header('cf-connecting-ip') ?? c.req.header('x-forwarded-for') ?? 'unknown';
   if (!checkRateLimit(ip)) {
@@ -137,6 +140,7 @@ events.post('/register', async (c) => {
   }
 
   const { eventId, email, title, date, time, location, capacity } = body;
+  console.info('[events/register] incoming', { eventId, email: email.slice(0, 3) + '***' });
 
   if (!EMAIL_REGEX.test(email)) {
     return c.json({ error: 'Invalid email address' }, 400);
@@ -163,9 +167,10 @@ events.post('/register', async (c) => {
       await c.env.csdept_db.prepare(
         'INSERT INTO event_registrations (event_id, email) VALUES (?, ?)'
       ).bind(eventId, email).run();
+      console.info('[events/register] DB insert ok');
     } catch (e) {
       if (String(e).includes('UNIQUE constraint')) {
-        // Raced with another request
+        console.info('[events/register] DB duplicate (raced)');
         return c.json({
           ok: true,
           alreadyRegistered: true,
@@ -173,12 +178,17 @@ events.post('/register', async (c) => {
           count: await getRegistrationCount(c.env.csdept_db, eventId),
         });
       }
+      console.error('[events/register] DB error', e);
       throw e;
     }
+  } else {
+    console.info('[events/register] already registered, sending confirmation');
   }
 
   let emailSent = false;
-  if (c.env.RESEND_API_KEY && c.env.RESEND_FROM) {
+  if (!c.env.RESEND_API_KEY || !c.env.RESEND_FROM) {
+    console.warn('[events/register] RESEND_API_KEY or RESEND_FROM not set; skipping email');
+  } else {
     try {
       const subject = `Registration confirmed: ${title ?? 'Event'}`;
       const html = buildConfirmationEmailHtml({ eventTitle: title ?? 'Event', date, time, location });
@@ -197,8 +207,10 @@ events.post('/register', async (c) => {
       });
       if (res.ok) {
         emailSent = true;
+        console.info('[events/register] email sent');
       } else {
-        console.error('[events/register] Resend failed', await res.text());
+        const errText = await res.text();
+        console.error('[events/register] Resend failed', res.status, errText);
       }
     } catch (e) {
       console.error('[events/register] Email send error', e);

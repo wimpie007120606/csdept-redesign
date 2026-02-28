@@ -116,7 +116,8 @@ Set production secrets in Cloudflare dashboard (Workers & Pages → your worker 
 
 - `JWT_SECRET`
 - `ADMIN_DEFAULT_USER`, `ADMIN_DEFAULT_PASS` (or rely on DB after seed)
-- `CORS_ORIGIN` (your Pages URL, e.g. `https://csdept.pages.dev`)
+- `CORS_ORIGIN` = your Pages frontend origin (e.g. `https://csdept.pages.dev` or `https://cs.vantondertech.dev`) so event registration and other API calls are not blocked by CORS
+- `RESEND_API_KEY`, `RESEND_FROM` (optional but recommended for event confirmation emails; if missing, registration still succeeds but `emailSent` will be false)
 
 ### Deploy Web (Pages)
 
@@ -190,3 +191,10 @@ See `docs/architecture.md` for API details and schema.
 - [ ] `/en/resources/links` shows the Links page content.
 - [ ] `/en/links` redirects to `/en/resources/links`.
 - [ ] Footer Resources column: only Links and FAQs (no Student Resources).
+
+**Event registration**
+- [ ] Local: Set `VITE_API_BASE_URL=http://localhost:8787`; browser console shows `[event-register] request URL: http://localhost:8787/api/events/register` on submit.
+- [ ] Production: Set `VITE_API_BASE_URL` to Worker URL and Worker `CORS_ORIGIN` to Pages URL.
+- [ ] Verify API: `curl -X POST https://<WORKER_URL>/api/events/register -H "Content-Type: application/json" -d '{"eventId":"test-1","email":"you@example.com"}'` → 200 and `{ "ok": true, "emailSent": true/false }`.
+- [ ] Worker logs: `[events/register] incoming`, `DB insert ok`, `email sent` or `Resend failed`.
+- [ ] Resend: Set `RESEND_API_KEY` and `RESEND_FROM` on Worker for confirmation emails.

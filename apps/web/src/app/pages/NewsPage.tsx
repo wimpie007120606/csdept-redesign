@@ -2,13 +2,17 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
-import { getNewsFeed, type NewsFeedItem } from '../api';
+import { getNewsFeed, getNewsHealth, type NewsFeedItem } from '../api';
+
+// Verification: /en/news must show articles; All 30–40 items; categories max 10; cards open item.url in new tab
 
 const campusBackground = '/realbackground3.jpeg';
 const FALLBACK_IMAGE = '/realbackground2.jpg';
 
 const CATEGORIES = ['all', 'AI', 'Cybersecurity', 'Software', 'Research', 'Local', 'International'] as const;
 type CategoryKey = (typeof CATEGORIES)[number];
+
+type ErrorDetail = { status: number; body: string; requestUrl: string };
 
 function formatDate(isoOrRss: string): string {
   if (!isoOrRss) return '';
@@ -22,16 +26,24 @@ function loadFeed(
   locale: string,
   setItems: (i: NewsFeedItem[]) => void,
   setError: (e: boolean) => void,
+  setErrorDetail: (d: ErrorDetail | null) => void,
+  setIsFallback: (b: boolean) => void,
   setLoading: (l: boolean) => void
 ) {
   setLoading(true);
   setError(false);
+  setErrorDetail(null);
   getNewsFeed(category, locale)
-    .then(({ items: data, ok }) => {
+    .then(({ items: data, ok, isFallback, errorDetail }) => {
       setItems(data);
       setError(!ok);
+      setIsFallback(isFallback === true);
+      setErrorDetail(errorDetail ?? null);
     })
-    .catch(() => setError(true))
+    .catch(() => {
+      setError(true);
+      setErrorDetail(null);
+    })
     .finally(() => setLoading(false));
 }
 
@@ -41,12 +53,19 @@ export function NewsPage() {
   const [items, setItems] = useState<NewsFeedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [errorDetail, setErrorDetail] = useState<ErrorDetail | null>(null);
+  const [isFallback, setIsFallback] = useState(false);
+  const [healthOk, setHealthOk] = useState<boolean | null>(null);
 
   useEffect(() => {
-    loadFeed(selectedCategory, language, setItems, setError, setLoading);
+    getNewsHealth().then((r) => setHealthOk(r.ok));
+  }, []);
+
+  useEffect(() => {
+    loadFeed(selectedCategory, language, setItems, setError, setErrorDetail, setIsFallback, setLoading);
   }, [selectedCategory, language]);
 
-  const retry = () => loadFeed(selectedCategory, language, setItems, setError, setLoading);
+  const retry = () => loadFeed(selectedCategory, language, setItems, setError, setErrorDetail, setIsFallback, setLoading);
 
   return (
     <div className="pt-20">
@@ -111,13 +130,40 @@ export function NewsPage() {
       {/* News Grid */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
+          {healthOk === false && (
+            <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-sm">
+              Debug: API unreachable. Check that <code className="bg-black/10 px-1 rounded">/api/health/news</code> is deployed (e.g. Cloudflare Pages Functions).
+            </div>
+          )}
+          {isFallback && items.length > 0 && (
+            <div className="mb-6 p-4 rounded-xl bg-muted border border-border text-muted-foreground text-sm">
+              {t('news.fallbackNote') ?? 'Showing fallback feed (live sources temporarily unavailable).'}
+            </div>
+          )}
           {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-card rounded-2xl overflow-hidden animate-pulse">
+                  <div className="h-56 bg-muted" />
+                  <div className="p-6 space-y-3">
+                    <div className="h-4 bg-muted rounded w-1/3" />
+                    <div className="h-5 bg-muted rounded w-full" />
+                    <div className="h-4 bg-muted rounded w-full" />
+                    <div className="h-4 bg-muted rounded w-2/3" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : error ? (
-            <div className="text-center py-20 text-muted-foreground space-y-4">
-              <p>{t('news.loadError') ?? 'Unable to load news. Please try again later.'}</p>
+            <div className="text-center py-20 text-muted-foreground space-y-4 max-w-2xl mx-auto">
+              <p className="font-semibold">{t('news.apiError') ?? 'News API error'}</p>
+              {errorDetail ? (
+                <pre className="text-left text-xs bg-muted p-4 rounded-xl overflow-auto max-h-48">
+                  {`Status: ${errorDetail.status}\nURL: ${errorDetail.requestUrl}\nBody: ${errorDetail.body}`}
+                </pre>
+              ) : (
+                <p className="text-sm">Check browser console for request URL. Ensure /api/news is deployed (e.g. Cloudflare Pages Functions).</p>
+              )}
               <button onClick={retry} className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:opacity-90 transition-opacity">
                 {t('news.retry') ?? 'Retry'}
               </button>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { apiUrl, registerForEvent } from '@/app/api';
+import { registerForEvent } from '@/app/api';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -20,7 +20,7 @@ interface EventRegistrationModalProps {
   isOpen: boolean;
   onClose: () => void;
   event: EventForRegistration | null;
-  onSuccess?: (newCount: number) => void;
+  onSuccess?: (newCount: number, emailSent?: boolean) => void;
   onEventFull?: () => void;
 }
 
@@ -106,13 +106,13 @@ export function EventRegistrationModal({
       setEmailSent(result.emailSent !== false);
       setStatus('success');
       if (typeof result.count === 'number') {
-        onSuccess?.(result.count);
+        onSuccess?.(result.count, result.emailSent);
       }
     } else {
       const err = result?.error ?? 'Registration failed. Please try again.';
       setErrorMessage(err);
       setStatus('error');
-      if (err === 'This event is full.') {
+      if (err.includes('event is full') || err === 'This event is full.') {
         onEventFull?.();
       }
     }
@@ -121,8 +121,7 @@ export function EventRegistrationModal({
   if (!isOpen) return null;
   if (!event) return null;
 
-  const registerUrl = apiUrl('/api/events/register');
-  const canSubmit = !!registerUrl;
+  const canSubmit = true;
 
   return (
     <div

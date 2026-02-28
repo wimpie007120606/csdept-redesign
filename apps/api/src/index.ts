@@ -36,6 +36,33 @@ app.route('/api/programmes', programmesRoutes);
 app.route('/api/admin', adminRoutes);
 app.route('/api/assets', assetsRoutes);
 
+// Optional alias: POST /events/register (same handler as /api/events/register)
+app.route('/events', eventsRoutes);
+
+// Debug: list mounted routes (helpful to confirm deployment)
+app.get('/api/routes', (c) => {
+  const routes = [
+    'GET /api/health',
+    'GET /api/routes',
+    'GET /api/people',
+    'GET /api/people/:slug',
+    'GET /api/news',
+    'GET /api/news/feed',
+    'GET /api/news/:slug',
+    'GET /api/events',
+    'GET /api/events/registrations/count',
+    'POST /api/events/register',
+    'GET /api/events/:slug',
+    'GET /api/programmes',
+    'GET /api/programmes/:slug',
+    'GET /api/programmes/:slug/years',
+    'POST /api/admin/login',
+    'GET /api/admin/me',
+    'GET /api/assets/*',
+  ];
+  return c.json({ routes });
+});
+
 app.notFound((c) => c.json({ error: 'Not Found' }, 404));
 app.onError((err, c) => {
   console.error(err);

@@ -368,10 +368,15 @@ export function EventsPage() {
         isOpen={!!registrationEvent}
         onClose={() => setRegistrationEvent(null)}
         event={registrationEvent}
-        onSuccess={(newCount) => {
+        onSuccess={(newCount, emailSent) => {
           if (registrationEvent) {
             setRegistrationCounts((prev) => ({ ...prev, [registrationEvent.id]: newCount }));
-            toast.success("You're registered! Confirmation email sent.");
+            toast.success(
+              emailSent !== false
+                ? "You're registered! Confirmation email sent."
+                : "You're registered. We couldn't send the confirmation email right now."
+            );
+            setRegistrationEvent(null);
           }
         }}
         onEventFull={() => {
