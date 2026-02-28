@@ -132,6 +132,108 @@
   color: var(--ivory);
 }
 
+/* ========== Maroon theme: SU gold accent system (tokens only) ========== */
+
+/* Headings: gold divider / left accent */
+.maroon h2 {
+  border-bottom: 2px solid var(--su-gold);
+  padding-bottom: 0.35em;
+}
+.maroon h3 {
+  border-left: 4px solid var(--su-gold);
+  padding-left: 0.6em;
+}
+
+/* Page title gold rule (use class .page-title for hero H1s) */
+.maroon .page-title-accent {
+  display: block;
+  width: 4rem;
+  height: 3px;
+  background: var(--su-gold);
+  margin-top: 0.35em;
+}
+
+/* Cards: gold border + subtle gold-tint shadow */
+.maroon .su-card,
+.maroon .event-card {
+  border: 1px solid rgba(202, 162, 88, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(202, 162, 88, 0.15);
+}
+
+/* Modals / important surfaces: gold top bar + neutral surface */
+.maroon .su-modal-panel,
+.maroon .newsletter-modal-panel {
+  border-top: 4px solid var(--su-gold);
+}
+.maroon .subscription-confirmation-card {
+  border-color: var(--su-gold);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(202, 162, 88, 0.2);
+}
+
+/* Buttons: gold focus ring (--ring is already gold), outline/secondary gold border */
+.maroon .su-btn-outline {
+  border-color: var(--su-gold);
+}
+.maroon .su-btn-outline:hover {
+  border-color: var(--gold-light);
+  box-shadow: 0 0 0 1px var(--su-gold);
+}
+.maroon .su-btn-secondary {
+  border: 1px solid rgba(202, 162, 88, 0.5);
+}
+.maroon .su-btn-secondary:hover {
+  border-color: var(--su-gold);
+  box-shadow: 0 0 0 1px rgba(202, 162, 88, 0.3);
+}
+
+/* Add-to-calendar dropdown: gold border + stand out */
+.maroon .add-to-calendar-dropdown {
+  border: 1px solid var(--su-gold);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(202, 162, 88, 0.2);
+}
+.maroon .add-to-calendar-trigger {
+  border: 1px solid rgba(202, 162, 88, 0.5);
+}
+.maroon .add-to-calendar-trigger:hover,
+.maroon .add-to-calendar-trigger[aria-expanded="true"] {
+  border-color: var(--su-gold);
+  box-shadow: 0 0 0 1px var(--su-gold);
+}
+
+/* Nav: active = gold underline; hover = gold tint */
+.maroon .nav-link[data-current="true"] {
+  border-bottom: 2px solid var(--su-gold);
+  padding-bottom: 2px;
+}
+.maroon .nav-link:hover {
+  border-bottom: 2px solid rgba(202, 162, 88, 0.6);
+  padding-bottom: 2px;
+}
+.maroon .nav-dropdown-trigger[data-open="true"] {
+  border-bottom: 2px solid var(--su-gold);
+  padding-bottom: 2px;
+}
+.maroon .nav-dropdown-trigger[data-open="true"] svg,
+.maroon .nav-dropdown-trigger:hover svg {
+  color: var(--su-gold);
+}
+
+/* Alert: gold top bar + neutral surface in maroon */
+.maroon [data-slot="alert"] {
+  background: var(--ivory);
+  color: var(--su-black);
+  border-top: 3px solid var(--su-gold);
+  border-color: rgba(202, 162, 88, 0.4);
+}
+.maroon [data-slot="alert"] [data-slot="alert-title"] {
+  color: var(--su-maroon);
+}
+
+/* Toast (Sonner): gold top bar in maroon */
+.maroon [data-sonner-toast] {
+  border-top: 3px solid var(--su-gold);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

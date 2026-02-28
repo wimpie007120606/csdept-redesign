@@ -121,7 +121,7 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
     >
       <div
         ref={panelRef}
-        className="relative w-full max-w-md rounded-2xl shadow-2xl"
+        className="newsletter-modal-panel relative w-full max-w-md rounded-2xl shadow-2xl"
         style={{
           maxHeight: '90vh',
           overflowY: 'auto',

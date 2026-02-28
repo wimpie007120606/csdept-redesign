@@ -194,7 +194,7 @@ export function EventsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="group bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                className="event-card group bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
               >
                 <div className="flex flex-col lg:flex-row">
                   {/* Date Badge */}
@@ -228,7 +228,7 @@ export function EventsPage() {
                       <div className="relative">
                         <button
                           type="button"
-                          className="px-6 py-2 bg-secondary/10 text-secondary rounded-xl font-semibold hover:bg-secondary/20 transition-all inline-flex items-center gap-2"
+                          className="add-to-calendar-trigger px-6 py-2 bg-secondary/10 text-secondary rounded-xl font-semibold hover:bg-secondary/20 transition-all inline-flex items-center gap-2"
                           aria-haspopup="true"
                           aria-expanded={openMenuIndex === index}
                           onClick={() =>
@@ -236,12 +236,12 @@ export function EventsPage() {
                           }
                         >
                           {t('events.addToCalendar')}
-                          <Calendar className="w-4 h-4" />
+                          <Calendar className="w-4 h-4 text-[color:var(--su-gold)]" />
                           <ChevronDown className="w-4 h-4" />
                         </button>
                         {openMenuIndex === index && (
                           <div
-                            className="mt-2 w-full sm:w-64 rounded-xl border border-border bg-card shadow-xl py-2"
+                            className="add-to-calendar-dropdown mt-2 w-full sm:w-64 rounded-xl border border-border bg-card shadow-xl py-2"
                             role="menu"
                           >
                             <button

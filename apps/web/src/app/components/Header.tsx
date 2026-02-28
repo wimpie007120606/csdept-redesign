@@ -48,6 +48,10 @@ export function Header() {
     setActiveDropdown(null);
   }, [location]);
 
+  const currentPath = pathWithoutLang(location.pathname);
+  const isNavActive = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href));
+  const isDropdownActive = (key: string) => activeDropdown === key;
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-[color:var(--su-maroon)] ${
@@ -80,7 +84,8 @@ export function Header() {
                 <LocalizedLink
                   key={item.key}
                   to={item.href}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-colors"
+                  className="nav-link px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-colors border-b-2 border-transparent"
+                  data-current={isNavActive(item.href) ? 'true' : undefined}
                 >
                   {t(`nav.${item.key}`)}
                 </LocalizedLink>
@@ -91,7 +96,10 @@ export function Header() {
                   onMouseEnter={() => setActiveDropdown(item.key)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
-                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-colors flex items-center gap-1">
+                  <button
+                    className="nav-dropdown-trigger px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-colors flex items-center gap-1 border-b-2 border-transparent"
+                    data-open={isDropdownActive(item.key) ? 'true' : undefined}
+                  >
                     {t(`nav.${item.key}`)}
                     <ChevronDown className="w-4 h-4" />
                   </button>
@@ -102,7 +110,7 @@ export function Header() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 w-56 bg-white text-[#0B1C2D] maroon:bg-white maroon:text-[#0B1C2D] rounded-xl shadow-2xl border border-[#0B1C2D]/10 overflow-hidden"
+                        className="su-card absolute top-full left-0 mt-2 w-56 bg-white text-[#0B1C2D] maroon:bg-[color:var(--ivory)] maroon:text-[color:var(--su-black)] rounded-xl shadow-2xl border border-[#0B1C2D]/10 overflow-hidden"
                       >
                         {item.items.map((subItem) => (
                           <LocalizedLink
@@ -199,7 +207,8 @@ export function Header() {
                   <LocalizedLink
                     key={item.key}
                     to={item.href}
-                    className="block px-4 py-3 rounded-lg text-sm font-medium text-[#0B1C2D] maroon:text-[#FAF8F3] hover:bg-[#F3F0E8] maroon:hover:bg-white/10 transition-colors"
+                    className="nav-link block px-4 py-3 rounded-lg text-sm font-medium text-[#0B1C2D] maroon:text-[#FAF8F3] hover:bg-[#F3F0E8] maroon:hover:bg-white/10 transition-colors border-b-2 border-transparent"
+                    data-current={isNavActive(item.href) ? 'true' : undefined}
                   >
                     {t(`nav.${item.key}`)}
                   </LocalizedLink>
