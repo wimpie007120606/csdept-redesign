@@ -1,7 +1,22 @@
 /**
  * Single source of truth for research groups.
- * Category images: place in public/images/research/ (e.g. automata-grammars.jpg).
+ * Category images live in public/research-groups/ (see RESEARCH_GROUP_IMAGES).
  */
+
+const RESEARCH_GROUPS_DIR = '/research-groups';
+
+/** Exact image filenames in public/research-groups/ per group slug. */
+export const RESEARCH_GROUP_IMAGES: Record<string, string> = {
+  'automata-grammars': 'TheoryandApplicationsofAutomataandGrammarsWallpaers.png',
+  'software-verification': 'SoftwareEngineeringandVerificationWallpaper.jpg',
+  'ml-ai': 'MachineLearningandArtificialIntelligencewallpaper.avif',
+  'networks-broadband': 'BroadbandandMobileNetworkswallpaper.jpg',
+  'robotics-vision': 'RoboticsandComputerVision.webp',
+  nlp: 'NaturalLanguageProcessingWallpaper.webp',
+};
+
+/** Fallback image for research group cards/sections when the group image fails to load. */
+export const RESEARCH_GROUP_IMAGE_FALLBACK = '/realbackground2.jpg';
 
 export interface ResearchGroupLink {
   label: string;
@@ -13,7 +28,7 @@ export interface ResearchGroupLink {
 export interface ResearchGroup {
   slug: string;
   title: string;
-  /** Path under public/ e.g. /images/research/automata-grammars.jpg */
+  /** Path under public/ e.g. /research-groups/SomeImage.jpg */
   categoryImage: string;
   summary: string;
   /**
@@ -28,13 +43,16 @@ export interface ResearchGroup {
   links?: ResearchGroupLink[];
 }
 
-const RESEARCH_IMAGE_DIR = '/images/research';
+function researchGroupImage(slug: string): string {
+  const filename = RESEARCH_GROUP_IMAGES[slug];
+  return filename ? `${RESEARCH_GROUPS_DIR}/${filename}` : RESEARCH_GROUP_IMAGE_FALLBACK;
+}
 
 export const researchGroups: ResearchGroup[] = [
   {
     slug: 'automata-grammars',
     title: 'Theory and Applications of Automata and Grammars',
-    categoryImage: `${RESEARCH_IMAGE_DIR}/automata-grammars.jpg`,
+    categoryImage: researchGroupImage('automata-grammars'),
     summary:
       'We work on formal languages, automata theory, and their applications—including descriptional complexity, symmetric difference NFAs, and connections to verification and natural language processing.',
     memberIds: [
@@ -63,7 +81,7 @@ export const researchGroups: ResearchGroup[] = [
   {
     slug: 'software-verification',
     title: 'Software Engineering and Verification',
-    categoryImage: `${RESEARCH_IMAGE_DIR}/software-verification.jpg`,
+    categoryImage: researchGroupImage('software-verification'),
     summary:
       'Research in program verification, testing, and software engineering—including symbolic execution, regular expression matching, and tools for correctness and security.',
     memberIds: [
@@ -95,7 +113,7 @@ export const researchGroups: ResearchGroup[] = [
   {
     slug: 'ml-ai',
     title: 'Machine Learning and Artificial Intelligence',
-    categoryImage: `${RESEARCH_IMAGE_DIR}/ml-ai.jpg`,
+    categoryImage: researchGroupImage('ml-ai'),
     summary:
       'Advancing artificial intelligence through deep learning, reinforcement learning, and neural architecture search. Applications in vision, NLP, and data analytics.',
     memberIds: [
@@ -114,7 +132,7 @@ export const researchGroups: ResearchGroup[] = [
   {
     slug: 'networks-broadband',
     title: 'Telkom–Siemens Centre of Excellence in ATM and Broadband Networks and their Applications',
-    categoryImage: `${RESEARCH_IMAGE_DIR}/networks-broadband.jpg`,
+    categoryImage: researchGroupImage('networks-broadband'),
     summary:
       'Research on scalable distributed systems, cloud and edge computing, and broadband network technologies with strong industry collaboration.',
     memberIds: ['jaco-geldenhuys', 'anthony-e-krzesinski', 'willem-visser'],
@@ -128,7 +146,7 @@ export const researchGroups: ResearchGroup[] = [
   {
     slug: 'robotics-vision',
     title: 'Robotics and Computer Vision',
-    categoryImage: `${RESEARCH_IMAGE_DIR}/robotics-vision.jpg`,
+    categoryImage: researchGroupImage('robotics-vision'),
     summary:
       'Developing intelligent robots and autonomous systems: perception, path planning, human–robot interaction, and manipulation for real-world applications.',
     memberIds: [],
@@ -137,7 +155,7 @@ export const researchGroups: ResearchGroup[] = [
   {
     slug: 'nlp',
     title: 'Natural Language Processing',
-    categoryImage: `${RESEARCH_IMAGE_DIR}/nlp.jpg`,
+    categoryImage: researchGroupImage('nlp'),
     summary:
       'Work on natural language processing, computational linguistics, and assistive technologies that bridge language and computation.',
     memberIds: ['lynette-van-zijl'],

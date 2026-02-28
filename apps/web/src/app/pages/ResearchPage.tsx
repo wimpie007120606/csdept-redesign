@@ -11,9 +11,8 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
-import { researchGroups, type ResearchGroup } from '@/content/researchGroups';
+import { researchGroups, RESEARCH_GROUP_IMAGE_FALLBACK, type ResearchGroup } from '@/content/researchGroups';
 import { MemberAvatar } from '../components/MemberAvatar';
-import { PLACEHOLDER_IMAGE } from '../placeholder';
 import { useTranslation } from '@/i18n/useTranslation';
 import {
   getAllPublications,
@@ -236,12 +235,12 @@ export function ResearchPage() {
                   <div className="aspect-[16/10] overflow-hidden bg-muted">
                     <img
                       src={group.categoryImage}
-                      alt=""
+                      alt={t(`research.groups.${group.slug}.title`)}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         const el = e.currentTarget;
                         el.onerror = null;
-                        el.src = PLACEHOLDER_IMAGE;
+                        el.src = RESEARCH_GROUP_IMAGE_FALLBACK;
                       }}
                     />
                   </div>
@@ -318,12 +317,12 @@ export function ResearchPage() {
                   <div className="aspect-[21/9] min-h-[200px] bg-muted">
                     <img
                       src={group.categoryImage}
-                      alt=""
+                      alt={t(`research.groups.${group.slug}.title`)}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         const el = e.currentTarget;
                         el.onerror = null;
-                        el.src = PLACEHOLDER_IMAGE;
+                        el.src = RESEARCH_GROUP_IMAGE_FALLBACK;
                       }}
                     />
                   </div>
