@@ -75,7 +75,7 @@ export function ResourcesPage() {
                 <div className="flex items-center justify-center gap-6">
                   <div className="h-[1px] flex-1 bg-gradient-to-l from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
                   <span className="text-[#C8A951] text-xs uppercase tracking-[0.2em] font-medium font-['Spectral']">
-                    Student Resources
+                    {t('resources.heroLabel')}
                   </span>
                   <div className="h-[1px] flex-1 bg-gradient-to-r from-[#C8A951]/40 to-transparent max-w-[200px]"></div>
                 </div>

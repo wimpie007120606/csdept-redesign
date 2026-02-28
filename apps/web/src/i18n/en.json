@@ -518,7 +518,13 @@
     "subtitle": "Latest news and announcements",
     "heroLabel": "Latest Updates",
     "heroTitle": "News & Announcements",
-    "heroSub": "Stay updated with the latest developments, achievements, and events"
+    "heroSub": "Stay updated with the latest developments, achievements, and events",
+    "tabsAll": "All News",
+    "readMore": "Read More",
+    "loadError": "Unable to load news. Please try again later.",
+    "noItems": "No articles in this category.",
+    "readOnSource": "Read on Source",
+    "readerNoUrl": "No article URL provided."
   },
   "events": {
     "title": "Events",

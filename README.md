@@ -169,3 +169,24 @@ If you use a root-directory build, ensure the build step installs and builds the
 - **Admin**: Login via `POST /api/admin/login`; session stored in HttpOnly cookie. Use admin routes to create/update/delete people, news, events, programmes and to get R2 upload URLs.
 
 See `docs/architecture.md` for API details and schema.
+
+---
+
+## Manual test checklist (News + Resources)
+
+**Real-time News (`/en/news`)**
+- [ ] News page loads and shows hero (maroon theme).
+- [ ] Category tabs work: All News, AI, Cybersecurity, Software, Research, Local, International.
+- [ ] Cards show: category pill, date, source, title, excerpt, “Read More” (opens in new tab).
+- [ ] Loading state shows while fetching; empty/error state shows if no data or API down.
+- [ ] API: `GET /api/news/feed?category=all&locale=en` returns `{ data: [...] }`; cache ~15 min.
+
+**Reader view (`/en/news/read?url=...&title=...&summary=...`)**
+- [ ] Page shows title, summary, and “Read on Source” link; no full-article scraping.
+
+**Resources and Links**
+- [ ] Top nav: no standalone “Links”; “Resources” dropdown has: Resources, Links, FAQs, Forms.
+- [ ] `/en/resources` is the Resources landing (hero label “Resources” or “Resources & Support”).
+- [ ] `/en/resources/links` shows the Links page content.
+- [ ] `/en/links` redirects to `/en/resources/links`.
+- [ ] Internal links to “Links” (e.g. Institute page “Back to Links”) go to `/resources/links`.

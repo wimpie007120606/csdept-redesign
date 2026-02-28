@@ -30,7 +30,7 @@ export function InstituteAppliedCSPage() {
               className="space-y-4"
             >
               <LocalizedLink
-                to="/links"
+                to="/resources/links"
                 className="text-sm text-white/80 hover:text-white transition-colors inline-block mb-2"
               >
                 {t('institute.backToLinks')}

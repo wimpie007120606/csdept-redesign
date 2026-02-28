@@ -3,6 +3,8 @@ import { zValidator } from '@hono/zod-validator';
 import type { Env } from '../bindings.js';
 import { requireAdmin } from '../auth.js';
 import { newsCreateSchema, newsUpdateSchema } from '@csdept/shared';
+import { getAggregatedFeed } from '../newsFeed.js';
+import type { NewsCategory } from '../newsSources.js';
 
 const news = new Hono<{ Bindings: Env }>();
 
@@ -25,6 +27,18 @@ news.get('/', async (c) => {
     'SELECT * FROM news ORDER BY published_at DESC'
   ).all();
   return c.json({ data: results.map(rowToNews) });
+});
+
+news.get('/feed', async (c) => {
+  const category = (c.req.query('category') ?? 'all') as NewsCategory;
+  const locale = c.req.query('locale') ?? 'en';
+  try {
+    const items = await getAggregatedFeed(category, locale);
+    return c.json({ data: items });
+  } catch (e) {
+    console.error('[news/feed]', e);
+    return c.json({ data: [] });
+  }
 });
 
 news.get('/:slug', async (c) => {

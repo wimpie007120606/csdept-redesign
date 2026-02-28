@@ -15,9 +15,8 @@ const navStructure = [
   { key: 'people', href: '/people' },
   { key: 'news', href: '/news' },
   { key: 'events', href: '/events' },
-  { key: 'resources', items: [{ key: 'studentResources', href: '/resources' }, { key: 'faqs', href: '/resources#faq' }, { key: 'forms', href: '/resources#forms' }] },
+  { key: 'resources', items: [{ key: 'resources', href: '/resources' }, { key: 'links', href: '/resources/links' }, { key: 'faqs', href: '/resources#faq' }, { key: 'forms', href: '/resources#forms' }] },
   { key: 'bridging', href: '/bridging' },
-  { key: 'links', href: '/links' },
   { key: 'contact', href: '/contact' },
 ] as const;
 

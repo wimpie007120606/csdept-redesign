@@ -66,6 +66,32 @@ export interface NewsItem {
   updated_at: string;
 }
 
+/** Real-time aggregated feed item (from GET /api/news/feed). */
+export interface NewsFeedItem {
+  id: string;
+  title: string;
+  url: string;
+  source: string;
+  publishedAt: string;
+  summary: string;
+  image: string | null;
+  category: string;
+  region: string;
+}
+
+export async function getNewsFeed(category: string = 'all', locale: string = 'en'): Promise<NewsFeedItem[]> {
+  const url = apiUrl(`/api/news/feed?category=${encodeURIComponent(category)}&locale=${encodeURIComponent(locale)}`);
+  if (!url) return [];
+  try {
+    const res = await fetch(url, { credentials: 'include' });
+    if (!res.ok) return [];
+    const data = (await res.json()) as { data?: NewsFeedItem[] };
+    return data?.data ?? [];
+  } catch {
+    return [];
+  }
+}
+
 export interface EventItem {
   id: number;
   slug: string;
