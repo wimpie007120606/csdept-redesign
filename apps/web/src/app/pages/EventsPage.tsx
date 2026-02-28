@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Calendar, MapPin, Clock, Users, ArrowRight, ChevronDown } from 'lucide-react';
-import { toast } from 'sonner';
+import { Calendar, MapPin, Clock, ArrowRight, ChevronDown } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 import {
   type CalendarEvent,
@@ -10,10 +9,6 @@ import {
   buildOutlookCalendarUrl,
 } from '../utils/calendar';
 import { useNewsletterModal } from '../components/newsletter/NewsletterModal';
-import {
-  EventRegistrationModal,
-  type EventForRegistration,
-} from '../components/events/EventRegistrationModal';
 
 const campusBackground = '/realbackground3.jpeg';
 
@@ -21,9 +16,6 @@ export function EventsPage() {
   const { t } = useTranslation();
   const { openModal } = useNewsletterModal();
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
-  const [registrationEvent, setRegistrationEvent] = useState<EventForRegistration | null>(null);
-  const [fullEventIds, setFullEventIds] = useState<Set<string>>(new Set());
-  const [registrationCounts, setRegistrationCounts] = useState<Record<string, number>>({});
 
   const upcomingEvents = [
     {
@@ -34,8 +26,6 @@ export function EventsPage() {
       time: '09:00 - 17:00',
       location: 'Main Auditorium, Stellenbosch Campus',
       description: 'Annual symposium featuring keynotes from leading AI researchers, technical presentations, and networking opportunities.',
-      capacity: 250,
-      registered: 180,
       type: 'Conference',
     },
     {
@@ -46,8 +36,6 @@ export function EventsPage() {
       time: '14:00 - 16:00',
       location: 'Seminar Room 1',
       description: 'Monthly seminar showcasing cutting-edge research from our doctoral candidates.',
-      capacity: 80,
-      registered: 45,
       type: 'Seminar',
     },
     {
@@ -58,8 +46,6 @@ export function EventsPage() {
       time: '10:00 - 18:00',
       location: 'Campus Center',
       description: 'Connect with leading tech companies, explore career opportunities, and network with industry professionals.',
-      capacity: 500,
-      registered: 320,
       type: 'Career',
     },
     {
@@ -70,8 +56,6 @@ export function EventsPage() {
       time: '13:00 - 17:00',
       location: 'Computer Lab 2',
       description: 'Hands-on workshop on modern cybersecurity practices and tools for students and professionals.',
-      capacity: 60,
-      registered: 55,
       type: 'Workshop',
     },
     {
@@ -82,8 +66,6 @@ export function EventsPage() {
       time: '10:00 - 16:00',
       location: 'Engineering Building',
       description: 'Watch student teams compete in autonomous robotics challenges with their innovative designs.',
-      capacity: 200,
-      registered: 85,
       type: 'Competition',
     },
     {
@@ -94,8 +76,6 @@ export function EventsPage() {
       time: '15:00 - 16:30',
       location: 'Main Auditorium',
       description: 'Distinguished guest speaker from MIT discusses quantum computing breakthroughs and future directions.',
-      capacity: 300,
-      registered: 210,
       type: 'Lecture',
     },
   ];
@@ -232,49 +212,20 @@ export function EventsPage() {
                       {event.title}
                     </h3>
                     <p className="text-muted-foreground mb-4">{event.description}</p>
-                    
-                    {(() => {
-                      const displayedRegistered = registrationCounts[event.id] ?? event.registered;
-                      const isFull = fullEventIds.has(event.id) || (event.capacity != null && displayedRegistered >= event.capacity);
-                      return (
-                        <>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                            <div className="flex items-center gap-2 text-sm">
-                              <Clock className="w-4 h-4 text-primary" />
-                              <span className="text-muted-foreground">{event.time}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm">
-                              <MapPin className="w-4 h-4 text-primary" />
-                              <span className="text-muted-foreground">{event.location}</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-sm">
-                              <Users className="w-4 h-4 text-primary" />
-                              <span className="text-muted-foreground">
-                                {displayedRegistered}/{event.capacity} registered
-                              </span>
-                            </div>
-                          </div>
 
-                          {/* Progress Bar */}
-                          <div className="mb-4">
-                            <div className="h-2 bg-muted rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-500"
-                                style={{ width: `${event.capacity ? (displayedRegistered / event.capacity) * 100 : 0}%` }}
-                              />
-                            </div>
-                          </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Clock className="w-4 h-4 text-primary" />
+                        <span className="text-muted-foreground">{event.time}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <MapPin className="w-4 h-4 text-primary" />
+                        <span className="text-muted-foreground">{event.location}</span>
+                      </div>
+                    </div>
 
-                          <div className="flex flex-col sm:flex-row flex-wrap gap-3">
-                            <button
-                              type="button"
-                              onClick={() => setRegistrationEvent(event)}
-                              disabled={isFull}
-                              className="px-6 py-2 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-                            >
-                              Register Now
-                            </button>
-                            <div className="relative">
+                    <div className="flex flex-wrap gap-3">
+                      <div className="relative">
                         <button
                           type="button"
                           className="px-6 py-2 bg-secondary/10 text-secondary rounded-xl font-semibold hover:bg-secondary/20 transition-all inline-flex items-center gap-2"
@@ -351,11 +302,8 @@ export function EventsPage() {
                             </a>
                           </div>
                         )}
-                            </div>
-                          </div>
-                        </>
-                      );
-                    })()}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </motion.div>
@@ -363,29 +311,6 @@ export function EventsPage() {
           </div>
         </div>
       </section>
-
-      <EventRegistrationModal
-        isOpen={!!registrationEvent}
-        onClose={() => setRegistrationEvent(null)}
-        event={registrationEvent}
-        onSuccess={(newCount, emailSent) => {
-          if (registrationEvent) {
-            setRegistrationCounts((prev) => ({ ...prev, [registrationEvent.id]: newCount }));
-            toast.success(
-              emailSent !== false
-                ? "You're registered! Confirmation email sent."
-                : "You're registered. We couldn't send the confirmation email right now."
-            );
-            setRegistrationEvent(null);
-          }
-        }}
-        onEventFull={() => {
-          if (registrationEvent) {
-            setFullEventIds((prev) => new Set(prev).add(registrationEvent.id));
-            toast.error('This event is full.');
-          }
-        }}
-      />
 
       {/* CTA */}
       <section className="py-20 bg-gradient-to-br from-[color:var(--su-maroon)] to-[#0B1C2D] text-white">

@@ -55,7 +55,7 @@ See **D1 setup + migrations** below. For a quick start (remote DB only):
 npm run db:migrate
 ```
 
-This applies `db/migrations/` to the **remote** D1 database (`csdept_db`), including the `events` and `event_registrations` tables required for event registration.
+This applies `db/migrations/` to the **remote** D1 database (`csdept_db`), including the `events` table.
 
 ### 4. Seed database
 
@@ -198,13 +198,7 @@ npx wrangler deploy --config apps/api/wrangler.toml
    `npx wrangler deploy --config apps/api/wrangler.toml`
 
 4. **Test API**  
-   `curl -i -X POST https://csdept-api.csdept.workers.dev/api/events/register -H "Content-Type: application/json" -d '{"eventId":"test-1","email":"you@example.com"}'`  
-   Expect 200 and `{"ok":true,...}` (or 400 if validation fails).
-
-5. **Test UI**  
-   Set Pages env `VITE_API_BASE_URL=https://csdept-api.csdept.workers.dev`, open Events, click Register and submit an email.
-
-If the schema is missing, the register endpoint returns **500** with body `{"error":"Database schema missing. Run D1 migrations."}` and logs the full D1 error server-side.
+   `curl -i https://csdept-api.csdept.workers.dev/api/events` — expect 200 and `{"data":[...]}`.
 
 ---
 
@@ -258,9 +252,3 @@ See `docs/architecture.md` for API details and schema.
 - [ ] `/en/links` redirects to `/en/resources/links`.
 - [ ] Footer Resources column: only Links and FAQs (no Student Resources).
 
-**Event registration**
-- [ ] Local: Set `VITE_API_BASE_URL=http://localhost:8787`; browser console shows `[event-register] request URL: http://localhost:8787/api/events/register` on submit.
-- [ ] Production: Set `VITE_API_BASE_URL` to Worker URL and Worker `CORS_ORIGIN` to Pages URL.
-- [ ] Verify API: `curl -X POST https://<WORKER_URL>/api/events/register -H "Content-Type: application/json" -d '{"eventId":"test-1","email":"you@example.com"}'` → 200 and `{ "ok": true, "emailSent": true/false }`.
-- [ ] Worker logs: `[events/register] incoming`, `DB insert ok`, `email sent` or `Resend failed`.
-- [ ] Resend: Set `RESEND_API_KEY` and `RESEND_FROM` on Worker for confirmation emails.

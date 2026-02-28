@@ -36,9 +36,6 @@ app.route('/api/programmes', programmesRoutes);
 app.route('/api/admin', adminRoutes);
 app.route('/api/assets', assetsRoutes);
 
-// Optional alias: POST /events/register (same handler as /api/events/register)
-app.route('/events', eventsRoutes);
-
 // Debug: list mounted routes (helpful to confirm deployment)
 app.get('/api/routes', (c) => {
   const routes = [
@@ -50,8 +47,6 @@ app.get('/api/routes', (c) => {
     'GET /api/news/feed',
     'GET /api/news/:slug',
     'GET /api/events',
-    'GET /api/events/registrations/count',
-    'POST /api/events/register',
     'GET /api/events/:slug',
     'GET /api/programmes',
     'GET /api/programmes/:slug',
