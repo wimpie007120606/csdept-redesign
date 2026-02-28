@@ -8,16 +8,66 @@ import {
   Newspaper,
   ArrowRight,
   Sparkles,
-  Brain,
-  Network,
-  Bot,
-  Lock,
   ChevronRight,
   BookOpen,
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
+import { useState } from 'react';
+import { useNewsForHome, formatNewsDate } from '../hooks/useNews';
+import { type CalendarEvent } from '../utils/calendar';
+import { AddToCalendarDropdown } from '../components/events/AddToCalendarDropdown';
+import { researchGroups, RESEARCH_GROUP_IMAGE_FALLBACK } from '@/content/researchGroups';
 
 const heroBackground = '/realbackground2.jpg';
+
+/** Month name (short) to index for Home page event dates (e.g. "Mar" -> 2). */
+const HOME_MONTH_MAP: Record<string, number> = {
+  Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+  Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11,
+};
+
+/**
+ * Build a CalendarEvent from Home page i18n event (dateStr e.g. "Mar 5", timeStr e.g. "09:00 - 17:00").
+ * Reuses same calendar logic as Events page; uses Africa/Johannesburg.
+ */
+function homeEventToCalendarEvent(
+  id: string,
+  title: string,
+  dateStr: string,
+  timeStr: string,
+  location: string
+): CalendarEvent | null {
+  const parts = dateStr.trim().split(/\s+/);
+  const monthStr = parts[0] ?? '';
+  const day = parseInt(parts[1] ?? '', 10);
+  const monthIndex = HOME_MONTH_MAP[monthStr];
+  if (Number.isNaN(day) || monthIndex === undefined) return null;
+
+  const now = new Date();
+  let year = now.getFullYear();
+  const trial = new Date(year, monthIndex, day);
+  if (trial < now) year += 1;
+
+  const [startStr, endStr] = timeStr.split('-').map((p) => p.trim());
+  const [startHourStr, startMinuteStr] = (startStr ?? '').split(':');
+  const [endHourStr, endMinuteStr] = (endStr ?? '').split(':');
+  const startHour = Number.parseInt(startHourStr ?? '0', 10);
+  const startMinute = Number.parseInt(startMinuteStr ?? '0', 10);
+  const endHour = Number.isNaN(Number.parseInt(endHourStr ?? '', 10)) ? startHour + 1 : Number.parseInt(endHourStr ?? '0', 10);
+  const endMinute = Number.isNaN(Number.parseInt(endMinuteStr ?? '', 10)) ? startMinute : Number.parseInt(endMinuteStr ?? '0', 10);
+
+  const start = new Date(year, monthIndex, day, startHour, startMinute, 0);
+  const end = new Date(year, monthIndex, day, endHour, endMinute, 0);
+  return {
+    id,
+    title,
+    location,
+    start,
+    end,
+    timezone: 'Africa/Johannesburg',
+  };
+}
+const NEWS_FALLBACK_IMAGE = '/realbackground2.jpg';
 
 const homePeople = [
   { name: 'W. H. K. Bester', slug: 'whk-bester', image: '/WillemPeople.jpg', title: 'Technical Officer' },
@@ -27,7 +77,9 @@ const homePeople = [
 ];
 
 export function HomePage() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const { items: homeNewsItems, loading: homeNewsLoading, error: homeNewsError } = useNewsForHome(language);
+  const [homeCalendarOpenIndex, setHomeCalendarOpenIndex] = useState<number | null>(null);
 
   const quickAccessTiles = [
     { icon: GraduationCap, labelKey: 'nav.undergraduate', href: '/study/undergraduate', color: 'from-[#7B1E3A] to-[#A33456]' },
@@ -39,18 +91,8 @@ export function HomePage() {
     { icon: Calendar, labelKey: 'nav.events', href: '/events', color: 'from-[#0B1C2D] to-[#7B1E3A]' },
   ];
 
-  const researchHighlights = [
-    { icon: Brain, titleKey: 'home.aiTitle', descKey: 'home.aiDesc', image: 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnRpZmljaWFsJTIwaW50ZWxsaWdlbmNlJTIwbWFjaGluZSUyMGxlYXJuaW5nfGVufDF8fHx8MTc3MjA4MjY4OHww&ixlib=rb-4.1.0&q=80&w=1080' },
-    { icon: Bot, titleKey: 'home.roboticsTitle', descKey: 'home.roboticsDesc', image: 'https://images.unsplash.com/photo-1758295746012-41650245a9bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyb2JvdGljcyUyMGVuZ2luZWVyaW5nJTIwbGFib3JhdG9yeXxlbnwxfHx8fDE3NzIxMjEwMDB8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-    { icon: Network, titleKey: 'home.networksTitle', descKey: 'home.networksDesc', image: 'https://images.unsplash.com/photo-1768224656445-33d078c250b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxuZXR3b3JrJTIwY3liZXJzZWN1cml0eSUyMHRlY2hub2xvZ3l8ZW58MXx8fHwxNzcyMDQ0MTkyfDA&ixlib=rb-4.1.0&q=80&w=1080' },
-    { icon: Lock, titleKey: 'home.cyberTitle', descKey: 'home.cyberDesc', image: 'https://images.unsplash.com/photo-1762279389083-abf71f22d338?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwc2NpZW5jZSUyMHZpc3VhbGl6YXRpb258ZW58MXx8fHwxNzcyMDg3ODI3fDA&ixlib=rb-4.1.0&q=80&w=1080' },
-  ];
-
-  const newsItems = [
-    { date: 'Feb 20, 2026', categoryKey: 'home.news1Category', titleKey: 'home.news1Title', descKey: 'home.news1Desc' },
-    { date: 'Feb 15, 2026', categoryKey: 'home.news2Category', titleKey: 'home.news2Title', descKey: 'home.news2Desc' },
-    { date: 'Feb 10, 2026', categoryKey: 'home.news3Category', titleKey: 'home.news3Title', descKey: 'home.news3Desc' },
-  ];
+  /** First 4 research groups from same source as Research page (single source of truth). */
+  const homeResearchGroups = researchGroups.slice(0, 4);
 
   const upcomingEvents = [
     { dateKey: 'home.event1Date', titleKey: 'home.event1Title', timeKey: 'home.event1Time', locationKey: 'home.event1Location' },
@@ -178,71 +220,104 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Research Highlights */}
+      {/* Research Highlights — same source as Research page (content/researchGroups) */}
       <section className="py-24 bg-muted">
         <div className="container mx-auto px-4 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-primary text-sm font-semibold mb-4">
-              {t('home.researchExcellence')}
-            </div>
-            <h2 className="font-['Playfair_Display'] text-4xl md:text-5xl font-bold text-foreground mb-4">
-              {t('home.worldClassResearch')}
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t('home.worldClassResearchSub')}
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {researchHighlights.map((highlight, index) => (
-              <motion.div
-                key={highlight.titleKey}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="group"
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-6 mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center sm:text-left"
+            >
+              <div className="inline-block px-4 py-2 bg-primary/10 rounded-full text-primary text-sm font-semibold mb-4">
+                {t('home.researchExcellence')}
+              </div>
+              <h2 className="font-['Playfair_Display'] text-4xl md:text-5xl font-bold text-foreground mb-2">
+                {t('home.worldClassResearch')}
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl">
+                {t('home.worldClassResearchSub')}
+              </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="flex justify-center sm:justify-end"
+            >
+              <LocalizedLink
+                to="/research"
+                className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
               >
-                <div className="relative h-full bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                  {/* Image */}
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={highlight?.image ?? ''}
-                      alt={t(highlight.titleKey)}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-4 left-4">
-                      <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center">
-                        <highlight.icon className="w-6 h-6 text-white" />
+                {t('home.viewAllResearchGroups')}
+                <ArrowRight className="w-5 h-5" />
+              </LocalizedLink>
+            </motion.div>
+          </div>
+
+          {homeResearchGroups.length === 0 ? (
+            <div className="rounded-2xl bg-card border border-border p-12 text-center">
+              <p className="text-muted-foreground mb-6">{t('research.overviewSub')}</p>
+              <LocalizedLink
+                to="/research"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:opacity-90 transition-opacity"
+              >
+                {t('home.viewAllResearchGroups')}
+                <ArrowRight className="w-4 h-4" />
+              </LocalizedLink>
+            </div>
+          ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {homeResearchGroups.map((group, index) => {
+              const title = t(`research.groups.${group.slug}.title`) || group.title;
+              const summary = t(`research.groups.${group.slug}.summary`) || group.summary;
+              return (
+                <motion.div
+                  key={group.slug}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="group"
+                >
+                  <LocalizedLink
+                    to={`/research#${group.slug}`}
+                    className="block h-full rounded-2xl focus:outline-none focus:ring-2 focus:ring-[color:var(--su-maroon)] focus:ring-inset"
+                  >
+                    <div className="su-card relative h-full bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl border border-border hover:border-[#7B1E3A]/30 transition-all duration-300 hover:-translate-y-1">
+                      <div className="aspect-[16/10] overflow-hidden bg-muted">
+                        <img
+                          src={group.categoryImage}
+                          alt={title}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          onError={(e) => {
+                            const el = e.currentTarget;
+                            el.onerror = null;
+                            el.src = RESEARCH_GROUP_IMAGE_FALLBACK;
+                          }}
+                        />
+                      </div>
+                      <div className="p-6">
+                        <h3 className="font-['Playfair_Display'] text-xl font-bold text-foreground mb-2 line-clamp-2">
+                          {title}
+                        </h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 mb-4">
+                          {summary}
+                        </p>
+                        <span className="inline-flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+                          {t('research.exploreGroup')}
+                          <ArrowRight className="w-4 h-4" />
+                        </span>
                       </div>
                     </div>
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="p-6">
-                    <h3 className="font-['Playfair_Display'] text-xl font-bold text-foreground mb-2">
-                      {t(highlight.titleKey)}
-                    </h3>
-                    <p className="text-muted-foreground text-sm mb-4">{t(highlight.descKey)}</p>
-<LocalizedLink 
-                      to="/research"
-                      className="inline-flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all"
-                    >
-                      {t('home.learnMore')}
-                      <ArrowRight className="w-4 h-4" />
-                    </LocalizedLink>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                  </LocalizedLink>
+                </motion.div>
+              );
+            })}
           </div>
+          )}
         </div>
       </section>
 
@@ -333,35 +408,86 @@ export function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {newsItems.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div className="h-full p-6 bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-sm text-muted-foreground">{item.date}</span>
-                    <span className="px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-                      {t(item.categoryKey)}
-                    </span>
+            {homeNewsLoading ? (
+              [...Array(3)].map((_, i) => (
+                <div key={i} className="bg-card rounded-2xl overflow-hidden animate-pulse">
+                  <div className="h-40 bg-muted" />
+                  <div className="p-6 space-y-3">
+                    <div className="h-4 bg-muted rounded w-1/3" />
+                    <div className="h-5 bg-muted rounded w-full" />
+                    <div className="h-4 bg-muted rounded w-full" />
+                    <div className="h-4 bg-muted rounded w-2/3" />
                   </div>
-                  <h3 className="font-['Playfair_Display'] text-xl font-bold text-foreground mb-3">
-                    {t(item.titleKey)}
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-4">{t(item.descKey)}</p>
-<LocalizedLink 
-                    to="/news"
-                    className="inline-flex items-center gap-2 text-primary font-semibold text-sm hover:gap-3 transition-all"
-                  >
-                    {t('home.readMore')}
-                    <ArrowRight className="w-4 h-4" />
-                  </LocalizedLink>
                 </div>
-              </motion.div>
-            ))}
+              ))
+            ) : homeNewsError || homeNewsItems.length === 0 ? (
+              <div className="md:col-span-3 flex flex-col items-center justify-center py-12 px-4 rounded-2xl bg-card border border-border text-center">
+                <p className="text-muted-foreground font-medium mb-4">
+                  {homeNewsError ? t('news.apiError') ?? 'Unable to load news.' : t('news.noItems') ?? 'No articles right now.'}
+                </p>
+                <LocalizedLink
+                  to="/news"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:opacity-90 transition-opacity"
+                >
+                  {t('home.viewAllNews')}
+                  <ArrowRight className="w-4 h-4" />
+                </LocalizedLink>
+              </div>
+            ) : (
+              homeNewsItems.map((item, index) => (
+                <motion.article
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="h-full flex flex-col bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                >
+                  <div className="relative h-40 overflow-hidden flex-shrink-0">
+                    <img
+                      src={item.image || NEWS_FALLBACK_IMAGE}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const el = e.currentTarget;
+                        if (el.src !== NEWS_FALLBACK_IMAGE) el.src = NEWS_FALLBACK_IMAGE;
+                      }}
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-primary text-xs font-semibold rounded-full">
+                        {item.categoryTags?.[0] ?? item.category}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                      <span>{formatNewsDate(item.publishedAt)}</span>
+                      {item.source && (
+                        <>
+                          <span aria-hidden>·</span>
+                          <span className="truncate">{item.source}</span>
+                        </>
+                      )}
+                    </div>
+                    <h3 className="font-['Playfair_Display'] text-xl font-bold text-foreground mb-3 line-clamp-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-3 flex-1">
+                      {item.summary || item.title}
+                    </p>
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-primary font-semibold text-sm hover:gap-3 transition-all w-fit"
+                    >
+                      {t('home.readMore')}
+                      <ArrowRight className="w-4 h-4" />
+                    </a>
+                  </div>
+                </motion.article>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -391,6 +517,11 @@ export function HomePage() {
             {upcomingEvents.map((event, index) => {
               const dateStr = t(event.dateKey);
               const parts = dateStr.split(' ');
+              const title = t(event.titleKey);
+              const timeStr = t(event.timeKey);
+              const location = t(event.locationKey);
+              const eventId = `home-event-${index + 1}`;
+              const calEvent = homeEventToCalendarEvent(eventId, title, dateStr, timeStr, location);
               return (
               <motion.div
                 key={index}
@@ -399,7 +530,7 @@ export function HomePage() {
                 transition={{ delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <div className="group flex flex-col sm:flex-row gap-6 p-6 bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-x-2">
+                <div className="group flex flex-col sm:flex-row gap-6 p-6 bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-x-2 event-card">
                   <div className="flex-shrink-0 text-center">
                     <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-xl flex flex-col items-center justify-center text-white">
                       <div className="text-2xl font-bold">{parts[1] ?? ''}</div>
@@ -408,26 +539,28 @@ export function HomePage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="font-['Playfair_Display'] text-xl font-bold text-foreground mb-2">
-                      {t(event.titleKey)}
+                      {title}
                     </h3>
                     <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        {t(event.timeKey)}
+                        <Calendar className="w-4 h-4 text-primary" />
+                        {timeStr}
                       </div>
                       <div className="flex items-center gap-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                        {t(event.locationKey)}
+                        {location}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center">
-                    <button className="px-6 py-3 bg-primary/10 text-primary rounded-xl font-semibold hover:bg-primary hover:text-primary-foreground transition-all">
-                      {t('home.register')}
-                    </button>
+                    <AddToCalendarDropdown
+                      event={calEvent}
+                      isOpen={homeCalendarOpenIndex === index}
+                      onOpenChange={(open) => setHomeCalendarOpenIndex(open ? index : null)}
+                    />
                   </div>
                 </div>
               </motion.div>
