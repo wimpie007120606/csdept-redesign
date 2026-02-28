@@ -1,40 +1,29 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const STORAGE_SUBSCRIBED = 'newsletter_subscribed';
-const STORAGE_LAST_PROMPT = 'newsletter_last_prompt';
-const THROTTLE_DAYS = 7;
 
-export function getShouldShowModal(): boolean {
-  if (typeof window === 'undefined') return false;
-  try {
-    if (localStorage.getItem(STORAGE_SUBSCRIBED) === 'true') return false;
-    const last = localStorage.getItem(STORAGE_LAST_PROMPT);
-    if (!last) return true;
-    const ts = parseInt(last, 10);
-    if (Number.isNaN(ts)) return true;
-    return Date.now() - ts > THROTTLE_DAYS * 24 * 60 * 60 * 1000;
-  } catch {
-    return true;
-  }
-}
-
-export function markPromptShown(): void {
-  try {
-    localStorage.setItem(STORAGE_LAST_PROMPT, String(Date.now()));
-  } catch {
-    /* ignore */
-  }
-}
-
-export function markSubscribed(): void {
+function markSubscribed(): void {
   try {
     localStorage.setItem(STORAGE_SUBSCRIBED, 'true');
-    localStorage.setItem(STORAGE_LAST_PROMPT, String(Date.now()));
   } catch {
     /* ignore */
   }
 }
+
+export interface NewsletterModalContextValue {
+  openModal: () => void;
+  closeModal: () => void;
+}
+
+const NewsletterModalContext = createContext<NewsletterModalContextValue | null>(null);
+
+export function useNewsletterModal(): NewsletterModalContextValue {
+  const ctx = useContext(NewsletterModalContext);
+  return ctx ?? { openModal: () => {}, closeModal: () => {} };
+}
+
+export const NewsletterModalProvider = NewsletterModalContext.Provider;
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
@@ -124,7 +113,8 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50"
+      className="fixed inset-0 flex items-center justify-center p-4 bg-black/50"
+      style={{ zIndex: 9999 }}
       role="dialog"
       aria-modal="true"
       aria-labelledby="newsletter-modal-title"
@@ -132,8 +122,10 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
     >
       <div
         ref={panelRef}
-        className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl"
+        className="relative w-full max-w-md rounded-2xl shadow-2xl"
         style={{
+          maxHeight: '90vh',
+          overflowY: 'auto',
           background: 'var(--su-maroon)',
           fontFamily: "'SU Raleway', 'Raleway', 'Trebuchet MS', sans-serif",
         }}

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Calendar, MapPin, Clock, Users, ArrowRight, ChevronDown } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -8,46 +8,14 @@ import {
   buildGoogleCalendarUrl,
   buildOutlookCalendarUrl,
 } from '../utils/calendar';
-import {
-  NewsletterModal,
-  getShouldShowModal,
-  markPromptShown,
-} from '../components/newsletter/NewsletterModal';
+import { useNewsletterModal } from '../components/newsletter/NewsletterModal';
 
 const campusBackground = '/realbackground3.jpeg';
 
 export function EventsPage() {
   const { t } = useTranslation();
+  const { openModal } = useNewsletterModal();
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
-  const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
-  const autoPromptDone = useRef(false);
-
-  useEffect(() => {
-    if (!getShouldShowModal() || autoPromptDone.current) return;
-
-    const trigger = () => {
-      if (autoPromptDone.current) return;
-      autoPromptDone.current = true;
-      markPromptShown();
-      setNewsletterModalOpen(true);
-    };
-
-    const timer = setTimeout(trigger, 10_000);
-
-    const handleScroll = () => {
-      if (autoPromptDone.current) return;
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (scrollHeight <= 0) return;
-      const pct = (window.scrollY / scrollHeight) * 100;
-      if (pct >= 40) trigger();
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   const upcomingEvents = [
     {
@@ -391,7 +359,7 @@ export function EventsPage() {
             </p>
             <button
               type="button"
-              onClick={() => setNewsletterModalOpen(true)}
+              onClick={openModal}
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[color:var(--su-maroon)] rounded-xl font-semibold hover:bg-[color:var(--su-gold)] hover:text-white transition-all duration-300 shadow-2xl"
             >
               Subscribe to Updates
@@ -400,11 +368,6 @@ export function EventsPage() {
           </motion.div>
         </div>
       </section>
-
-      <NewsletterModal
-        isOpen={newsletterModalOpen}
-        onClose={() => setNewsletterModalOpen(false)}
-      />
     </div>
   );
 }
