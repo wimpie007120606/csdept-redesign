@@ -23,6 +23,18 @@ function rowToNews(row: Record<string, unknown>) {
 }
 
 news.get('/', async (c) => {
+  const categoryParam = c.req.query('category');
+  if (categoryParam !== undefined) {
+    try {
+      const { items, failedFeeds } = await getAggregatedFeed(categoryParam as NewsCategory, c.req.query('locale') ?? 'en');
+      if (failedFeeds.length > 0) console.warn('[news] failed feeds:', failedFeeds.join(', '));
+      console.info(`[news] category=${categoryParam} items=${items.length}`);
+      return c.json({ data: items });
+    } catch (e) {
+      console.error('[news] feed', e);
+      return c.json({ data: [] });
+    }
+  }
   const { results } = await c.env.csdept_db.prepare(
     'SELECT * FROM news ORDER BY published_at DESC'
   ).all();
@@ -33,7 +45,11 @@ news.get('/feed', async (c) => {
   const category = (c.req.query('category') ?? 'all') as NewsCategory;
   const locale = c.req.query('locale') ?? 'en';
   try {
-    const items = await getAggregatedFeed(category, locale);
+    const { items, failedFeeds } = await getAggregatedFeed(category, locale);
+    if (failedFeeds.length > 0) {
+      console.warn('[news/feed] failed feeds:', failedFeeds.join(', '));
+    }
+    console.info(`[news/feed] category=${category} items=${items.length}`);
     return c.json({ data: items });
   } catch (e) {
     console.error('[news/feed]', e);

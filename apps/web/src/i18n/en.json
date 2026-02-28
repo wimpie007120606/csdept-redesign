@@ -523,6 +523,7 @@
     "readMore": "Read More",
     "loadError": "Unable to load news. Please try again later.",
     "noItems": "No articles in this category.",
+    "retry": "Retry",
     "readOnSource": "Read on Source",
     "readerNoUrl": "No article URL provided."
   },
@@ -539,10 +540,13 @@
   },
   "resources": {
     "title": "Resources",
-    "subtitle": "Student resources and forms",
+    "subtitle": "Useful links and support",
     "heroLabel": "Resources",
     "heroTitle": "Resources & Support",
-    "heroSub": "Everything you need for a successful academic journey"
+    "heroSub": "Links and frequently asked questions",
+    "linksDescription": "Useful links and external resources",
+    "faqsDescription": "Frequently asked questions",
+    "faqTitle": "Frequently Asked Questions"
   },
   "courses": {
     "title": "Course Catalogue",

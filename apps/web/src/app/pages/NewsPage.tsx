@@ -17,6 +17,24 @@ function formatDate(isoOrRss: string): string {
   return d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+function loadFeed(
+  category: CategoryKey,
+  locale: string,
+  setItems: (i: NewsFeedItem[]) => void,
+  setError: (e: boolean) => void,
+  setLoading: (l: boolean) => void
+) {
+  setLoading(true);
+  setError(false);
+  getNewsFeed(category, locale)
+    .then(({ items: data, ok }) => {
+      setItems(data);
+      setError(!ok);
+    })
+    .catch(() => setError(true))
+    .finally(() => setLoading(false));
+}
+
 export function NewsPage() {
   const { t, language } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>('all');
@@ -25,16 +43,10 @@ export function NewsPage() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    setError(false);
-    getNewsFeed(selectedCategory, language)
-      .then((data) => {
-        setItems(data);
-        setError(data.length === 0 && selectedCategory === 'all');
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
+    loadFeed(selectedCategory, language, setItems, setError, setLoading);
   }, [selectedCategory, language]);
+
+  const retry = () => loadFeed(selectedCategory, language, setItems, setError, setLoading);
 
   return (
     <div className="pt-20">
@@ -103,13 +115,19 @@ export function NewsPage() {
             <div className="flex justify-center py-20">
               <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             </div>
-          ) : error && items.length === 0 ? (
-            <div className="text-center py-20 text-muted-foreground">
+          ) : error ? (
+            <div className="text-center py-20 text-muted-foreground space-y-4">
               <p>{t('news.loadError') ?? 'Unable to load news. Please try again later.'}</p>
+              <button onClick={retry} className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:opacity-90 transition-opacity">
+                {t('news.retry') ?? 'Retry'}
+              </button>
             </div>
           ) : items.length === 0 ? (
-            <div className="text-center py-20 text-muted-foreground">
+            <div className="text-center py-20 text-muted-foreground space-y-4">
               <p>{t('news.noItems') ?? 'No articles in this category.'}</p>
+              <button onClick={retry} className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:opacity-90 transition-opacity">
+                {t('news.retry') ?? 'Retry'}
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -135,7 +153,7 @@ export function NewsPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute top-4 left-4">
                       <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-primary text-xs font-semibold rounded-full">
-                        {item.category}
+                        {item.categoryTags?.[0] ?? item.category}
                       </span>
                     </div>
                   </div>

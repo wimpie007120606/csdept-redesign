@@ -102,29 +102,14 @@ export function Footer() {
             <h3 className="font-['Playfair_Display'] font-semibold text-lg mb-4">{t('footer.resources')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <LocalizedLink to="/resources" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  {t('nav.studentResources')}
+                <LocalizedLink to="/resources/links" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
+                  {t('nav.links')}
                 </LocalizedLink>
               </li>
               <li>
                 <LocalizedLink to="/resources#faq" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
                   {t('nav.faqs')}
                 </LocalizedLink>
-              </li>
-              <li>
-                <LocalizedLink to="/resources#forms" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  {t('footer.formsDocuments')}
-                </LocalizedLink>
-              </li>
-              <li>
-                <a href="#" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  {t('footer.academicCalendar')}
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-[#5A5A6E] dark:text-[#C4C4D1] hover:text-[#C8A951] transition-colors">
-                  {t('footer.accessibility')}
-                </a>
               </li>
             </ul>
           </div>

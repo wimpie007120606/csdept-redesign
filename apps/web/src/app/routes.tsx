@@ -16,19 +16,20 @@ import { NewsPage } from "./pages/NewsPage";
 import { NewsReaderPage } from "./pages/NewsReaderPage";
 import { EventsPage } from "./pages/EventsPage";
 import { CoursesPage } from "./pages/CoursesPage";
-import { ResourcesPage } from "./pages/ResourcesPage";
 import { ContactPage } from "./pages/ContactPage";
 import { BridgingCoursePage } from "./pages/BridgingCoursePage";
+import { ResourcesPage } from "./pages/ResourcesPage";
 import { LinksPage } from "./pages/LinksPage";
 import { InstituteAppliedCSPage } from "./pages/InstituteAppliedCSPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { RouteErrorPage } from "./pages/RouteErrorPage";
 
-/** Redirects /:lang/links to /:lang/resources/links (Links moved under Resources). */
+/** Redirects /:lang/links to /:lang/resources/links (Links under Resources). */
 function RedirectLinksToResources() {
   const { lang } = useParams<{ lang: string }>();
   return <Navigate to={`/${lang ?? "en"}/resources/links`} replace />;
 }
+
 
 export const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/en" replace /> },

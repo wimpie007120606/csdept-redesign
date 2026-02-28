@@ -1,10 +1,17 @@
 /**
- * Aggregates RSS/Atom feeds into a single normalized list. In-memory cache (10–30 min).
+ * Server-side RSS/Atom aggregation for CS news. In-memory cache 12h.
  * Only headline, excerpt, thumbnail, and link are used; no full-article scraping.
  */
 
 import { XMLParser } from 'fast-xml-parser';
 import { newsSources, type NewsCategory, type Region } from './newsSources.js';
+
+const USER_AGENT = 'csdept-site-news-bot/1.0';
+const ACCEPT = 'application/rss+xml, application/xml, text/xml, application/json';
+const FETCH_TIMEOUT_MS = 8_000;
+const CACHE_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours
+const LIMIT_ALL = 40;
+const LIMIT_PER_CATEGORY = 10;
 
 export interface NewsFeedItem {
   id: string;
@@ -16,9 +23,8 @@ export interface NewsFeedItem {
   image: string | null;
   category: NewsCategory;
   region: Region;
+  categoryTags: string[];
 }
-
-const CACHE_TTL_MS = 15 * 60 * 1000; // 15 minutes
 
 let cache: { items: NewsFeedItem[]; at: number } | null = null;
 
@@ -28,7 +34,7 @@ function stripHtml(html: string): string {
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
-    .slice(0, 300);
+    .slice(0, 400);
 }
 
 function extractImageFromDescription(desc: string): string | null {
@@ -40,7 +46,32 @@ function extractImageFromDescription(desc: string): string | null {
   return null;
 }
 
-function parseRssOrAtom(xml: string, sourceName: string, category: NewsCategory, region: Region): NewsFeedItem[] {
+function normalizeTitleForDedup(t: string): string {
+  return t
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/[^\w\s]/g, '')
+    .trim()
+    .slice(0, 80);
+}
+
+function assignCategoryTags(title: string, summary: string, source: string): string[] {
+  const text = `${title} ${summary} ${source}`.toLowerCase();
+  const tags: string[] = [];
+  if (/\b(ai|machine learning|deep learning|llm|neural|generative|openai|deepmind)\b/.test(text)) tags.push('AI');
+  if (/\b(security|hack|breach|malware|phishing|ransomware|cyber)\b/.test(text)) tags.push('Cybersecurity');
+  if (/\b(programming|software|dev|javascript|python|framework|release|aws|google)\b/.test(text)) tags.push('Software');
+  if (/\b(paper|study|journal|arxiv|conference|acm|ieee|research)\b/.test(text)) tags.push('Research');
+  if (tags.length === 0) tags.push('Research');
+  return tags;
+}
+
+function parseRssOrAtom(
+  xml: string,
+  sourceName: string,
+  sourceCategory: NewsCategory,
+  region: Region
+): NewsFeedItem[] {
   const parser = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: '@_',
@@ -51,7 +82,6 @@ function parseRssOrAtom(xml: string, sourceName: string, category: NewsCategory,
     const doc = parser.parse(xml);
     if (!doc) return out;
 
-    // RSS 2.0: rss.channel.item (or items)
     const channel = doc.rss?.channel;
     if (channel) {
       const items = Array.isArray(channel.item) ? channel.item : channel.item ? [channel.item] : [];
@@ -68,79 +98,89 @@ function parseRssOrAtom(xml: string, sourceName: string, category: NewsCategory,
         }
         if (!image) image = extractImageFromDescription(desc);
         if (!link || !title) continue;
-        const id = `rss-${btoa(link).replace(/[/+=]/g, '').slice(0, 48)}`;
+        const summary = stripHtml(desc);
+        const categoryTags = assignCategoryTags(title, summary, sourceName);
         out.push({
-          id,
+          id: `rss-${btoa(link).replace(/[/+=]/g, '').slice(0, 48)}`,
           title,
           url: link,
           source: sourceName,
           publishedAt: pubDate,
-          summary: stripHtml(desc),
+          summary,
           image,
-          category,
+          category: sourceCategory,
           region,
+          categoryTags,
         });
       }
       return out;
     }
 
-    // Atom: feed.entry
     const feed = doc.feed;
     if (feed) {
       const entries = Array.isArray(feed.entry) ? feed.entry : feed.entry ? [feed.entry] : [];
       for (const e of entries) {
-        const title = typeof e.title === 'string' ? e.title : e.title?.__text ?? e.title?.['#text'] ?? '';
-        const link = (Array.isArray(e.link) ? e.link.find((l: { '@_rel'?: string }) => l['@_rel'] !== 'self') ?? e.link[0] : e.link)?.['@_href'] ?? '';
+        const title = typeof e.title === 'string' ? e.title : (e.title?.__text ?? e.title?.['#text'] ?? '') as string;
+        const linkArr = Array.isArray(e.link) ? e.link : e.link ? [e.link] : [];
+        const linkObj = linkArr.find((l: { '@_rel'?: string }) => l['@_rel'] !== 'self') ?? linkArr[0];
+        const url = (linkObj?.['@_href'] ?? '') as string;
         const updated = e.updated ?? e.published ?? e.pubDate ?? '';
-        const summary = typeof e.summary === 'string' ? e.summary : e.summary?.__text ?? e.summary?.['#text'] ?? '';
-        const content = typeof e.content === 'string' ? e.content : e.content?.__text ?? e.content?.['#text'] ?? '';
+        const summary = typeof e.summary === 'string' ? e.summary : (e.summary?.__text ?? e.summary?.['#text'] ?? '') as string;
+        const content = typeof e.content === 'string' ? e.content : (e.content?.__text ?? e.content?.['#text'] ?? '') as string;
         const desc = summary || content;
         let image: string | null = extractImageFromDescription(desc);
         const media = e['media:content'] ?? e['media:thumbnail'];
-        if (media && media['@_url']) image = media['@_url'];
-        const url = typeof link === 'string' ? link : '';
+        if (media?.['@_url']) image = media['@_url'];
         if (!url || !title) continue;
-        const id = `atom-${btoa(url).replace(/[/+=]/g, '').slice(0, 48)}`;
+        const categoryTags = assignCategoryTags(title, stripHtml(desc), sourceName);
         out.push({
-          id,
+          id: `atom-${btoa(url).replace(/[/+=]/g, '').slice(0, 48)}`,
           title,
           url,
           source: sourceName,
           publishedAt: updated,
           summary: stripHtml(desc),
           image,
-          category,
+          category: sourceCategory,
           region,
+          categoryTags,
         });
       }
     }
   } catch (_) {
-    // ignore parse errors for this feed
+    // ignore parse errors
   }
   return out;
 }
 
-async function fetchOneFeed(
-  config: (typeof newsSources)[number]
-): Promise<NewsFeedItem[]> {
+async function fetchOneFeed(config: (typeof newsSources)[number]): Promise<{ items: NewsFeedItem[]; ok: boolean }> {
   try {
     const res = await fetch(config.url, {
-      headers: { 'User-Agent': 'Stellenbosch-CS-News/1.0 (CS Department News Aggregator)' },
-      signal: AbortSignal.timeout(12_000),
+      headers: {
+        'User-Agent': USER_AGENT,
+        Accept: ACCEPT,
+      },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
-    if (!res.ok) return [];
+    if (!res.ok) return { items: [], ok: false };
     const text = await res.text();
-    return parseRssOrAtom(text, config.name, config.category, config.region);
+    const items = parseRssOrAtom(text, config.name, config.category, config.region);
+    return { items, ok: true };
   } catch {
-    return [];
+    return { items: [], ok: false };
   }
 }
 
-function dedupe(items: NewsFeedItem[]): NewsFeedItem[] {
+function dedupeByUrlAndTitle(items: NewsFeedItem[]): NewsFeedItem[] {
   const byUrl = new Map<string, NewsFeedItem>();
+  const seenTitles = new Set<string>();
   for (const it of items) {
     const u = it.url.toLowerCase().trim();
-    if (!byUrl.has(u)) byUrl.set(u, it);
+    if (byUrl.has(u)) continue;
+    const normTitle = normalizeTitleForDedup(it.title);
+    if (seenTitles.has(normTitle)) continue;
+    seenTitles.add(normTitle);
+    byUrl.set(u, it);
   }
   return Array.from(byUrl.values());
 }
@@ -149,34 +189,55 @@ function sortNewestFirst(items: NewsFeedItem[]): void {
   items.sort((a, b) => {
     const da = new Date(a.publishedAt).getTime();
     const db = new Date(b.publishedAt).getTime();
+    if (Number.isNaN(da) && Number.isNaN(db)) return 0;
+    if (Number.isNaN(da)) return 1;
+    if (Number.isNaN(db)) return -1;
     return db - da;
   });
 }
 
-function filterByCategory(items: NewsFeedItem[], category: NewsCategory): NewsFeedItem[] {
-  if (category === 'all') return items;
-  if (category === 'Local') return items.filter((i) => i.region === 'local');
-  if (category === 'International') return items.filter((i) => i.region === 'international');
-  return items.filter((i) => i.category === category);
+function filterAndLimit(
+  items: NewsFeedItem[],
+  category: NewsCategory
+): NewsFeedItem[] {
+  if (category === 'all') return items.slice(0, LIMIT_ALL);
+  if (category === 'Local') return items.filter((i) => i.region === 'local').slice(0, LIMIT_PER_CATEGORY);
+  if (category === 'International') return items.filter((i) => i.region === 'international').slice(0, LIMIT_PER_CATEGORY);
+  return items
+    .filter((i) => i.categoryTags.includes(category))
+    .slice(0, LIMIT_PER_CATEGORY);
 }
 
 export async function getAggregatedFeed(
   category: NewsCategory = 'all',
   _locale: string = 'en'
-): Promise<NewsFeedItem[]> {
+): Promise<{ items: NewsFeedItem[]; failedFeeds: string[] }> {
   const now = Date.now();
   if (cache && now - cache.at < CACHE_TTL_MS) {
-    return filterByCategory(cache.items, category);
+    const filtered = filterAndLimit(cache.items, category);
+    return { items: filtered, failedFeeds: [] };
   }
 
-  const results = await Promise.allSettled(newsSources.map((s) => fetchOneFeed(s)));
+  const results = await Promise.allSettled(
+    newsSources.map(async (s) => {
+      const { items, ok } = await fetchOneFeed(s);
+      return { source: s.name, items, ok };
+    })
+  );
+
   const all: NewsFeedItem[] = [];
+  const failedFeeds: string[] = [];
   for (const r of results) {
-    if (r.status === 'fulfilled') all.push(...r.value);
+    if (r.status === 'rejected') continue;
+    const { source, items, ok } = r.value;
+    if (!ok) failedFeeds.push(source);
+    all.push(...items);
   }
-  const deduped = dedupe(all);
+
+  const deduped = dedupeByUrlAndTitle(all);
   sortNewestFirst(deduped);
   cache = { items: deduped, at: now };
 
-  return filterByCategory(deduped, category);
+  const filtered = filterAndLimit(deduped, category);
+  return { items: filtered, failedFeeds };
 }

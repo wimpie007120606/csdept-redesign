@@ -178,15 +178,15 @@ See `docs/architecture.md` for API details and schema.
 - [ ] News page loads and shows hero (maroon theme).
 - [ ] Category tabs work: All News, AI, Cybersecurity, Software, Research, Local, International.
 - [ ] Cards show: category pill, date, source, title, excerpt, “Read More” (opens in new tab).
-- [ ] Loading state shows while fetching; empty/error state shows if no data or API down.
-- [ ] API: `GET /api/news/feed?category=all&locale=en` returns `{ data: [...] }`; cache ~15 min.
+- [ ] Loading state and Retry button on error or empty.
+- [ ] API (server-side only): `GET /api/news/feed?category=all` or `GET /api/news?category=all` returns `{ data: [...] }`; cache 12h; All up to 40 items, per-category up to 10. Visit in browser to confirm JSON returns items.
 
 **Reader view (`/en/news/read?url=...&title=...&summary=...`)**
 - [ ] Page shows title, summary, and “Read on Source” link; no full-article scraping.
 
 **Resources and Links**
-- [ ] Top nav: no standalone “Links”; “Resources” dropdown has: Resources, Links, FAQs, Forms.
-- [ ] `/en/resources` is the Resources landing (hero label “Resources” or “Resources & Support”).
+- [ ] Top nav: “Resources” dropdown has only **Links** and **FAQs** (no Student Resources, no Forms).
+- [ ] `/en/resources` shows minimal page: two cards (Links, FAQs) + FAQ section; no full landing content.
 - [ ] `/en/resources/links` shows the Links page content.
 - [ ] `/en/links` redirects to `/en/resources/links`.
-- [ ] Internal links to “Links” (e.g. Institute page “Back to Links”) go to `/resources/links`.
+- [ ] Footer Resources column: only Links and FAQs (no Student Resources).

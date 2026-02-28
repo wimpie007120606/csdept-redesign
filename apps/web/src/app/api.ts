@@ -77,18 +77,24 @@ export interface NewsFeedItem {
   image: string | null;
   category: string;
   region: string;
+  categoryTags?: string[];
 }
 
-export async function getNewsFeed(category: string = 'all', locale: string = 'en'): Promise<NewsFeedItem[]> {
+export interface NewsFeedResult {
+  items: NewsFeedItem[];
+  ok: boolean;
+}
+
+export async function getNewsFeed(category: string = 'all', locale: string = 'en'): Promise<NewsFeedResult> {
   const url = apiUrl(`/api/news/feed?category=${encodeURIComponent(category)}&locale=${encodeURIComponent(locale)}`);
-  if (!url) return [];
+  if (!url) return { items: [], ok: false };
   try {
     const res = await fetch(url, { credentials: 'include' });
-    if (!res.ok) return [];
+    if (!res.ok) return { items: [], ok: false };
     const data = (await res.json()) as { data?: NewsFeedItem[] };
-    return data?.data ?? [];
+    return { items: data?.data ?? [], ok: true };
   } catch {
-    return [];
+    return { items: [], ok: false };
   }
 }
 
