@@ -112,7 +112,7 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 flex items-center justify-center p-4 bg-black/50"
+      className="fixed inset-0 flex items-center justify-center p-4 bg-black/50 min-h-screen"
       style={{ zIndex: 9999 }}
       role="dialog"
       aria-modal="true"
@@ -134,7 +134,7 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
             ref={closeRef}
             type="button"
             onClick={handleClose}
-            className="absolute top-4 right-4 p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-[var(--su-gold)] focus:ring-offset-2 focus:ring-offset-[var(--su-maroon)]"
+            className="absolute top-4 right-4 z-10 p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/15 focus:outline-none focus:ring-2 focus:ring-[var(--su-gold)] focus:ring-offset-2 focus:ring-offset-[var(--su-maroon)] focus:visible"
             aria-label="Close"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,20 +155,20 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
 
           {status === 'success' ? (
             <div
-              className="rounded-xl border-2 border-[color:var(--su-maroon)]/40 bg-white/95 maroon:bg-[color:var(--ivory)]/95 p-5 sm:p-6 text-left"
+              className="subscription-confirmation-card rounded-xl border-2 border-[color:var(--su-maroon)]/40 bg-white p-5 sm:p-6 text-left"
               style={{ fontFamily: "inherit" }}
             >
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-[var(--su-gold)]/20 flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5 text-[var(--su-gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="subscription-confirmation-icon-wrap w-10 h-10 rounded-full bg-[var(--su-gold)]/20 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-[var(--su-gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-[color:var(--su-maroon)] maroon:text-[color:var(--su-maroon)]">
+                <h3 className="subscription-confirmation-heading text-lg font-bold text-[color:var(--su-maroon)]">
                   Thank you for subscribing!
                 </h3>
               </div>
-              <div className="space-y-3 text-sm text-[#2C2A29] maroon:text-[color:var(--foreground)] leading-relaxed">
+              <div className="subscription-confirmation-body space-y-3 text-sm text-[#2C2A29] leading-relaxed">
                 <p>
                   We&apos;ve sent a welcome email to your inbox.
                 </p>
@@ -203,7 +203,7 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
                   aria-describedby={status === 'error' ? 'newsletter-error' : undefined}
                 />
                 {status === 'error' && (
-                  <p id="newsletter-error" className="mt-2 text-sm text-red-300" role="alert">
+                  <p id="newsletter-error" className="newsletter-error mt-2 text-sm text-red-300" role="alert">
                     {errorMessage}
                   </p>
                 )}

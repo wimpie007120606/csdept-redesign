@@ -112,6 +112,26 @@
   --sidebar-ring: var(--su-gold);
 }
 
+/* Newsletter subscription confirmation card: high-contrast SU surface in maroon theme (WCAG AA) */
+.maroon .subscription-confirmation-card {
+  background: var(--ivory);
+  color: var(--su-black);
+  border-color: rgba(97, 34, 59, 0.3);
+}
+.maroon .subscription-confirmation-card .subscription-confirmation-heading {
+  color: var(--su-maroon);
+}
+.maroon .subscription-confirmation-card .subscription-confirmation-body {
+  color: var(--su-black);
+}
+.maroon .subscription-confirmation-card .subscription-confirmation-icon-wrap {
+  background: rgba(202, 162, 88, 0.28);
+  color: var(--su-gold);
+}
+.maroon .newsletter-error {
+  color: var(--ivory);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
