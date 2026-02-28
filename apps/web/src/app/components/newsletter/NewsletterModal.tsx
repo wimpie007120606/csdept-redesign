@@ -155,13 +155,31 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
           </p>
 
           {status === 'success' ? (
-            <div className="flex flex-col items-center gap-4 py-4">
-              <div className="w-12 h-12 rounded-full bg-[var(--su-gold)]/20 flex items-center justify-center">
-                <svg className="w-6 h-6 text-[var(--su-gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
+            <div
+              className="rounded-xl border-2 border-[color:var(--su-maroon)]/40 bg-white/95 dark:bg-[#FAF8F3]/95 p-5 sm:p-6 text-left"
+              style={{ fontFamily: "inherit" }}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-[var(--su-gold)]/20 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-[var(--su-gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-[color:var(--su-maroon)] dark:text-[color:var(--su-maroon)]">
+                  Thank you for subscribing!
+                </h3>
               </div>
-              <p className="text-white font-medium text-center">You&apos;re subscribed. Thank you!</p>
+              <div className="space-y-3 text-sm text-[#2C2A29] dark:text-[#0B1C2D] leading-relaxed">
+                <p>
+                  We&apos;ve sent a welcome email to your inbox.
+                </p>
+                <p>
+                  If you don&apos;t see it within 1–2 minutes, please check your Promotions tab (especially if you&apos;re using Gmail).
+                </p>
+                <p>
+                  You can move it to your Primary inbox to make sure future updates arrive there.
+                </p>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
