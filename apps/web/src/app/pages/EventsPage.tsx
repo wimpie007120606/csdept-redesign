@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Calendar, MapPin, Clock, Users, ArrowRight, ChevronDown } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -8,12 +8,46 @@ import {
   buildGoogleCalendarUrl,
   buildOutlookCalendarUrl,
 } from '../utils/calendar';
+import {
+  NewsletterModal,
+  getShouldShowModal,
+  markPromptShown,
+} from '../components/newsletter/NewsletterModal';
 
 const campusBackground = '/realbackground3.jpeg';
 
 export function EventsPage() {
   const { t } = useTranslation();
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
+  const [newsletterModalOpen, setNewsletterModalOpen] = useState(false);
+  const autoPromptDone = useRef(false);
+
+  useEffect(() => {
+    if (!getShouldShowModal() || autoPromptDone.current) return;
+
+    const trigger = () => {
+      if (autoPromptDone.current) return;
+      autoPromptDone.current = true;
+      markPromptShown();
+      setNewsletterModalOpen(true);
+    };
+
+    const timer = setTimeout(trigger, 10_000);
+
+    const handleScroll = () => {
+      if (autoPromptDone.current) return;
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight <= 0) return;
+      const pct = (window.scrollY / scrollHeight) * 100;
+      if (pct >= 40) trigger();
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const upcomingEvents = [
     {
@@ -355,49 +389,22 @@ export function EventsPage() {
             <p className="text-xl text-white/90 max-w-2xl mx-auto mb-8">
               Subscribe to email updates to stay informed about upcoming events and seminars.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-xl mx-auto">
-              <input
-                type="email"
-                inputMode="email"
-                className="w-full sm:flex-1 rounded-xl px-4 py-3 text-sm text-[#0B1C2D] shadow-lg focus:outline-none focus:ring-2 focus:ring-[color:var(--su-gold)]"
-                placeholder="Your email address"
-                aria-label="Email address for event updates"
-              />
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 px-8 py-3 bg-white text-[color:var(--su-maroon)] rounded-xl font-semibold hover:bg-[color:var(--su-gold)] hover:text-white transition-all duration-300 shadow-2xl"
-                onClick={async () => {
-                  const input = document.querySelector<HTMLInputElement>(
-                    'input[aria-label=\"Email address for event updates\"]',
-                  );
-                  if (!input) return;
-                  const email = input.value.trim();
-                  if (!email) return;
-                  try {
-                    const res = await fetch('/api/subscribe', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ email }),
-                    });
-                    const data = await res.json();
-                    if (data?.ok) {
-                      alert(data.message ?? 'Subscribed successfully.');
-                      input.value = '';
-                    } else {
-                      alert(data?.error ?? 'Could not subscribe. Please try again.');
-                    }
-                  } catch {
-                    alert('Could not subscribe. Please try again.');
-                  }
-                }}
-              >
-                Subscribe
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setNewsletterModalOpen(true)}
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[color:var(--su-maroon)] rounded-xl font-semibold hover:bg-[color:var(--su-gold)] hover:text-white transition-all duration-300 shadow-2xl"
+            >
+              Subscribe to Updates
+              <ArrowRight className="w-5 h-5" />
+            </button>
           </motion.div>
         </div>
       </section>
+
+      <NewsletterModal
+        isOpen={newsletterModalOpen}
+        onClose={() => setNewsletterModalOpen(false)}
+      />
     </div>
   );
 }
