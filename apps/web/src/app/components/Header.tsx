@@ -65,23 +65,23 @@ export function Header() {
               className="w-14 h-14 object-contain transition-transform group-hover:scale-105"
             />
             <div className="hidden md:flex flex-col leading-tight">
-              <span className="text-xs font-semibold tracking-[0.18em] uppercase text-white dark:text-black">
+              <span className="text-xs font-semibold tracking-[0.18em] uppercase text-white">
                 {t('nav.stellenboschUniversity')}
               </span>
-              <span className="text-xl lg:text-2xl font-bold text-white dark:text-black">
+              <span className="text-xl lg:text-2xl font-bold text-white">
                 {t('nav.computerScience')}
               </span>
             </div>
           </LocalizedLink>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1 text-white dark:text-black">
+          <nav className="hidden lg:flex items-center space-x-1 text-white">
             {navStructure.map((item) =>
               'href' in item && item.href ? (
                 <LocalizedLink
                   key={item.key}
                   to={item.href}
-                  className="px-4 py-2 rounded-lg text-sm font-medium text-white dark:text-black hover:bg-white/10 dark:hover:bg-white/10 transition-colors"
+                  className="px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-colors"
                 >
                   {t(`nav.${item.key}`)}
                 </LocalizedLink>
@@ -92,7 +92,7 @@ export function Header() {
                   onMouseEnter={() => setActiveDropdown(item.key)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
-                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-white dark:text-black hover:bg-white/10 dark:hover:bg-white/10 transition-colors flex items-center gap-1">
+                  <button className="px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-colors flex items-center gap-1">
                     {t(`nav.${item.key}`)}
                     <ChevronDown className="w-4 h-4" />
                   </button>
@@ -123,9 +123,9 @@ export function Header() {
           </nav>
 
           {/* Right Side Actions: Language + Theme + Mobile menu */}
-          <div className="flex items-center gap-2 text-white dark:text-black">
+          <div className="flex items-center gap-2 text-white">
             <div
-              className="flex rounded-lg overflow-hidden border border-border"
+              className="flex rounded-lg overflow-hidden border border-white/30"
               role="group"
               aria-label={t('common.language')}
             >
@@ -134,7 +134,7 @@ export function Header() {
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'en'
                     ? 'bg-white text-[color:var(--su-maroon)]'
-                    : 'bg-transparent text-white dark:text-black hover:bg-white/10 dark:hover:bg-white/10'
+                    : 'bg-transparent text-white hover:bg-white/10'
                 }`}
                 aria-label={t('nav.english')}
                 aria-pressed={language === 'en'}
@@ -146,7 +146,7 @@ export function Header() {
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'af'
                     ? 'bg-white text-[color:var(--su-maroon)]'
-                    : 'bg-transparent text-white dark:text-black hover:bg-white/10 dark:hover:bg-white/10'
+                    : 'bg-transparent text-white hover:bg-white/10'
                 }`}
                 aria-label={t('nav.afrikaans')}
                 aria-pressed={language === 'af'}
@@ -158,7 +158,7 @@ export function Header() {
                 className={`px-3 py-1.5 text-sm font-medium transition-colors ${
                   language === 'xh'
                     ? 'bg-white text-[color:var(--su-maroon)]'
-                    : 'bg-transparent text-white dark:text-black hover:bg-white/10 dark:hover:bg-white/10'
+                    : 'bg-transparent text-white hover:bg-white/10'
                 }`}
                 aria-label={t('nav.isiXhosa')}
                 aria-pressed={language === 'xh'}
@@ -168,14 +168,14 @@ export function Header() {
             </div>
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-lg hover:bg-white/10 dark:hover:bg-white/10 transition-colors"
+              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
               aria-label={t('common.toggleTheme')}
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg hover:bg-white/10 dark:hover:bg-white/10 transition-colors"
+              className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
               aria-label={t('common.toggleMenu')}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
