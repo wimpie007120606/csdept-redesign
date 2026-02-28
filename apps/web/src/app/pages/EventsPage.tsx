@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Calendar, MapPin, Clock, Users, ArrowRight, ChevronDown } from 'lucide-react';
+import { toast } from 'sonner';
 import { useTranslation } from '@/i18n/useTranslation';
 import {
   type CalendarEvent,
@@ -9,6 +10,10 @@ import {
   buildOutlookCalendarUrl,
 } from '../utils/calendar';
 import { useNewsletterModal } from '../components/newsletter/NewsletterModal';
+import {
+  EventRegistrationModal,
+  type EventForRegistration,
+} from '../components/events/EventRegistrationModal';
 
 const campusBackground = '/realbackground3.jpeg';
 
@@ -16,6 +21,9 @@ export function EventsPage() {
   const { t } = useTranslation();
   const { openModal } = useNewsletterModal();
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
+  const [registrationEvent, setRegistrationEvent] = useState<EventForRegistration | null>(null);
+  const [fullEventIds, setFullEventIds] = useState<Set<string>>(new Set());
+  const [registrationCounts, setRegistrationCounts] = useState<Record<string, number>>({});
 
   const upcomingEvents = [
     {
@@ -225,38 +233,48 @@ export function EventsPage() {
                     </h3>
                     <p className="text-muted-foreground mb-4">{event.description}</p>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Clock className="w-4 h-4 text-primary" />
-                        <span className="text-muted-foreground">{event.time}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <MapPin className="w-4 h-4 text-primary" />
-                        <span className="text-muted-foreground">{event.location}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Users className="w-4 h-4 text-primary" />
-                        <span className="text-muted-foreground">
-                          {event.registered}/{event.capacity} registered
-                        </span>
-                      </div>
-                    </div>
+                    {(() => {
+                      const displayedRegistered = registrationCounts[event.id] ?? event.registered;
+                      const isFull = fullEventIds.has(event.id) || (event.capacity != null && displayedRegistered >= event.capacity);
+                      return (
+                        <>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                            <div className="flex items-center gap-2 text-sm">
+                              <Clock className="w-4 h-4 text-primary" />
+                              <span className="text-muted-foreground">{event.time}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <MapPin className="w-4 h-4 text-primary" />
+                              <span className="text-muted-foreground">{event.location}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm">
+                              <Users className="w-4 h-4 text-primary" />
+                              <span className="text-muted-foreground">
+                                {displayedRegistered}/{event.capacity} registered
+                              </span>
+                            </div>
+                          </div>
 
-                    {/* Progress Bar */}
-                    <div className="mb-4">
-                      <div className="h-2 bg-muted rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-500"
-                          style={{ width: `${(event.registered / event.capacity) * 100}%` }}
-                        />
-                      </div>
-                    </div>
+                          {/* Progress Bar */}
+                          <div className="mb-4">
+                            <div className="h-2 bg-muted rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-500"
+                                style={{ width: `${event.capacity ? (displayedRegistered / event.capacity) * 100 : 0}%` }}
+                              />
+                            </div>
+                          </div>
 
-                    <div className="flex flex-col sm:flex-row flex-wrap gap-3">
-                      <button className="px-6 py-2 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all">
-                        Register Now
-                      </button>
-                      <div className="relative">
+                          <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setRegistrationEvent(event)}
+                              disabled={isFull}
+                              className="px-6 py-2 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                              Register Now
+                            </button>
+                            <div className="relative">
                         <button
                           type="button"
                           className="px-6 py-2 bg-secondary/10 text-secondary rounded-xl font-semibold hover:bg-secondary/20 transition-all inline-flex items-center gap-2"
@@ -333,8 +351,11 @@ export function EventsPage() {
                             </a>
                           </div>
                         )}
-                      </div>
-                    </div>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
               </motion.div>
@@ -342,6 +363,24 @@ export function EventsPage() {
           </div>
         </div>
       </section>
+
+      <EventRegistrationModal
+        isOpen={!!registrationEvent}
+        onClose={() => setRegistrationEvent(null)}
+        event={registrationEvent}
+        onSuccess={(newCount) => {
+          if (registrationEvent) {
+            setRegistrationCounts((prev) => ({ ...prev, [registrationEvent.id]: newCount }));
+            toast.success("You're registered! Confirmation email sent.");
+          }
+        }}
+        onEventFull={() => {
+          if (registrationEvent) {
+            setFullEventIds((prev) => new Set(prev).add(registrationEvent.id));
+            toast.error('This event is full.');
+          }
+        }}
+      />
 
       {/* CTA */}
       <section className="py-20 bg-gradient-to-br from-[color:var(--su-maroon)] to-[#0B1C2D] text-white">

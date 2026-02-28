@@ -53,7 +53,7 @@ Do not commit `.dev.vars`.
 npm run db:migrate
 ```
 
-This applies `db/migrations/` to the **remote** D1 database (`csdept_db`).
+This applies `db/migrations/` to the **remote** D1 database (`csdept_db`), including the `event_registrations` table used for event sign-ups.
 
 ### 4. Seed database
 

@@ -154,3 +154,43 @@ export function assetUrl(key: string | null): string | null {
   if (!key || !API_BASE) return null;
   return `${API_BASE}/api/assets/${encodeURIComponent(key)}`;
 }
+
+export interface EventRegistrationPayload {
+  eventId: string;
+  email: string;
+  title?: string;
+  date?: string;
+  time?: string;
+  location?: string;
+  capacity?: number;
+}
+
+export interface EventRegistrationResponse {
+  ok: boolean;
+  alreadyRegistered?: boolean;
+  emailSent?: boolean;
+  count?: number;
+  error?: string;
+}
+
+export async function registerForEvent(
+  payload: EventRegistrationPayload
+): Promise<EventRegistrationResponse | null> {
+  const url = apiUrl('/api/events/register');
+  if (!url) return null;
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload),
+    });
+    const data = (await res.json()) as EventRegistrationResponse & { error?: string };
+    if (!res.ok) {
+      return { ok: false, error: data?.error ?? 'Registration failed' };
+    }
+    return data as EventRegistrationResponse;
+  } catch {
+    return { ok: false, error: 'Network error. Please try again.' };
+  }
+}
