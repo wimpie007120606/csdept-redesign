@@ -131,7 +131,7 @@ export function NewsPage() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
           {healthOk === false && (
-            <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-200 text-sm">
+            <div className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 maroon:text-amber-200 text-sm">
               Debug: API unreachable. Check that <code className="bg-black/10 px-1 rounded">/api/health/news</code> is deployed (e.g. Cloudflare Pages Functions).
             </div>
           )}

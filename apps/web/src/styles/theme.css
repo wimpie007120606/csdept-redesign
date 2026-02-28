@@ -1,4 +1,5 @@
-@custom-variant dark (&:is(.dark *));
+/* Maroon theme = SU branding (replaces former dark theme). Use class .maroon on html. */
+@custom-variant maroon (&:is(.maroon *));
 
 :root {
   --font-size: 16px;
@@ -72,42 +73,43 @@
   --text-7xl: 4.5rem;
 }
 
-.dark {
-  --background: #000000;
-  --foreground: #FAF8F3;
-  --card: #1a1a1a;
-  --card-foreground: #FAF8F3;
-  --popover: #1a1a1a;
-  --popover-foreground: #FAF8F3;
-  --primary: #A33456;
-  --primary-foreground: #FAF8F3;
-  --secondary: #E0C87A;
-  --secondary-foreground: #000000;
-  --muted: #1a1a1a;
-  --muted-foreground: #C4C4D1;
-  --accent: #7B1E3A;
-  --accent-foreground: #FAF8F3;
+/* Maroon theme: full SU maroon, no black/grey. All values from SU tokens. */
+.maroon {
+  --background: var(--su-maroon);
+  --foreground: var(--ivory);
+  --card: var(--maroon-light);
+  --card-foreground: var(--ivory);
+  --popover: var(--maroon-light);
+  --popover-foreground: var(--ivory);
+  --primary: var(--su-gold);
+  --primary-foreground: var(--su-black);
+  --secondary: var(--gold-light);
+  --secondary-foreground: var(--su-black);
+  --muted: var(--maroon-dark);
+  --muted-foreground: var(--ivory-dark);
+  --accent: var(--su-gold);
+  --accent-foreground: var(--su-black);
   --destructive: #d4183d;
-  --destructive-foreground: #FAF8F3;
-  --border: rgba(250, 248, 243, 0.1);
-  --input: rgba(250, 248, 243, 0.05);
-  --input-background: rgba(250, 248, 243, 0.05);
-  --ring: #A33456;
+  --destructive-foreground: var(--ivory);
+  --border: rgba(250, 248, 243, 0.15);
+  --input: rgba(250, 248, 243, 0.08);
+  --input-background: rgba(250, 248, 243, 0.08);
+  --ring: var(--su-gold);
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --chart-1: #A33456;
-  --chart-2: #E0C87A;
-  --chart-3: #FAF8F3;
-  --chart-4: #C8A951;
-  --chart-5: #7B1E3A;
-  --sidebar: #000000;
-  --sidebar-foreground: #FAF8F3;
-  --sidebar-primary: #A33456;
-  --sidebar-primary-foreground: #FAF8F3;
-  --sidebar-accent: #1a1a1a;
-  --sidebar-accent-foreground: #FAF8F3;
-  --sidebar-border: rgba(250, 248, 243, 0.1);
-  --sidebar-ring: #A33456;
+  --chart-1: var(--su-gold);
+  --chart-2: var(--gold-light);
+  --chart-3: var(--ivory);
+  --chart-4: var(--maroon-light);
+  --chart-5: var(--su-maroon);
+  --sidebar: var(--maroon-dark);
+  --sidebar-foreground: var(--ivory);
+  --sidebar-primary: var(--su-gold);
+  --sidebar-primary-foreground: var(--su-black);
+  --sidebar-accent: var(--su-maroon);
+  --sidebar-accent-foreground: var(--ivory);
+  --sidebar-border: rgba(250, 248, 243, 0.15);
+  --sidebar-ring: var(--su-gold);
 }
 
 @theme inline {

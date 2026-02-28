@@ -155,7 +155,7 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
 
           {status === 'success' ? (
             <div
-              className="rounded-xl border-2 border-[color:var(--su-maroon)]/40 bg-white/95 dark:bg-[#FAF8F3]/95 p-5 sm:p-6 text-left"
+              className="rounded-xl border-2 border-[color:var(--su-maroon)]/40 bg-white/95 maroon:bg-[color:var(--ivory)]/95 p-5 sm:p-6 text-left"
               style={{ fontFamily: "inherit" }}
             >
               <div className="flex items-center gap-3 mb-4">
@@ -164,11 +164,11 @@ export function NewsletterModal({ isOpen, onClose }: NewsletterModalProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-bold text-[color:var(--su-maroon)] dark:text-[color:var(--su-maroon)]">
+                <h3 className="text-lg font-bold text-[color:var(--su-maroon)] maroon:text-[color:var(--su-maroon)]">
                   Thank you for subscribing!
                 </h3>
               </div>
-              <div className="space-y-3 text-sm text-[#2C2A29] dark:text-[#0B1C2D] leading-relaxed">
+              <div className="space-y-3 text-sm text-[#2C2A29] maroon:text-[color:var(--foreground)] leading-relaxed">
                 <p>
                   We&apos;ve sent a welcome email to your inbox.
                 </p>

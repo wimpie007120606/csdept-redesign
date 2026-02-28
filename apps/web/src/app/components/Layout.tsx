@@ -39,7 +39,7 @@ export function Layout() {
         <ScrollToTop />
         {/* Background Image */}
         <div
-          className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.03] dark:opacity-[0.02]"
+          className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-[0.03] maroon:opacity-[0.06]"
           style={{ backgroundImage: `url(${campusBackground})` }}
         />
 

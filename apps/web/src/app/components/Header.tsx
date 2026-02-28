@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { LocalizedLink } from './LocalizedLink';
 import { pathWithoutLang } from '../utils/langPath';
-import { Menu, X, Moon, Sun, ChevronDown } from 'lucide-react';
+import { Menu, X, Sun, Palette, ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -102,13 +102,13 @@ export function Header() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 w-56 bg-white text-[#0B1C2D] dark:bg-white dark:text-black rounded-xl shadow-2xl border border-[#0B1C2D]/10 overflow-hidden"
+                        className="absolute top-full left-0 mt-2 w-56 bg-white text-[#0B1C2D] maroon:bg-white maroon:text-[#0B1C2D] rounded-xl shadow-2xl border border-[#0B1C2D]/10 overflow-hidden"
                       >
                         {item.items.map((subItem) => (
                           <LocalizedLink
                             key={subItem.key}
                             to={subItem.href}
-                            className="block px-4 py-3 text-sm hover:bg-[#F3F0E8] dark:hover:bg-[#F3F0E8] transition-colors"
+                            className="block px-4 py-3 text-sm hover:bg-[#F3F0E8] maroon:hover:bg-[#F3F0E8] transition-colors"
                           >
                             {t(`nav.${subItem.key}`)}
                           </LocalizedLink>
@@ -166,11 +166,11 @@ export function Header() {
               </button>
             </div>
             <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              onClick={() => setTheme(theme === 'maroon' ? 'light' : 'maroon')}
               className="p-2 rounded-lg hover:bg-white/10 transition-colors"
               aria-label={t('common.toggleTheme')}
             >
-              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {theme === 'maroon' ? <Sun className="w-5 h-5" /> : <Palette className="w-5 h-5" />}
             </button>
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -191,7 +191,7 @@ export function Header() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden bg-white dark:bg-white border-t border-[#0B1C2D]/10"
+            className="lg:hidden bg-white maroon:bg-white border-t border-[#0B1C2D]/10"
           >
             <nav className="container mx-auto px-4 py-4 space-y-1">
               {navStructure.map((item) =>
@@ -199,13 +199,13 @@ export function Header() {
                   <LocalizedLink
                     key={item.key}
                     to={item.href}
-                    className="block px-4 py-3 rounded-lg text-sm font-medium text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
+                    className="block px-4 py-3 rounded-lg text-sm font-medium text-[#0B1C2D] maroon:text-[#FAF8F3] hover:bg-[#F3F0E8] maroon:hover:bg-white/10 transition-colors"
                   >
                     {t(`nav.${item.key}`)}
                   </LocalizedLink>
                 ) : (
                   <div key={item.key} className="space-y-1">
-                    <div className="px-4 py-3 text-sm font-bold text-[color:var(--su-maroon)] dark:text-[color:var(--su-maroon)]">
+                    <div className="px-4 py-3 text-sm font-bold text-[color:var(--su-maroon)] maroon:text-[var(--su-gold)]">
                       {t(`nav.${item.key}`)}
                     </div>
                     {'items' in item &&
@@ -213,7 +213,7 @@ export function Header() {
                         <LocalizedLink
                           key={subItem.key}
                           to={subItem.href}
-                          className="block pl-8 pr-4 py-2 rounded-lg text-sm text-[#0B1C2D] dark:text-[#FAF8F3] hover:bg-[#F3F0E8] dark:hover:bg-[#1A2F43] transition-colors"
+                          className="block pl-8 pr-4 py-2 rounded-lg text-sm text-[#0B1C2D] maroon:text-[#FAF8F3] hover:bg-[#F3F0E8] maroon:hover:bg-white/10 transition-colors"
                         >
                           {t(`nav.${subItem.key}`)}
                         </LocalizedLink>

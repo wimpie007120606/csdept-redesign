@@ -53,7 +53,7 @@ export function InstituteAppliedCSPage() {
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="prose prose-lg dark:prose-invert max-w-none space-y-12"
+            className="prose prose-lg maroon:prose-invert max-w-none space-y-12"
           >
             <p className="text-muted-foreground leading-relaxed text-lg">
               {t('institute.intro')}

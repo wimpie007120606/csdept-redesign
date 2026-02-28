@@ -181,7 +181,7 @@ function GeneralComputerScience() {
             </div>
           ))}
         </div>
-        <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/20 border-l-4 border-amber-600 flex gap-3">
+        <div className="mt-4 p-4 bg-amber-50 maroon:bg-amber-950/20 border-l-4 border-amber-600 flex gap-3">
           <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-foreground/80">
             <p className="font-semibold mb-1">Note:</p>
@@ -302,7 +302,7 @@ function GeneralComputerScience() {
             <li>• Geographical Information Technology 311 (16), 312 (16), 341 (16), 342 (16)</li>
             <li>• Mathematical Statistics 312 (16), 316 (16), 344 (16), 364 (16)</li>
           </ul>
-          <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/20 border-l-4 border-amber-600 text-sm">
+          <div className="mt-3 p-3 bg-amber-50 maroon:bg-amber-950/20 border-l-4 border-amber-600 text-sm">
             <p className="text-foreground/80">
               <AlertTriangle className="w-4 h-4 inline mr-1" />
               These Mathematical Statistics modules may not be taken with Statistics 318 or 348.
@@ -315,7 +315,7 @@ function GeneralComputerScience() {
             <li>• Physics 314 (16), 334 (16), 344 (16), 384 (16)</li>
             <li>• Statistics 318 (24), 348 (24)</li>
           </ul>
-          <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950/20 border-l-4 border-blue-600 text-sm">
+          <div className="mt-3 p-3 bg-blue-50 maroon:bg-blue-950/20 border-l-4 border-blue-600 text-sm">
             <p className="text-foreground/80">
               * Mathematics 378 (32) will be replaced with Mathematics 318 (16) in 2027.
             </p>
@@ -334,7 +334,7 @@ function ComputerSystems() {
         <h2 className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">
           7.4.2 Focal Area: Computer Systems
         </h2>
-        <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border-l-4 border-amber-600 flex gap-3">
+        <div className="p-4 bg-amber-50 maroon:bg-amber-950/20 border-l-4 border-amber-600 flex gap-3">
           <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-foreground/80">
             <p className="font-semibold mb-1">Note:</p>
@@ -443,7 +443,7 @@ function DataScience() {
         <h2 className="font-['Spectral'] text-4xl font-bold text-foreground mb-4">
           7.4.3 Focal Area: Data Science
         </h2>
-        <div className="p-4 bg-amber-50 dark:bg-amber-950/20 border-l-4 border-amber-600 flex gap-3">
+        <div className="p-4 bg-amber-50 maroon:bg-amber-950/20 border-l-4 border-amber-600 flex gap-3">
           <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-foreground/80">
             <p className="font-semibold mb-1">Note:</p>
