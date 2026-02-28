@@ -1,14 +1,10 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Calendar, MapPin, Clock, ArrowRight, ChevronDown } from 'lucide-react';
+import { Calendar, MapPin, Clock, ArrowRight } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
-import {
-  type CalendarEvent,
-  triggerIcsDownload,
-  buildGoogleCalendarUrl,
-  buildOutlookCalendarUrl,
-} from '../utils/calendar';
+import { type CalendarEvent } from '../utils/calendar';
 import { useNewsletterModal } from '../components/newsletter/NewsletterModal';
+import { AddToCalendarDropdown } from '../components/events/AddToCalendarDropdown';
 
 const campusBackground = '/realbackground3.jpeg';
 
@@ -225,84 +221,11 @@ export function EventsPage() {
                     </div>
 
                     <div className="flex flex-wrap gap-3">
-                      <div className="relative">
-                        <button
-                          type="button"
-                          className="add-to-calendar-trigger px-6 py-2 bg-secondary/10 text-secondary rounded-xl font-semibold hover:bg-secondary/20 transition-all inline-flex items-center gap-2"
-                          aria-haspopup="true"
-                          aria-expanded={openMenuIndex === index}
-                          onClick={() =>
-                            setOpenMenuIndex(openMenuIndex === index ? null : index)
-                          }
-                        >
-                          {t('events.addToCalendar')}
-                          <Calendar className="w-4 h-4 text-[color:var(--su-gold)]" />
-                          <ChevronDown className="w-4 h-4" />
-                        </button>
-                        {openMenuIndex === index && (
-                          <div
-                            className="add-to-calendar-dropdown mt-2 w-full sm:w-64 rounded-xl border border-border bg-card shadow-xl py-2"
-                            role="menu"
-                          >
-                            <button
-                              type="button"
-                              className="w-full px-4 py-2 text-left text-sm hover:bg-secondary/10 flex items-center gap-2"
-                              onClick={() => {
-                                const calEvent = buildCalendarEvent(event);
-                                if (!calEvent) return;
-                                triggerIcsDownload(calEvent);
-                                setOpenMenuIndex(null);
-                              }}
-                            >
-                              {t('events.addToCalendarApple')}
-                            </button>
-                            <a
-                              href={
-                                (() => {
-                                  const calEvent = buildCalendarEvent(event);
-                                  return calEvent ? buildGoogleCalendarUrl(calEvent) : '#';
-                                })()
-                              }
-                              onClick={(e) => {
-                                const calEvent = buildCalendarEvent(event);
-                                if (!calEvent) {
-                                  e.preventDefault();
-                                  return;
-                                }
-                                setOpenMenuIndex(null);
-                              }}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="block w-full px-4 py-2 text-left text-sm hover:bg-secondary/10"
-                              role="menuitem"
-                            >
-                              {t('events.addToCalendarGoogle')}
-                            </a>
-                            <a
-                              href={
-                                (() => {
-                                  const calEvent = buildCalendarEvent(event);
-                                  return calEvent ? buildOutlookCalendarUrl(calEvent) : '#';
-                                })()
-                              }
-                              onClick={(e) => {
-                                const calEvent = buildCalendarEvent(event);
-                                if (!calEvent) {
-                                  e.preventDefault();
-                                  return;
-                                }
-                                setOpenMenuIndex(null);
-                              }}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="block w-full px-4 py-2 text-left text-sm hover:bg-secondary/10"
-                              role="menuitem"
-                            >
-                              {t('events.addToCalendarOutlook')}
-                            </a>
-                          </div>
-                        )}
-                      </div>
+                      <AddToCalendarDropdown
+                        event={buildCalendarEvent(event)}
+                        isOpen={openMenuIndex === index}
+                        onOpenChange={(open) => setOpenMenuIndex(open ? index : null)}
+                      />
                     </div>
                   </div>
                 </div>
