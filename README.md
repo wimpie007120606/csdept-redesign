@@ -49,11 +49,13 @@ Do not commit `.dev.vars`.
 
 ### 3. Run migrations
 
+See **D1 setup + migrations** below. For a quick start (remote DB only):
+
 ```bash
 npm run db:migrate
 ```
 
-This applies `db/migrations/` to the **remote** D1 database (`csdept_db`), including the `event_registrations` table used for event sign-ups.
+This applies `db/migrations/` to the **remote** D1 database (`csdept_db`), including the `events` and `event_registrations` tables required for event registration.
 
 ### 4. Seed database
 
@@ -133,7 +135,7 @@ Set production secrets in Cloudflare dashboard (Workers & Pages → your worker 
      - Build output directory: `dist`
 
 3. **Environment variables** (Pages → Settings → Environment variables)
-   - `VITE_API_BASE_URL` = your Worker URL (e.g. `https://csdept-api.<your-subdomain>.workers.dev`)
+   - **`VITE_API_BASE_URL`** = your Worker URL. For production use: **`https://csdept-api.csdept.workers.dev`** so event registration and other API calls hit the correct backend.
 
 4. **Deploy**  
    Push to the connected branch or trigger a deploy from the dashboard.
@@ -142,9 +144,73 @@ If you use a root-directory build, ensure the build step installs and builds the
 
 ---
 
+## D1 setup + migrations + production deploy
+
+The Worker uses a D1 binding named **`csdept_db`** (see `apps/api/wrangler.toml`). The **database name** used in Wrangler commands is the same: **`csdept_db`** (`database_name` in the config). Migrations live in **`db/migrations/`** and are applied with the config so paths resolve from the repo root.
+
+### Apply migrations locally (local D1 for dev)
+
+From repo root:
+
+```bash
+npx wrangler d1 migrations apply csdept_db --local --config apps/api/wrangler.toml
+```
+
+### Apply migrations to production (remote D1)
+
+From repo root:
+
+```bash
+npx wrangler d1 migrations apply csdept_db --remote --config apps/api/wrangler.toml
+```
+
+Or from `apps/api`:
+
+```bash
+cd apps/api
+npx wrangler d1 migrations apply csdept_db --remote
+```
+
+(When run from `apps/api`, `wrangler.toml` there sets `migrations_dir = "../db/migrations"`, so migrations are still loaded from `db/migrations/`.)
+
+### Redeploy Worker after schema changes
+
+```bash
+cd apps/api
+npx wrangler deploy
+```
+
+Or from root:
+
+```bash
+npx wrangler deploy --config apps/api/wrangler.toml
+```
+
+### Checklist (fix “no such table” / event registration 500)
+
+1. **Confirm Worker has D1 binding**  
+   In Cloudflare Dashboard → Workers & Pages → your API worker → Settings → Bindings, ensure a **D1 database** binding named **`csdept_db`** is attached (database id `bef31762-64a1-4091-b35b-10a884669c86` or your production DB).
+
+2. **Run migrations on the remote DB**  
+   `npx wrangler d1 migrations apply csdept_db --remote --config apps/api/wrangler.toml`
+
+3. **Redeploy the Worker**  
+   `npx wrangler deploy --config apps/api/wrangler.toml`
+
+4. **Test API**  
+   `curl -i -X POST https://csdept-api.csdept.workers.dev/api/events/register -H "Content-Type: application/json" -d '{"eventId":"test-1","email":"you@example.com"}'`  
+   Expect 200 and `{"ok":true,...}` (or 400 if validation fails).
+
+5. **Test UI**  
+   Set Pages env `VITE_API_BASE_URL=https://csdept-api.csdept.workers.dev`, open Events, click Register and submit an email.
+
+If the schema is missing, the register endpoint returns **500** with body `{"error":"Database schema missing. Run D1 migrations."}` and logs the full D1 error server-side.
+
+---
+
 ## Wrangler bindings (already set)
 
-- **D1**: `csdept_db` → database name `csdept_db`, id `bef31762-64a1-4091-b35b-10a884669c86`
+- **D1**: binding **`csdept_db`** → database name `csdept_db`, id `bef31762-64a1-4091-b35b-10a884669c86`
 - **R2**: `csdept_assets` → bucket name `csdept-assets`
 
 ---
@@ -159,7 +225,7 @@ If you use a root-directory build, ensure the build step installs and builds the
 | `npm run build`   | Build shared, web, api                        |
 | `npm run build:web` | Build frontend only                         |
 | `npm run build:api` | Build Worker only (Wrangler bundles)        |
-| `npm run db:migrate` | Apply D1 migrations (remote)               |
+| `npm run db:migrate` | Apply D1 migrations to **remote** (`csdept_db`) |
 | `npm run db:seed`   | Seed D1 + create admin user                  |
 
 ---

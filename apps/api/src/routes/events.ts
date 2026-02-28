@@ -146,43 +146,60 @@ events.post('/register', async (c) => {
     return c.json({ error: 'Invalid email address' }, 400);
   }
 
-  if (capacity !== undefined && capacity > 0) {
-    const countRow = await c.env.csdept_db.prepare(
-      'SELECT COUNT(*) as count FROM event_registrations WHERE event_id = ?'
-    ).bind(eventId).first();
-    const currentCount = (countRow?.count as number) ?? 0;
-    if (currentCount >= capacity) {
-      return c.json({ error: 'This event is full.' }, 400);
-    }
-  }
+  const db = c.env.csdept_db;
+  let alreadyRegistered: boolean;
+  let count: number;
 
-  const existing = await c.env.csdept_db.prepare(
-    'SELECT id FROM event_registrations WHERE event_id = ? AND email = ?'
-  ).bind(eventId, email).first();
-
-  const alreadyRegistered = !!existing;
-
-  if (!alreadyRegistered) {
-    try {
-      await c.env.csdept_db.prepare(
-        'INSERT INTO event_registrations (event_id, email) VALUES (?, ?)'
-      ).bind(eventId, email).run();
-      console.info('[events/register] DB insert ok');
-    } catch (e) {
-      if (String(e).includes('UNIQUE constraint')) {
-        console.info('[events/register] DB duplicate (raced)');
-        return c.json({
-          ok: true,
-          alreadyRegistered: true,
-          emailSent: false,
-          count: await getRegistrationCount(c.env.csdept_db, eventId),
-        });
+  try {
+    if (capacity !== undefined && capacity > 0) {
+      const countRow = await db.prepare(
+        'SELECT COUNT(*) as count FROM event_registrations WHERE event_id = ?'
+      ).bind(eventId).first();
+      const currentCount = (countRow?.count as number) ?? 0;
+      if (currentCount >= capacity) {
+        return c.json({ error: 'This event is full.' }, 400);
       }
-      console.error('[events/register] DB error', e);
-      throw e;
     }
-  } else {
-    console.info('[events/register] already registered, sending confirmation');
+
+    const existing = await db.prepare(
+      'SELECT id FROM event_registrations WHERE event_id = ? AND email = ?'
+    ).bind(eventId, email).first();
+
+    alreadyRegistered = !!existing;
+
+    if (!alreadyRegistered) {
+      try {
+        await db.prepare(
+          'INSERT INTO event_registrations (event_id, email) VALUES (?, ?)'
+        ).bind(eventId, email).run();
+        console.info('[events/register] DB insert ok');
+      } catch (e) {
+        if (String(e).includes('UNIQUE constraint')) {
+          console.info('[events/register] DB duplicate (raced)');
+          count = await getRegistrationCount(db, eventId);
+          return c.json({
+            ok: true,
+            alreadyRegistered: true,
+            emailSent: false,
+            count,
+          });
+        }
+        console.error('[events/register] DB error', e);
+        throw e;
+      }
+    } else {
+      console.info('[events/register] already registered, sending confirmation');
+    }
+
+    count = await getRegistrationCount(db, eventId);
+  } catch (e) {
+    const msg = String(e ?? '').toLowerCase();
+    if (msg.includes('no such table')) {
+      console.error('[events/register] D1 schema missing', e);
+      return c.json({ error: 'Database schema missing. Run D1 migrations.' }, 500);
+    }
+    console.error('[events/register] D1 error', e);
+    throw e;
   }
 
   let emailSent = false;
@@ -217,7 +234,6 @@ events.post('/register', async (c) => {
     }
   }
 
-  const count = await getRegistrationCount(c.env.csdept_db, eventId);
   return c.json({
     ok: true,
     alreadyRegistered,
