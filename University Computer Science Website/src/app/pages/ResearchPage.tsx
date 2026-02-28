@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Link } from 'react-router';
-import { Brain, Bot, Network, Lock, Database, Globe, TrendingUp, ArrowRight, Users, FileText } from 'lucide-react';
+import { Brain, Bot, Network, Lock, Database, ArrowRight, Users, FileText } from 'lucide-react';
 import campusBackground from 'figma:asset/aa35fdae5d39aef96d1ba77e86c445c1cc5e4dc4.png';
 
 export function ResearchPage() {
@@ -53,10 +53,8 @@ export function ResearchPage() {
   ];
 
   const impactMetrics = [
-    { value: '850+', label: 'Publications (2024)', icon: FileText },
-    { value: 'R45M', label: 'Research Funding', icon: TrendingUp },
-    { value: '35+', label: 'Industry Partners', icon: Globe },
-    { value: '120+', label: 'Active Researchers', icon: Users },
+    { value: '50+', label: 'Publications', icon: FileText },
+    { value: '20+', label: 'Active Researchers', icon: Users },
   ];
 
   const recentPublications = [
@@ -141,7 +139,7 @@ export function ResearchPage() {
       {/* Impact Metrics */}
       <section className="py-16 bg-background border-b border-border">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {impactMetrics.map((metric, index) => (
               <motion.div
                 key={index}

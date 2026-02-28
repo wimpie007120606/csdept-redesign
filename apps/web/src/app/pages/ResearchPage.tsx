@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { LocalizedLink } from '../components/LocalizedLink';
 import {
   FileText,
-  TrendingUp,
-  Globe,
   Users,
   ArrowRight,
   ArrowUp,
@@ -27,10 +25,8 @@ import { peopleMeta, peopleById, peopleBySlug, type PersonMeta } from '@/content
 const campusBackground = '/realbackground3.jpeg';
 
 const impactMetricKeys = [
-  { value: '850+', labelKey: 'research.metrics.publications', icon: FileText },
-  { value: 'R45M', labelKey: 'research.metrics.funding', icon: TrendingUp },
-  { value: '35+', labelKey: 'research.metrics.partners', icon: Globe },
-  { value: '120+', labelKey: 'research.metrics.researchers', icon: Users },
+  { value: '50+', labelKey: 'research.metrics.publications', icon: FileText },
+  { value: '20+', labelKey: 'research.metrics.researchers', icon: Users },
 ];
 
 const SLUG_TO_NAME: Record<string, string> = {
@@ -271,7 +267,7 @@ export function ResearchPage() {
       {/* Impact metrics */}
       <section className="py-16 bg-muted/50 border-y border-border">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
             {impactMetricKeys.map((metric, index) => (
               <motion.div
                 key={index}
