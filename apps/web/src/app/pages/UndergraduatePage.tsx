@@ -15,31 +15,14 @@ import {
   Briefcase,
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
+import { getGeneralCSCompulsoryByYear } from '@/content/bscComputerScienceProgramme';
 
 const campusBackground = '/realbackground2.jpg';
 const classroomImage = '/first-year-science-student-asking-question-chemistry.jpg';
 
 export function UndergraduatePage() {
   const { t } = useTranslation();
-  const modules = [
-    // First Year - General CS (92 compulsory + 32-48 elective = 124-140 total)
-    { year: 1, code: 'CS 114', name: 'Computer Science 114', credits: 16, type: 'compulsory' },
-    { year: 1, code: 'CS 144', name: 'Computer Science 144', credits: 16, type: 'compulsory' },
-    { year: 1, code: 'MATH 114', name: 'Mathematics 114', credits: 16, type: 'compulsory' },
-    { year: 1, code: 'MATH 144', name: 'Mathematics 144', credits: 16, type: 'compulsory' },
-    { year: 1, code: 'STAT 114', name: 'Probability Theory and Statistics 114', credits: 16, type: 'compulsory' },
-    { year: 1, code: 'SCI 179', name: 'Science in Context 179', credits: 12, type: 'compulsory' },
-    
-    // Second Year - General CS (32 compulsory + 96 elective = 128 total)
-    { year: 2, code: 'CS 214', name: 'Computer Science 214', credits: 16, type: 'compulsory' },
-    { year: 2, code: 'CS 244', name: 'Computer Science 244', credits: 16, type: 'compulsory' },
-    
-    // Third Year - General CS (64 compulsory + 64 elective = 128 total)
-    { year: 3, code: 'CS 313', name: 'Computer Science 313', credits: 16, type: 'compulsory' },
-    { year: 3, code: 'CS 314', name: 'Computer Science 314', credits: 16, type: 'compulsory' },
-    { year: 3, code: 'CS 343', name: 'Computer Science 343', credits: 16, type: 'compulsory' },
-    { year: 3, code: 'CS 344', name: 'Computer Science 344', credits: 16, type: 'compulsory' },
-  ];
+  const modules = getGeneralCSCompulsoryByYear();
 
   const careerOutcomes = [
     { role: 'Software Engineer', companies: 'Google, Microsoft, Amazon', salary: 'R450k - R800k' },

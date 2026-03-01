@@ -1,8 +1,11 @@
 import { LocalizedLink } from './LocalizedLink';
-import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Youtube, Instagram } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const suLogo = '/newlogo.jpeg';
+
+/** Official Facebook presence; other social platforms removed (no valid links). */
+const FACEBOOK_URL = 'https://www.facebook.com/groups/csmaties/';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -28,39 +31,13 @@ export function Footer() {
             </p>
             <div className="flex gap-3">
               <a
-                href="#"
-                className="w-9 h-9 rounded-lg bg-[#0B1C2D]/5 maroon:bg-white/10 hover:bg-[#0B1C2D]/10 maroon:hover:bg-white/20 flex items-center justify-center transition-colors"
+                href={FACEBOOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-lg bg-[#0B1C2D]/5 maroon:bg-white/10 hover:bg-[#0B1C2D]/10 maroon:hover:bg-white/20 flex items-center justify-center transition-colors text-[#0B1C2D] maroon:text-[color:var(--su-gold)] hover:opacity-90 maroon:hover:text-[color:var(--gold-light)] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[color:var(--su-gold)] focus-visible:ring-offset-transparent maroon:focus-visible:ring-offset-[color:var(--su-maroon)]"
                 aria-label="Facebook"
               >
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="w-9 h-9 rounded-lg bg-[#0B1C2D]/5 maroon:bg-white/10 hover:bg-[#0B1C2D]/10 maroon:hover:bg-white/20 flex items-center justify-center transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="w-9 h-9 rounded-lg bg-[#0B1C2D]/5 maroon:bg-white/10 hover:bg-[#0B1C2D]/10 maroon:hover:bg-white/20 flex items-center justify-center transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="w-9 h-9 rounded-lg bg-[#0B1C2D]/5 maroon:bg-white/10 hover:bg-[#0B1C2D]/10 maroon:hover:bg-white/20 flex items-center justify-center transition-colors"
-                aria-label="YouTube"
-              >
-                <Youtube className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="w-9 h-9 rounded-lg bg-[#0B1C2D]/5 maroon:bg-white/10 hover:bg-[#0B1C2D]/10 maroon:hover:bg-white/20 flex items-center justify-center transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-4 h-4" />
+                <Facebook className="w-4 h-4" aria-hidden />
               </a>
             </div>
           </div>

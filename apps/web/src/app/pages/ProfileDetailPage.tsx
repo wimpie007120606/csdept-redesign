@@ -6,26 +6,17 @@ import { ArrowLeft, Mail, Phone, MapPin, GraduationCap, ExternalLink, ChevronDow
 import { getPerson, assetUrl, type PersonDetail } from '../api';
 import { PLACEHOLDER_IMAGE } from '../placeholder';
 import { AchievementsTimeline, type YearGroup } from '../components/AchievementsTimeline';
+import { Timeline, type TimelineItemProps } from '../components/Timeline';
 import { lynetteAchievementsByYear } from '@/content/lynette-achievements';
 import { getBerndFischerYearGroups } from '@/content/bernd-fischer-publications';
 import { getJacoGeldenhuysYearGroups } from '@/content/jaco-geldenhuys-publications';
 import { getCorneliaInggsYearGroups } from '@/content/cornelia-inggs-publications';
 import { getWillemVisserYearGroups } from '@/content/willem-visser-publications';
 import { getSteveKroonYearGroups, steveKroonFeaturedPublications } from '@/content/steve-kroon-publications';
+import { getPhotoForSlug } from '@/content/people';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const campusBackground = '/realbackground3.jpeg';
-const STATIC_IMAGES: Record<string, string> = {
-  'whk-bester': '/WillemPeople.jpg',
-  'lynette-van-zijl': '/LynettePeople.webp',
-  'brink-van-der-merwe': '/BrinkPeople.jpeg',
-  'walter-schulze': '/WalterPeople.jpeg',
-  'bernd-fischer': '/people/Bernd_Fischer_People.jpg',
-  'jaco-geldenhuys': '/people/Jaco_Geldenhuys_People.jpg',
-  'cornelia-inggs': '/people/Cornelia_Ings_People.jpg',
-  'willem-visser': '/people/Willem_Visser_People.jpg',
-  'steve-kroon': '/people/Steve_Kroon_People.jpg',
-};
 
 function buildYearGroupsFromPublications(
   pubs: { title: string; authors?: string; venue?: string; year: number }[]
@@ -107,7 +98,7 @@ export function ProfileDetailPage() {
       secondaryEmail: 'whkbester@gmail.com',
       phone: '+27 21 808 4232',
       phoneNote: 'administrative officer',
-      image: STATIC_IMAGES['whk-bester'],
+      image: getPhotoForSlug('whk-bester') ?? PLACEHOLDER_IMAGE,
 
       bio: [
         'Without any formal qualification or training, I worked as a software programmer/analyst for eight years in the media industry. I was involved with system programming, web strategising, and full-text data archiving and retrieval. In 2003, I turned to university studies for an undergraduate degree in Computer Science and Mathematics at Stellenbosch University, followed by an honours and a master\'s degree. I was appointed as technical officer in the Computer Science Division in 2009, and then as junior lecturer in 2014.',
@@ -171,7 +162,7 @@ export function ProfileDetailPage() {
       secondaryEmail: 'lvzijl@sun.ac.za',
       phone: '+27 21 808 4232',
       phoneNote: 'secretary',
-      image: STATIC_IMAGES['lynette-van-zijl'],
+      image: getPhotoForSlug('lynette-van-zijl') ?? PLACEHOLDER_IMAGE,
 
       bio: [
         'My research interests lie in automata and formal languages, as well as the computer science foundations underlying applications in nature conservation research and assistive technologies.',
@@ -212,7 +203,7 @@ export function ProfileDetailPage() {
       address: 'Private Bag X1, Matieland 7602, South Africa',
       campusLocation: 'c.o. Banghoek Road and Joubert Street, Stellenbosch, South Africa',
       email: 'abvdm@cs.sun.ac.za',
-      image: STATIC_IMAGES['brink-van-der-merwe'],
+      image: getPhotoForSlug('brink-van-der-merwe') ?? PLACEHOLDER_IMAGE,
 
       bio: [
         'Brink van der Merwe is a professor in the Computer Science Division at Stellenbosch University. His research focuses on automata theory, formal languages, regular expression matching, and program verification. His work spans theoretical computer science and practical verification tools, with applications in software correctness and computational systems.',
@@ -284,7 +275,7 @@ export function ProfileDetailPage() {
       address: 'Private Bag X1, Matieland 7602, South Africa',
       campusLocation: 'c.o. Banghoek Road and Joubert Street, Stellenbosch, South Africa',
       email: 'walter@walterschulze.org',
-      image: STATIC_IMAGES['walter-schulze'],
+      image: getPhotoForSlug('walter-schulze') ?? PLACEHOLDER_IMAGE,
 
       bio: [
         'Walter Schulze is a researcher in Informatics at Stellenbosch University whose work focuses on formal language theory, regular expressions, programming language design, and algorithmic music generation. His research intersects theoretical computer science and creative computation, particularly in the application of formal grammars and automata to music and language processing systems.',
@@ -343,7 +334,7 @@ export function ProfileDetailPage() {
       email: 'bfischer@cs.sun.ac.za',
       phone: '+27 21 808 4232',
       phoneNote: 'secretary',
-      image: STATIC_IMAGES['bernd-fischer'],
+      image: getPhotoForSlug('bernd-fischer') ?? PLACEHOLDER_IMAGE,
 
       bio: [
         'Bernd Fischer is a Professor and Head of the Division of Computer Science at Stellenbosch University. His research focuses on automated software engineering, program verification, and program synthesis. He has led and contributed to tools such as CSeq, ESBMC, and AutoBayes, and has published widely on bounded model checking, certification of auto-generated code, and formal methods.',
@@ -384,7 +375,7 @@ export function ProfileDetailPage() {
       email: 'geld@sun.ac.za',
       phone: '+27 21 808 4232',
       phoneNote: 'secretary',
-      image: STATIC_IMAGES['jaco-geldenhuys'],
+      image: getPhotoForSlug('jaco-geldenhuys') ?? PLACEHOLDER_IMAGE,
 
       bio: [
         'Jaco Geldenhuys is an Associate Professor in the Computer Science Division at Stellenbosch University. His research focuses on software engineering, in particular formal methods (model checking and process algebra), static analysis, testing, and open source software. He also has interests in automata and language theory and in data structures and algorithms.',
@@ -465,7 +456,7 @@ export function ProfileDetailPage() {
       address: 'Computer Science, Stellenbosch University, Private Bag X1, 7602 Matieland, South Africa',
       campusLocation: 'c.o. Banghoek Road and Joubert Street, Stellenbosch, South Africa',
       email: 'cinggs@sun.ac.za',
-      image: STATIC_IMAGES['cornelia-inggs'],
+      image: getPhotoForSlug('cornelia-inggs') ?? PLACEHOLDER_IMAGE,
 
       bio: [
         'Dr. Cornelia Inggs holds a PhD from The University of Manchester (UK) and is a part-time Senior Lecturer in Computer Science at Stellenbosch University, where she previously studied. Her research focuses on software verification and analysis, program performance and scalability, parallel and distributed software, and efficient search and planning algorithms for AI and machine learning.',
@@ -579,7 +570,13 @@ export function ProfileDetailPage() {
       secondaryTitle: 'Academic Staff',
       department: 'Computer Science Division, Department of Mathematical Sciences',
       institution: 'Stellenbosch University',
-      image: STATIC_IMAGES['willem-visser'],
+      office: '',
+      address: 'Computer Science Division\nStellenbosch University\nPrivate Bag X1\n7602 Matieland\nSouth Africa',
+      email: 'wvisser@cs.sun.ac.za',
+      secondaryEmail: 'visserw@sun.ac.za',
+      tertiaryEmail: 'willem@gmail.com',
+      phone: '+27 21 808 4232',
+      image: getPhotoForSlug('willem-visser') ?? PLACEHOLDER_IMAGE,
 
       bio: [
         'Willem Visser is a Professor in the Division of Computer Science at Stellenbosch University. He was Head of Division (2009–2013) and Vice-Dean of Research in the Faculty of Science (2017–2019). His research focuses on finding bugs in software, through testing, program analysis, symbolic execution, probabilistic symbolic execution, and model checking. He is known for Java PathFinder (JPF) and Symbolic PathFinder (SPF). He has held positions at NASA Ames Research Center and SEVEN Networks.',
@@ -660,7 +657,7 @@ export function ProfileDetailPage() {
       office: 'A515, General Engineering Building',
       email: 'kroon@sun.ac.za',
       phone: '+27 21 808 9375',
-      image: STATIC_IMAGES['steve-kroon'],
+      image: getPhotoForSlug('steve-kroon') ?? PLACEHOLDER_IMAGE,
 
       bio: [
         'Prof. Steve Kroon obtained MCom (Computer Science) and PhD (Mathematical Statistics) degrees from Stellenbosch University and joined the Computer Science department in 2008. He holds an NRF C2 rating. His research interests include generative modelling, Bayesian methods, search and adversarial search, decision-making and planning under uncertainty, and machine learning. He serves as reviewer and programme committee member for venues including ICML, NeurIPS, JAIR, Algorithmica, and JUCS. He is affiliated with CAIR and NITheCS.',
@@ -733,7 +730,7 @@ export function ProfileDetailPage() {
         secondaryEmail: apiPerson.email_secondary ?? null,
         phone: apiPerson.phone ?? null,
         phoneNote: null,
-        image: (imageUrl || fallbackImg || STATIC_IMAGES[normalizedSlug]) ?? null,
+        image: (imageUrl || fallbackImg || getPhotoForSlug(normalizedSlug)) ?? PLACEHOLDER_IMAGE,
         bio: apiPerson.bio ? apiPerson.bio.split('\n\n').filter(Boolean) : [],
         researchInterests,
         teaching: null,
@@ -882,34 +879,73 @@ export function ProfileDetailPage() {
 
               {/* Contact Information */}
               <div className="space-y-3 bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-[#C8A951] flex-shrink-0 mt-1" />
-                  <div className="text-sm">
-                    <p className="font-semibold">{profile?.office}</p>
-                    <p className="text-white/70">{profile.address}</p>
-                    <p className="text-white/70">{profile.campusLocation}</p>
-                  </div>
-                </div>
-                {profile.phone && (
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-[#C8A951] flex-shrink-0" />
-                    <div className="text-sm">
-                      <p>{profile.phone}</p>
-                      {profile.phoneNote && (
-                        <p className="text-white/60">({profile.phoneNote})</p>
+                {(profile?.office || profile?.address || profile?.campusLocation) && (
+                  <div className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-[#C8A951] flex-shrink-0 mt-1" aria-hidden />
+                    <div className="text-sm min-w-0">
+                      {profile?.office && <p className="font-semibold">{profile.office}</p>}
+                      {profile?.address && (
+                        <p className="text-white/70 whitespace-pre-line">{profile.address}</p>
+                      )}
+                      {profile?.campusLocation && (
+                        <p className="text-white/70">{profile.campusLocation}</p>
                       )}
                     </div>
                   </div>
                 )}
-                <div className="flex items-start gap-3">
-                  <Mail className="w-5 h-5 text-[#C8A951] flex-shrink-0 mt-1" />
-                  <div className="text-sm space-y-1">
-                    <p>{profile?.email}</p>
-                    {profile.secondaryEmail && (
-                      <p className="text-white/80">{profile.secondaryEmail}</p>
-                    )}
+                {profile?.phone && (
+                  <div className="flex items-start gap-3">
+                    <Phone className="w-5 h-5 text-[#C8A951] flex-shrink-0 mt-1" aria-hidden />
+                    <div className="text-sm">
+                      <a
+                        href={`tel:${String(profile.phone).replace(/\s/g, '')}`}
+                        className="text-white hover:text-[#C8A951] transition-colors underline underline-offset-2"
+                      >
+                        {profile.phone}
+                      </a>
+                      {profile.phoneNote && (
+                        <p className="text-white/60 mt-0.5">({profile.phoneNote})</p>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
+                {(profile?.email || profile?.secondaryEmail || (profile as any).tertiaryEmail) && (
+                  <div className="flex items-start gap-3">
+                    <Mail className="w-5 h-5 text-[#C8A951] flex-shrink-0 mt-1" aria-hidden />
+                    <div className="text-sm space-y-1 min-w-0 break-all">
+                      {profile?.email && (
+                        <p>
+                          <a
+                            href={`mailto:${profile.email}`}
+                            className="text-white hover:text-[#C8A951] transition-colors underline underline-offset-2"
+                          >
+                            {profile.email}
+                          </a>
+                        </p>
+                      )}
+                      {profile?.secondaryEmail && (
+                        <p>
+                          <a
+                            href={`mailto:${profile.secondaryEmail}`}
+                            className="text-white/90 hover:text-[#C8A951] transition-colors underline underline-offset-2"
+                          >
+                            {profile.secondaryEmail}
+                          </a>
+                        </p>
+                      )}
+                      {(profile as any).tertiaryEmail && (
+                        <p>
+                          <a
+                            href={`mailto:${(profile as any).tertiaryEmail}`}
+                            className="text-white/90 hover:text-[#C8A951] transition-colors underline underline-offset-2"
+                          >
+                            {(profile as any).tertiaryEmail}
+                          </a>
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
@@ -1011,15 +1047,27 @@ export function ProfileDetailPage() {
                   <div className="w-1 h-8 bg-[#7B1E3A]"></div>
                   {t('profile.honoursAwards')}
                 </h2>
-                <ul className="space-y-3">
-                  {(profile.honoursAwards as Array<{ year?: string; title: string; detail?: string }>).map((item, index) => (
-                    <li key={index} className="bg-card rounded-lg p-4 border border-border text-foreground/90">
-                      {item.year && <span className="font-medium text-[#7B1E3A] mr-2">{item.year}:</span>}
-                      <span className="font-medium">{item.title}</span>
-                      {item.detail && <span className="text-muted-foreground block mt-1 ml-0 sm:ml-[4.5rem]">{item.detail}</span>}
-                    </li>
-                  ))}
-                </ul>
+                {profile.id === 'willem-visser' ? (
+                  <Timeline
+                    items={(profile.honoursAwards as Array<{ year?: string; title: string; detail?: string }>).map(
+                      (item): TimelineItemProps => ({
+                        year: item.year ?? '',
+                        title: item.title,
+                        description: item.detail,
+                      })
+                    )}
+                  />
+                ) : (
+                  <ul className="space-y-3">
+                    {(profile.honoursAwards as Array<{ year?: string; title: string; detail?: string }>).map((item, index) => (
+                      <li key={index} className="bg-card rounded-lg p-4 border border-border text-foreground/90">
+                        {item.year && <span className="font-medium text-[#7B1E3A] mr-2">{item.year}:</span>}
+                        <span className="font-medium">{item.title}</span>
+                        {item.detail && <span className="text-muted-foreground block mt-1 ml-0 sm:ml-[4.5rem]">{item.detail}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </motion.div>
             )}
 

@@ -9,7 +9,15 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { bridgingCourseManifest } from '@/content/bridgingCourse';
-import { ResourceCard, FilterBar, DayAccordion, type ResourceTypeFilter, type DayFilter } from '../components/bridging';
+import {
+  ResourceCard,
+  FilterBar,
+  DayAccordion,
+  CodeViewerModal,
+  type ResourceTypeFilter,
+  type DayFilter,
+} from '../components/bridging';
+import { buildBridgingZip, downloadBlob } from '../utils/bridgingZip';
 
 const heroBackground = '/realbackground2.jpg';
 
@@ -25,46 +33,116 @@ export function BridgingCoursePage() {
   const [typeFilter, setTypeFilter] = useState<ResourceTypeFilter>('all');
   const [dayFilter, setDayFilter] = useState<DayFilter>('all');
   const [copiedFilename, setCopiedFilename] = useState<string | null>(null);
+  const [viewerOpen, setViewerOpen] = useState(false);
+  const [viewerFilename, setViewerFilename] = useState('');
+  const [viewerContent, setViewerContent] = useState('');
+  const [viewerDownloadPath, setViewerDownloadPath] = useState('');
+  const [zipProgress, setZipProgress] = useState<{ current: number; total: number } | null>(null);
 
   const scrollTo = useCallback((id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
 
-  const { overviewResource, exercises, days } = bridgingCourseManifest;
+  const { overviewResource, exercises, days, zipEntries } = bridgingCourseManifest;
+
+  const openCodeViewer = useCallback(async (path: string, filename: string) => {
+    setViewerFilename(filename);
+    setViewerDownloadPath(path);
+    setViewerContent('Loading…');
+    setViewerOpen(true);
+    try {
+      const res = await fetch(path);
+      const text = await res.text();
+      setViewerContent(text);
+    } catch {
+      setViewerContent('Could not load file.');
+    }
+  }, []);
+
+  const closeViewer = useCallback(() => {
+    setViewerOpen(false);
+    setViewerFilename('');
+    setViewerContent('');
+    setViewerDownloadPath('');
+  }, []);
+
+  const handleDownloadAllZip = useCallback(async () => {
+    setZipProgress({ current: 0, total: zipEntries.length });
+    try {
+      const blob = await buildBridgingZip(zipEntries, (current, total) => {
+        setZipProgress({ current, total });
+      });
+      downloadBlob(blob, 'BridgingCourse.zip');
+    } finally {
+      setZipProgress(null);
+    }
+  }, [zipEntries]);
 
   const visibleExercises = useMemo(() => {
-    return exercises.filter((ex) => {
-      if (typeFilter === 'java') return false;
-      if (typeFilter === 'pdf' && ex.type !== 'pdf') return false;
-      return filterBySearch(searchQuery, ex.label);
-    });
+    if (typeFilter === 'java' || typeFilter === 'python' || typeFilter === 'c') return [];
+    if (typeFilter === 'pdf') return exercises.filter((ex) => ex.type === 'pdf');
+    return exercises.filter((ex) => filterBySearch(searchQuery, ex.label));
   }, [exercises, searchQuery, typeFilter]);
 
+  const filterProgramsByType = useCallback(
+    (programs: { type: string }[]) => {
+      if (typeFilter === 'all') return programs;
+      if (typeFilter === 'pdf') return []; // no code files are PDF
+      return programs.filter((p) => p.type === typeFilter);
+    },
+    [typeFilter]
+  );
+
   const visibleDay1 = useMemo(() => {
-    if (dayFilter === 'day2') return [];
+    if (dayFilter === 'day2' || dayFilter === 'day3') return [];
     const day = days.find((d) => d.dayId === 'day1');
     if (!day) return [];
-    return day.programs.filter((p) =>
+    const bySearch = day.programs.filter((p) =>
       filterBySearch(searchQuery, p.filename, p.description)
     );
-  }, [days, searchQuery, dayFilter]);
+    return filterProgramsByType(bySearch);
+  }, [days, searchQuery, dayFilter, filterProgramsByType]);
 
   const visibleDay2 = useMemo(() => {
-    if (dayFilter === 'day1') return [];
+    if (dayFilter === 'day1' || dayFilter === 'day3') return [];
     const day = days.find((d) => d.dayId === 'day2');
     if (!day) return [];
-    return day.programs.filter((p) =>
+    const bySearch = day.programs.filter((p) =>
       filterBySearch(searchQuery, p.filename, p.description)
     );
-  }, [days, searchQuery, dayFilter]);
+    return filterProgramsByType(bySearch);
+  }, [days, searchQuery, dayFilter, filterProgramsByType]);
 
-  const totalResults = visibleExercises.length + visibleDay1.length + visibleDay2.length;
+  const visibleDay3 = useMemo(() => {
+    if (dayFilter === 'day1' || dayFilter === 'day2') return [];
+    const day = days.find((d) => d.dayId === 'day3');
+    if (!day) return [];
+    const bySearch = day.programs.filter((p) =>
+      filterBySearch(searchQuery, p.filename, p.description)
+    );
+    return filterProgramsByType(bySearch);
+  }, [days, searchQuery, dayFilter, filterProgramsByType]);
+
+  const totalResults =
+    visibleExercises.length + visibleDay1.length + visibleDay2.length + visibleDay3.length;
 
   const day1Data = days.find((d) => d.dayId === 'day1');
   const day2Data = days.find((d) => d.dayId === 'day2');
+  const day3Data = days.find((d) => d.dayId === 'day3');
+
+  const isZipLoading = zipProgress !== null;
 
   return (
     <div className="pt-20">
+      <CodeViewerModal
+        open={viewerOpen}
+        onClose={closeViewer}
+        filename={viewerFilename}
+        content={viewerContent}
+        downloadPath={viewerDownloadPath}
+        downloadLabel={t('bridging.downloadResource')}
+      />
+
       {/* Hero */}
       <section
         className="relative py-32 text-white overflow-hidden min-h-[500px] flex items-center"
@@ -101,7 +179,7 @@ export function BridgingCoursePage() {
               <div className="flex flex-wrap gap-3">
                 <a
                   href={overviewResource.path}
-                  download
+                  download={overviewResource.label}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-5 py-3 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all shadow-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#0B1C2D]"
@@ -155,9 +233,22 @@ export function BridgingCoursePage() {
                 <p className="text-muted-foreground mb-4">
                   {t('bridging.overviewDesc')}
                 </p>
+                <p className="text-muted-foreground text-sm mb-4">
+                  {t('bridging.overviewHowTo')}
+                </p>
+                <div className="mb-4">
+                  <h3 className="text-sm font-semibold text-foreground mb-2">
+                    {t('bridging.learningPathTitle')}
+                  </h3>
+                  <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
+                    <li>{t('bridging.learningPath1')}</li>
+                    <li>{t('bridging.learningPath2')}</li>
+                    <li>{t('bridging.learningPath3')}</li>
+                  </ul>
+                </div>
                 <a
                   href={overviewResource.path}
-                  download
+                  download={overviewResource.label}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#7B1E3A] text-white font-medium hover:bg-[#7B1E3A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
@@ -183,6 +274,9 @@ export function BridgingCoursePage() {
                       label={ex.label}
                       path={ex.path}
                       type={ex.type}
+                      onOpenText={(path, _label) =>
+                        openCodeViewer(path, path.split('/').pop() || ex.label)
+                      }
                     />
                   ))}
                   {visibleExercises.length === 0 && (
@@ -208,6 +302,7 @@ export function BridgingCoursePage() {
                     viewLabel={t('bridging.view')}
                     copyLabel={t('bridging.copyFilename')}
                     copiedLabel={t('bridging.copied')}
+                    downloadLabel={t('bridging.downloadResource')}
                     sortAZLabel={t('bridging.sortAZ')}
                     sortZALabel={t('bridging.sortZA')}
                     expandLabel={t('bridging.dayAccordionExpand')}
@@ -215,6 +310,7 @@ export function BridgingCoursePage() {
                     visiblePrograms={visibleDay1}
                     onCopyFilename={setCopiedFilename}
                     copiedFilename={copiedFilename}
+                    onOpenCode={openCodeViewer}
                   />
                 )}
                 {day2Data && (
@@ -224,6 +320,7 @@ export function BridgingCoursePage() {
                     viewLabel={t('bridging.view')}
                     copyLabel={t('bridging.copyFilename')}
                     copiedLabel={t('bridging.copied')}
+                    downloadLabel={t('bridging.downloadResource')}
                     sortAZLabel={t('bridging.sortAZ')}
                     sortZALabel={t('bridging.sortZA')}
                     expandLabel={t('bridging.dayAccordionExpand')}
@@ -231,6 +328,25 @@ export function BridgingCoursePage() {
                     visiblePrograms={visibleDay2}
                     onCopyFilename={setCopiedFilename}
                     copiedFilename={copiedFilename}
+                    onOpenCode={openCodeViewer}
+                  />
+                )}
+                {day3Data && (
+                  <DayAccordion
+                    day={day3Data}
+                    defaultOpen={false}
+                    viewLabel={t('bridging.view')}
+                    copyLabel={t('bridging.copyFilename')}
+                    copiedLabel={t('bridging.copied')}
+                    downloadLabel={t('bridging.downloadResource')}
+                    sortAZLabel={t('bridging.sortAZ')}
+                    sortZALabel={t('bridging.sortZA')}
+                    expandLabel={t('bridging.dayAccordionExpand')}
+                    collapseLabel={t('bridging.dayAccordionCollapse')}
+                    visiblePrograms={visibleDay3}
+                    onCopyFilename={setCopiedFilename}
+                    copiedFilename={copiedFilename}
+                    onOpenCode={openCodeViewer}
                   />
                 )}
               </div>
@@ -254,8 +370,11 @@ export function BridgingCoursePage() {
                 allLabel={t('bridging.all')}
                 pdfLabel={t('bridging.pdf')}
                 javaLabel={t('bridging.java')}
+                pythonLabel={t('bridging.python')}
+                cLabel={t('bridging.c')}
                 day1Label={t('bridging.day1')}
                 day2Label={t('bridging.day2')}
+                day3Label={t('bridging.day3')}
               />
 
               <motion.div
@@ -269,21 +388,24 @@ export function BridgingCoursePage() {
                   {t('bridging.newcomerTips')}
                 </h3>
                 <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
-                  <li>{t('bridging.newcomerTip1')}</li>
-                  <li>{t('bridging.newcomerTip2')}</li>
-                  <li>{t('bridging.newcomerTip3')}</li>
+                  <li>{t('bridging.newcomerTipJava')}</li>
+                  <li>{t('bridging.newcomerTipPython')}</li>
+                  <li>{t('bridging.newcomerTipC')}</li>
                 </ul>
               </motion.div>
 
               <button
                 type="button"
-                disabled
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-border bg-muted/50 text-muted-foreground text-sm font-medium cursor-not-allowed"
-                aria-label={t('bridging.downloadAllDisabled')}
-                title={t('bridging.downloadAllDisabled')}
+                disabled={isZipLoading}
+                onClick={handleDownloadAllZip}
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 border-[#7B1E3A] bg-[#7B1E3A] text-white text-sm font-medium hover:bg-[#7B1E3A]/90 hover:border-[#7B1E3A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                aria-label={t('bridging.downloadAll')}
+                title={t('bridging.downloadAll')}
               >
                 <Package className="w-4 h-4" aria-hidden />
-                {t('bridging.downloadAllDisabled')}
+                {isZipLoading && zipProgress
+                  ? `${t('bridging.zipPreparing')} (${zipProgress.current}/${zipProgress.total} files)`
+                  : t('bridging.downloadAll')}
               </button>
             </div>
           </div>

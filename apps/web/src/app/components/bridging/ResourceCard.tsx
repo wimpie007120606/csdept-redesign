@@ -5,12 +5,27 @@ interface ResourceCardProps {
   label: string;
   path: string;
   type: 'pdf' | 'txt';
+  /** When provided, "Open" for txt files will call this instead of opening in new tab (e.g. show in modal). */
+  onOpenText?: (path: string, label: string) => void;
 }
 
-export function ResourceCard({ label, path, type }: ResourceCardProps) {
+export function ResourceCard({ label, path, type, onOpenText }: ResourceCardProps) {
   const { t } = useTranslation();
   const openLabel = t('bridging.openResource');
   const downloadLabel = t('bridging.downloadResource');
+
+  const handleOpen = () => {
+    if (type === 'pdf') {
+      window.open(path, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    if (type === 'txt' && onOpenText) {
+      onOpenText(path, label);
+      return;
+    }
+    window.open(path, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div
       className="group flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card p-4 shadow-sm transition-all hover:shadow-md hover:border-[#7B1E3A]/30 focus-within:ring-2 focus-within:ring-[#7B1E3A] focus-within:ring-offset-2"
@@ -28,29 +43,26 @@ export function ResourceCard({ label, path, type }: ResourceCardProps) {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <a
-          href={path}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          type="button"
+          onClick={handleOpen}
           className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#7B1E3A] text-white text-sm font-medium hover:bg-[#7B1E3A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
           aria-label={`${openLabel} ${label}`}
         >
           <ExternalLink className="w-4 h-4" aria-hidden />
           {openLabel}
+        </button>
+        <a
+          href={path}
+          download
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-muted/50 text-foreground text-sm font-medium hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+          aria-label={`${downloadLabel} ${label}`}
+        >
+          <Download className="w-4 h-4" aria-hidden />
+          {downloadLabel}
         </a>
-        {type === 'pdf' && (
-          <a
-            href={path}
-            download
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-muted/50 text-foreground text-sm font-medium hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
-            aria-label={`${downloadLabel} ${label}`}
-          >
-            <Download className="w-4 h-4" aria-hidden />
-            {downloadLabel}
-          </a>
-        )}
       </div>
     </div>
   );

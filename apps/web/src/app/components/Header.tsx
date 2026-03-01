@@ -13,13 +13,17 @@ const HEADER_Z_INDEX = 50;
 const DROPDOWN_WIDTH = 224; // w-56
 const DROPDOWN_GAP = 8;
 const DROPDOWN_MAX_HEIGHT = 400;
+/** Delay (ms) before closing dropdown when pointer leaves trigger/panel — makes menu forgiving. */
+const DROPDOWN_CLOSE_DELAY_MS = 280;
+/** Invisible "hover bridge" (px) so pointer can move from trigger to panel without closing. */
+const HOVER_BRIDGE_PX = 12;
 
 const suLogo = '/brand/stellenbosch/su-logo-primary.jpeg';
 
 const navStructure = [
   { key: 'study', items: [{ key: 'undergraduate', href: '/study/undergraduate' }, { key: 'postgraduate', href: '/study/postgraduate' }, { key: 'courseCatalogue', href: '/courses' }] },
   { key: 'research', items: [{ key: 'researchOverview', href: '/research' }, { key: 'researchGroups', href: '/research#groups' }, { key: 'publications', href: '/research#publications' }] },
-  { key: 'people', href: '/people' },
+  { key: 'people', items: [{ key: 'staff', href: '/people' }, { key: 'alumni', href: '/people/alumni' }] },
   { key: 'news', href: '/news' },
   { key: 'events', href: '/events' },
   { key: 'resources', items: [{ key: 'links', href: '/resources/links' }, { key: 'faqs', href: '/resources#faq' }] },
@@ -34,7 +38,20 @@ export function Header() {
   const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number } | null>(null);
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { theme, setTheme } = useTheme();
+
+  const cancelCloseTimer = () => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  };
+
+  const scheduleCloseDropdown = () => {
+    cancelCloseTimer();
+    closeTimerRef.current = setTimeout(() => setActiveDropdown(null), DROPDOWN_CLOSE_DELAY_MS);
+  };
   const location = useLocation();
   const navigate = useNavigate();
   const { t, language, setLanguage } = useTranslation();
@@ -58,6 +75,14 @@ export function Header() {
     setActiveDropdown(null);
   }, [location]);
 
+  // Clear close timer when dropdown closes or on unmount
+  useEffect(() => {
+    return () => cancelCloseTimer();
+  }, []);
+  useEffect(() => {
+    if (!activeDropdown) cancelCloseTimer();
+  }, [activeDropdown]);
+
   // Position dropdown in viewport (viewport-safe, no clipping)
   const updateDropdownPosition = () => {
     if (!activeDropdown) {
@@ -75,7 +100,8 @@ export function Header() {
     let left = rect.left;
     if (left + DROPDOWN_WIDTH > vw - DROPDOWN_GAP) left = vw - DROPDOWN_WIDTH - DROPDOWN_GAP;
     if (left < DROPDOWN_GAP) left = DROPDOWN_GAP;
-    const top = rect.bottom + DROPDOWN_GAP;
+    // Position panel with overlap (hover bridge) so pointer can move from trigger to panel without closing
+    const top = rect.bottom + DROPDOWN_GAP - HOVER_BRIDGE_PX;
     setDropdownPosition({ top, left });
   };
 
@@ -159,8 +185,11 @@ export function Header() {
                 <div
                   key={item.key}
                   className="relative"
-                  onMouseEnter={() => setActiveDropdown(item.key)}
-                  onMouseLeave={() => setActiveDropdown(null)}
+                  onPointerEnter={() => {
+                    cancelCloseTimer();
+                    setActiveDropdown(item.key);
+                  }}
+                  onPointerLeave={scheduleCloseDropdown}
                 >
                   <button
                     ref={(el) => { triggerRefs.current[item.key] = el; }}
@@ -375,9 +404,12 @@ export function Header() {
                   left: dropdownPosition.left,
                   maxHeight: maxH,
                   overflowY: 'auto',
+                  paddingTop: HOVER_BRIDGE_PX,
                 }}
                 role="menu"
                 aria-label={t(`nav.${activeDropdown}`)}
+                onPointerEnter={cancelCloseTimer}
+                onPointerLeave={scheduleCloseDropdown}
               >
                 {item.items.map((subItem) => (
                   <LocalizedLink

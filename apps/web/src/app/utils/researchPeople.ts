@@ -18,13 +18,13 @@ export function getSlugForMemberName(displayName: string): string | null {
   return person?.slug ?? null;
 }
 
-/** Known image paths from fallback (same as People page). */
+/** Known image paths under public/people (prefer resolving via content/people.ts peopleBySlug in UI). */
 const KNOWN_IMAGES: Record<string, string> = {
-  [normalizeName('W. H. K. Bester')]: '/WillemPeople.jpg',
-  [normalizeName('Lynette van Zijl')]: '/LynettePeople.webp',
-  [normalizeName('Prof. Brink van der Merwe')]: '/BrinkPeople.jpeg',
-  [normalizeName('Brink van der Merwe')]: '/BrinkPeople.jpeg',
-  [normalizeName('Walter Schulze')]: '/WalterPeople.jpeg',
+  [normalizeName('W. H. K. Bester')]: '/people/WillemPeople.jpg',
+  [normalizeName('Lynette van Zijl')]: '/people/LynettePeople.webp',
+  [normalizeName('Prof. Brink van der Merwe')]: '/people/BrinkPeople.jpeg',
+  [normalizeName('Brink van der Merwe')]: '/people/BrinkPeople.jpeg',
+  [normalizeName('Walter Schulze')]: '/people/WalterPeople.jpeg',
 };
 
 /**
@@ -43,15 +43,15 @@ export function getMemberImageBaseName(displayName: string): string {
 const EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'] as const;
 
 /**
- * Preferred image path for a member. Returns known path from People data if any,
- * otherwise /images/people/{BaseName}.jpg.
+ * Preferred image path for a member. Returns known path if any,
+ * otherwise /people/{BaseName}.jpg (files live in public/people/).
  */
 export function getMemberImagePath(displayName: string): string {
   const normalized = normalizeName(displayName);
   const known = KNOWN_IMAGES[normalized];
   if (known) return known;
   const base = getMemberImageBaseName(displayName);
-  return `/images/people/${base}.jpg`;
+  return `/people/${base}.jpg`;
 }
 
 /**
@@ -63,6 +63,6 @@ export function getMemberImagePathsToTry(displayName: string): string[] {
   const known = KNOWN_IMAGES[normalized];
   if (known) return [known];
   const base = getMemberImageBaseName(displayName);
-  const basePath = `/images/people/${base}`;
+  const basePath = `/people/${base}`;
   return EXTENSIONS.map((ext) => basePath + ext);
 }

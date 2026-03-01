@@ -27,7 +27,7 @@ const extraPeople: PersonMeta[] = [
   { id: 'andrew-collett', name: 'Andrew Collett', photo: '/people/Andrew_ColletPeople.jpg' },
   { id: 'zhunaid-mohamed', name: 'Zhunaid Mohamed', photo: '/people/Zhunaid_Mohamed_People.jpg' },
   { id: 'jan-taljaard', name: 'Jan Taljaard', photo: '/people/Jan_Taljaard_People.jpg' },
-  { id: 'phillip-van-heerden', name: 'Phillip van Heerden', photo: '/people/Phillip_van_Heerden_People.jpg' },
+  { id: 'phillip-van-heerden', name: 'Phillip van Heerden', photo: '/people/Phillip _van Heerden_People.jpg' },
   { id: 'burger-becker', name: 'Burger Becker', photo: '/people/Burger_Becker_People.jpg' },
   { id: 'marc-christoph', name: 'Marc Christoph', photo: '/people/Marc_Christoph_People.jpg' },
   { id: 'dirko-coetsee', name: 'Dirko Coetsee', photo: '/people/Dirko_Coetsee_People.jpg' },
@@ -35,7 +35,7 @@ const extraPeople: PersonMeta[] = [
   { id: 'jordan-masakuna', name: 'Jordan Masakuna', photo: '/people/Jordan_Masakuna_People.jpg' },
   { id: 'arnu-pretorius', name: 'Arnu Pretorius', photo: '/people/Arnu_Pretorius_People.jpg' },
   { id: 'charl-steyl', name: 'Charl Steyl', photo: '/people/Charl_Steyl_People.jpg' },
-  { id: 'elan-van-biljon', name: 'Elan van Biljon', photo: '/people/Elan_van_Biljon_People.jpg' },
+  { id: 'elan-van-biljon', name: 'Elan van Biljon', photo: '/people/Elan_van Biljon_People.jpg' },
   { id: 'anthony-e-krzesinski', name: 'Anthony E Krzesinski' },
 ];
 
@@ -47,6 +47,11 @@ export const peopleById: Map<string, PersonMeta> = new Map(
 
 export function getPersonMetaById(id: string): PersonMeta | undefined {
   return peopleById.get(id);
+}
+
+/** Resolve photo path for a person by slug (for profile/detail pages). */
+export function getPhotoForSlug(slug: string): string | null {
+  return peopleBySlug.get(slug)?.photo ?? null;
 }
 
 export const peopleBySlug: Map<string, PersonMeta> = new Map(

@@ -1,0 +1,21 @@
+Bridging Course – Day 2 Exercises (Control flow and functions)
+===============================================================
+
+1. Conditionals
+   - Write a program that reads a number and prints "positive", "negative", or "zero".
+   - Write a program that prints the larger of two numbers.
+
+2. Loops
+   - Print the numbers 1 to 10 using a for loop.
+   - Print the numbers 1 to 10 using a while loop.
+   - Print the first 5 even numbers (2, 4, 6, 8, 10).
+
+3. Functions
+   - Write a function that takes two numbers and returns their product. Call it and print the result.
+   - Write a function that takes a name and prints "Hello, [name]!". Call it with your name.
+   - Write a function that returns the maximum of two integers.
+
+4. Combined
+   - Write a function that takes an integer n and prints all numbers from 1 to n. Call it from main with n = 7.
+
+Suggested: Implement the same logic in Java, Python, and C.

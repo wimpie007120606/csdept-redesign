@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Code2, ExternalLink, Copy, Check, ArrowUpDown, ArrowDownUp } from 'lucide-react';
+import { Code2, Copy, Check, ArrowUpDown, ArrowDownUp, Download } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -14,6 +14,7 @@ interface DayAccordionProps {
   viewLabel: string;
   copyLabel: string;
   copiedLabel: string;
+  downloadLabel: string;
   sortAZLabel: string;
   sortZALabel: string;
   expandLabel: string;
@@ -21,6 +22,7 @@ interface DayAccordionProps {
   visiblePrograms: BridgingDayProgram[];
   onCopyFilename: (filename: string) => void;
   copiedFilename: string | null;
+  onOpenCode: (path: string, filename: string) => void;
 }
 
 export function DayAccordion({
@@ -29,6 +31,7 @@ export function DayAccordion({
   viewLabel,
   copyLabel,
   copiedLabel,
+  downloadLabel,
   sortAZLabel,
   sortZALabel,
   expandLabel,
@@ -36,6 +39,7 @@ export function DayAccordion({
   visiblePrograms,
   onCopyFilename,
   copiedFilename,
+  onOpenCode,
 }: DayAccordionProps) {
   const [sortOrder, setSortOrder] = useState<'az' | 'za'>('az');
   const sorted = [...visiblePrograms].sort((a, b) =>
@@ -99,7 +103,7 @@ export function DayAccordion({
               <li
                 key={prog.path}
                 className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/30 p-3 transition-colors hover:bg-muted/50 focus-within:ring-2 focus-within:ring-[#7B1E3A] focus-within:ring-offset-2"
-                data-resource-type="java"
+                data-resource-type={prog.type}
                 data-day={day.dayId}
               >
                 <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -117,16 +121,23 @@ export function DayAccordion({
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <a
-                    href={prog.path}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => onOpenCode(prog.path, prog.filename)}
                     className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#7B1E3A] text-white text-xs font-medium hover:bg-[#7B1E3A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
                     aria-label={`${viewLabel} ${prog.filename}`}
                   >
-                    <ExternalLink className="w-3.5 h-3.5" aria-hidden />
                     {viewLabel}
+                  </button>
+                  <a
+                    href={prog.path}
+                    download={prog.filename}
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-border bg-background text-foreground text-xs font-medium hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                    aria-label={`${downloadLabel} ${prog.filename}`}
+                  >
+                    <Download className="w-3.5 h-3.5" aria-hidden />
+                    {downloadLabel}
                   </a>
                   <button
                     type="button"

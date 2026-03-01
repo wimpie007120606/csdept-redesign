@@ -1,0 +1,22 @@
+Bridging Course – Day 3 Exercises (Arrays and mini project)
+============================================================
+
+1. Arrays / lists
+   - Create an array (or list) of 5 integers. Print each element.
+   - Compute and print the sum of all elements.
+   - Find and print the maximum value in the array.
+
+2. Loops over arrays
+   - Create an array of names. Print each name on a separate line.
+   - Create an array of numbers. Print only the even ones.
+
+3. Mini project ideas
+   - Extend the menu calculator: add "multiply" and "divide" options.
+   - Write a program that reads 5 grades, then prints the average and whether the student passed (average >= 50).
+   - Write a program that stores a small list of items (e.g. shopping list), prints them, and allows "add" and "quit".
+
+4. File I/O (optional, if you have time)
+   - Read a few lines from a text file and print them.
+   - Write a few lines to a text file.
+
+Suggested: Complete the Day 3 code examples first, then try these exercises.

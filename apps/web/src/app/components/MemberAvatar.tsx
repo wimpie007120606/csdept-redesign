@@ -17,32 +17,24 @@ interface MemberAvatarProps {
 }
 
 const sizeClasses = { sm: 'w-12 h-12 text-sm', md: 'w-16 h-16 text-lg', lg: 'w-24 h-24 text-xl' };
+const sizePx = { sm: 48, md: 64, lg: 96 };
 const PLACEHOLDER = '/people/placeholder.jpg';
 
 export function MemberAvatar({ displayName, photo, className = '', size = 'md' }: MemberAvatarProps) {
   const [errored, setErrored] = useState(false);
-  const initials = getInitials(displayName);
   const sizeClass = sizeClasses[size];
-
-  const effectivePhoto = !errored ? photo : null;
-
-  if (!effectivePhoto) {
-    // Use explicit placeholder image so layout never breaks.
-    return (
-      <img
-        src={PLACEHOLDER}
-        alt={displayName}
-        className={`rounded-full object-cover flex-shrink-0 ${sizeClass} ${className}`}
-      />
-    );
-  }
+  const px = sizePx[size];
+  const effectivePhoto = !errored && photo ? photo : null;
 
   return (
     <img
-      src={effectivePhoto}
+      src={effectivePhoto ?? PLACEHOLDER}
       alt={displayName}
+      width={px}
+      height={px}
       className={`rounded-full object-cover flex-shrink-0 ${sizeClass} ${className}`}
       onError={() => setErrored(true)}
+      loading="lazy"
     />
   );
 }

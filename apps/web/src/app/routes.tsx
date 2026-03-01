@@ -10,6 +10,7 @@ import { UndergraduatePage } from "./pages/UndergraduatePage";
 import { PostgraduatePage } from "./pages/PostgraduatePage";
 import { ProspectiveStudentsPage } from "./pages/ProspectiveStudentsPage";
 import { PeoplePage } from "./pages/PeoplePage";
+import { AlumniPage } from "./pages/AlumniPage";
 import { ProfileDetailPage } from "./pages/ProfileDetailPage";
 import { ResearchPage } from "./pages/ResearchPage";
 import { NewsPage } from "./pages/NewsPage";
@@ -46,6 +47,7 @@ export const router = createBrowserRouter([
       { path: "undergraduate", element: <RedirectToStudyUndergraduate /> },
       { path: "postgraduate", element: <RedirectToStudyPostgraduate /> },
       { path: "people", Component: PeoplePage },
+      { path: "people/alumni", Component: AlumniPage },
       { path: "people/:slug", Component: ProfileDetailPage },
       { path: "research", Component: ResearchPage },
       { path: "news", Component: NewsPage },

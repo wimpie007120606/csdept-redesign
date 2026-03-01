@@ -1,0 +1,20 @@
+Bridging Course – Day 1 Exercises (Absolute basics)
+==================================================
+
+1. Hello World
+   - Run the HelloWorld / hello_world program for your language.
+   - Change the printed message to say "Hello, [Your Name]".
+
+2. Variables
+   - Declare a variable holding your age. Print it.
+   - Declare a variable holding a short sentence. Print it.
+
+3. Input (optional)
+   - Uncomment the input section in the Day 1 file.
+   - Run the program and type your name when prompted.
+   - Print a greeting using the value you read.
+
+4. Small program
+   - Write a program that asks for two numbers (or use variables), adds them, and prints the result.
+
+Suggested: Try the same exercises in Java, Python, and C to compare syntax.

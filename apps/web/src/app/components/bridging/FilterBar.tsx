@@ -1,7 +1,7 @@
 import { Search } from 'lucide-react';
 
-export type ResourceTypeFilter = 'all' | 'pdf' | 'java';
-export type DayFilter = 'all' | 'day1' | 'day2';
+export type ResourceTypeFilter = 'all' | 'pdf' | 'java' | 'python' | 'c';
+export type DayFilter = 'all' | 'day1' | 'day2' | 'day3';
 
 interface FilterBarProps {
   searchQuery: string;
@@ -19,8 +19,11 @@ interface FilterBarProps {
   allLabel: string;
   pdfLabel: string;
   javaLabel: string;
+  pythonLabel: string;
+  cLabel: string;
   day1Label: string;
   day2Label: string;
+  day3Label: string;
 }
 
 export function FilterBar({
@@ -39,9 +42,26 @@ export function FilterBar({
   allLabel,
   pdfLabel,
   javaLabel,
+  pythonLabel,
+  cLabel,
   day1Label,
   day2Label,
+  day3Label,
 }: FilterBarProps) {
+  const typeOptions: { value: ResourceTypeFilter; label: string }[] = [
+    { value: 'all', label: allLabel },
+    { value: 'pdf', label: pdfLabel },
+    { value: 'java', label: javaLabel },
+    { value: 'python', label: pythonLabel },
+    { value: 'c', label: cLabel },
+  ];
+  const dayOptions: { value: DayFilter; label: string }[] = [
+    { value: 'all', label: allLabel },
+    { value: 'day1', label: day1Label },
+    { value: 'day2', label: day2Label },
+    { value: 'day3', label: day3Label },
+  ];
+
   return (
     <div className="space-y-4 rounded-xl border border-border bg-card p-4 shadow-sm">
       <h3 className="font-semibold text-foreground text-sm">{filterCardTitle}</h3>
@@ -59,7 +79,7 @@ export function FilterBar({
       <div>
         <p className="text-xs font-medium text-muted-foreground mb-2">{typeFilterLabel}</p>
         <div className="flex flex-wrap gap-2">
-          {(['all', 'pdf', 'java'] as const).map((value) => (
+          {typeOptions.map(({ value, label }) => (
             <button
               key={value}
               type="button"
@@ -70,9 +90,9 @@ export function FilterBar({
                   : 'bg-muted text-muted-foreground hover:bg-muted/80'
               }`}
               aria-pressed={typeFilter === value}
-              aria-label={`Filter by ${value === 'all' ? allLabel : value === 'pdf' ? pdfLabel : javaLabel}`}
+              aria-label={`Filter by ${label}`}
             >
-              {value === 'all' ? allLabel : value === 'pdf' ? pdfLabel : javaLabel}
+              {label}
             </button>
           ))}
         </div>
@@ -80,7 +100,7 @@ export function FilterBar({
       <div>
         <p className="text-xs font-medium text-muted-foreground mb-2">{dayFilterLabel}</p>
         <div className="flex flex-wrap gap-2">
-          {(['all', 'day1', 'day2'] as const).map((value) => (
+          {dayOptions.map(({ value, label }) => (
             <button
               key={value}
               type="button"
@@ -91,9 +111,9 @@ export function FilterBar({
                   : 'bg-muted text-muted-foreground hover:bg-muted/80'
               }`}
               aria-pressed={dayFilter === value}
-              aria-label={`Filter by ${value === 'all' ? allLabel : value === 'day1' ? day1Label : day2Label}`}
+              aria-label={`Filter by ${label}`}
             >
-              {value === 'all' ? allLabel : value === 'day1' ? day1Label : day2Label}
+              {label}
             </button>
           ))}
         </div>

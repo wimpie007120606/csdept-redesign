@@ -4,9 +4,11 @@ import { LocalizedLink } from '../components/LocalizedLink';
 import { Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
 import { getPeople, assetUrl, type Person } from '../api';
 import { fallbackPeople } from '@/content/fallback';
+import { peopleBySlug } from '@/content/people';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const campusBg = '/realbackground2.jpg';
+const PLACEHOLDER_PHOTO = '/people/placeholder.jpg';
 
 /** Normalize slug for routing: lowercase, trim, replace spaces with hyphens. */
 function toCanonicalSlug(s: string): string {
@@ -24,6 +26,8 @@ function mapPersonToCard(p: Person) {
   } catch {}
   const rawSlug = p.slug && String(p.slug).trim();
   const slug = rawSlug ? toCanonicalSlug(rawSlug) : String(p.id);
+  const resolvedPhoto =
+    p.image_key ? assetUrl(p.image_key) : (fallbackPeople.find((f) => f.slug === slug)?.image ?? peopleBySlug.get(slug)?.photo ?? null);
   return {
     id: slug,
     slug,
@@ -36,7 +40,7 @@ function mapPersonToCard(p: Person) {
     secondaryEmail: p.email_secondary ?? null,
     phone: p.phone ?? null,
     phoneNote: null as string | null,
-    image: p.image_key ? assetUrl(p.image_key) : null,
+    image: resolvedPhoto || null,
     researchAreas,
   };
 }
@@ -49,15 +53,7 @@ export function PeoplePage() {
   useEffect(() => {
     getPeople().then((apiPeople) => {
       if (apiPeople.length > 0) {
-        setPeople(
-          apiPeople.map((p) => {
-            const c = mapPersonToCard(p);
-            return {
-              ...c,
-              image: c.image ?? (fallbackPeople.find((f) => f.slug === p.slug)?.image ?? null),
-            };
-          })
-        );
+        setPeople(apiPeople.map(mapPersonToCard));
       }
     });
   }, []);
@@ -130,9 +126,10 @@ export function PeoplePage() {
                       {/* Image */}
                       <div className="md:w-1/3 h-80 md:h-auto relative overflow-hidden">
                         <img
-                          src={person.image || ''}
+                          src={person.image || PLACEHOLDER_PHOTO}
                           alt={person.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#7B1E3A]/60 to-transparent md:bg-gradient-to-r md:from-[#7B1E3A] md:to-transparent" />
                       </div>
