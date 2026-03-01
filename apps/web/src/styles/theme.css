@@ -50,6 +50,9 @@
   --chart-4: #8a3c5c;
   --chart-5: #e0c87a;
   --radius: 0.75rem;
+  /* Research Groups cards: accent and hover (light theme = maroon) */
+  --research-card-accent: var(--su-maroon);
+  --research-card-accent-hover: var(--maroon-light);
   --sidebar: #0B1C2D;
   --sidebar-foreground: #FAF8F3;
   --sidebar-primary: var(--su-maroon);
@@ -110,6 +113,9 @@
   --sidebar-accent-foreground: var(--ivory);
   --sidebar-border: rgba(250, 248, 243, 0.15);
   --sidebar-ring: var(--su-gold);
+  /* Research Groups cards: gold accent in maroon theme */
+  --research-card-accent: var(--su-gold);
+  --research-card-accent-hover: var(--gold-light);
 }
 
 /* Newsletter subscription confirmation card: high-contrast SU surface in maroon theme (WCAG AA) */

@@ -135,6 +135,10 @@
       "nlp": {
         "title": "Natural Language Processing",
         "summary": "Work on natural language processing, computational linguistics, and assistive technologies that bridge language and computation."
+      },
+      "pleased": {
+        "title": "PLeaSeD – Planning, Learning and Search for Decision-making",
+        "summary": "Research on planning under uncertainty, adversarial search, reinforcement learning, and decision-making—with applications in games, robotics, and autonomous systems."
       }
     },
     "metrics": {
@@ -564,7 +568,18 @@
     "publications": "Publications",
     "contact": "Contact",
     "researchInterests": "Research Interests",
+    "links": "Links",
     "teaching": "Teaching",
+    "researchProjects": "Research Projects",
+    "researchCategories": "Research Areas",
+    "honoursAwards": "Honours & Awards",
+    "service": "Service",
+    "toolsSoftware": "Tools & Software",
+    "featuredPublications": "Featured publications",
+    "researchGroups": "Research groups",
+    "studentSupervision": "Student Supervision",
+    "citedBy": "Cited by",
+    "software": "Software",
     "qualifications": "Qualifications",
     "programmeCommittees": "Programme Committees (Last 5 Years)",
     "scholarMetrics": "Scholar Metrics",

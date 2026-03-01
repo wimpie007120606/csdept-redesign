@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router';
 import { LocalizedLink } from './LocalizedLink';
 import { pathWithoutLang } from '../utils/langPath';
@@ -6,6 +7,12 @@ import { Menu, X, Sun, Palette, ChevronDown } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from '@/i18n/useTranslation';
+
+const DROPDOWN_Z_INDEX = 9999;
+const HEADER_Z_INDEX = 50;
+const DROPDOWN_WIDTH = 224; // w-56
+const DROPDOWN_GAP = 8;
+const DROPDOWN_MAX_HEIGHT = 400;
 
 const suLogo = '/brand/stellenbosch/su-logo-primary.jpeg';
 
@@ -24,6 +31,9 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number } | null>(null);
+  const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const { theme, setTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
@@ -48,6 +58,62 @@ export function Header() {
     setActiveDropdown(null);
   }, [location]);
 
+  // Position dropdown in viewport (viewport-safe, no clipping)
+  const updateDropdownPosition = () => {
+    if (!activeDropdown) {
+      setDropdownPosition(null);
+      return;
+    }
+    const trigger = triggerRefs.current[activeDropdown];
+    if (!trigger) {
+      setDropdownPosition(null);
+      return;
+    }
+    const rect = trigger.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    let left = rect.left;
+    if (left + DROPDOWN_WIDTH > vw - DROPDOWN_GAP) left = vw - DROPDOWN_WIDTH - DROPDOWN_GAP;
+    if (left < DROPDOWN_GAP) left = DROPDOWN_GAP;
+    const top = rect.bottom + DROPDOWN_GAP;
+    setDropdownPosition({ top, left });
+  };
+
+  useLayoutEffect(() => {
+    if (!activeDropdown) {
+      setDropdownPosition(null);
+      return;
+    }
+    updateDropdownPosition();
+    const onScrollOrResize = () => updateDropdownPosition();
+    window.addEventListener('scroll', onScrollOrResize, true);
+    window.addEventListener('resize', onScrollOrResize);
+    return () => {
+      window.removeEventListener('scroll', onScrollOrResize, true);
+      window.removeEventListener('resize', onScrollOrResize);
+    };
+  }, [activeDropdown]);
+
+  // Click outside + Escape to close dropdown
+  useEffect(() => {
+    if (!activeDropdown) return;
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as Node;
+      const trigger = triggerRefs.current[activeDropdown];
+      if (dropdownRef.current?.contains(target) || trigger?.contains(target)) return;
+      setActiveDropdown(null);
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActiveDropdown(null);
+    };
+    document.addEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [activeDropdown]);
+
   const currentPath = pathWithoutLang(location.pathname);
   const isNavActive = (href: string) => currentPath === href || (href !== '/' && currentPath.startsWith(href));
   const isDropdownActive = (key: string) => activeDropdown === key;
@@ -58,7 +124,7 @@ export function Header() {
         isScrolled ? 'shadow-lg' : ''
       }`}
     >
-      <div className="container mx-auto px-4 min-[1025px]:px-8 max-w-[100%] overflow-hidden">
+      <div className="container mx-auto px-4 min-[1025px]:px-8 max-w-[100%] overflow-x-hidden overflow-y-visible">
         <div className="flex items-center justify-between h-24 min-w-0 gap-2">
           {/* Logo + Brand */}
           <LocalizedLink to="/" className="flex items-center gap-2 min-[1025px]:gap-4 group min-w-0 flex-shrink" aria-label={t('nav.stellenboschUniversity')}>
@@ -97,33 +163,17 @@ export function Header() {
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
                   <button
+                    ref={(el) => { triggerRefs.current[item.key] = el; }}
+                    type="button"
                     className="nav-dropdown-trigger px-4 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10 transition-colors flex items-center gap-1 border-b-2 border-transparent"
                     data-open={isDropdownActive(item.key) ? 'true' : undefined}
+                    aria-haspopup="menu"
+                    aria-expanded={isDropdownActive(item.key)}
+                    onClick={() => setActiveDropdown(isDropdownActive(item.key) ? null : item.key)}
                   >
                     {t(`nav.${item.key}`)}
                     <ChevronDown className="w-4 h-4" />
                   </button>
-                  <AnimatePresence>
-                    {activeDropdown === item.key && 'items' in item && item.items && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2 }}
-                        className="su-card absolute top-full left-0 mt-2 w-56 bg-white text-[#0B1C2D] maroon:bg-[color:var(--ivory)] maroon:text-[color:var(--su-black)] rounded-xl shadow-2xl border border-[#0B1C2D]/10 overflow-hidden"
-                      >
-                        {item.items.map((subItem) => (
-                          <LocalizedLink
-                            key={subItem.key}
-                            to={subItem.href}
-                            className="block px-4 py-3 text-sm hover:bg-[#F3F0E8] maroon:hover:bg-[#F3F0E8] transition-colors"
-                          >
-                            {t(`nav.${subItem.key}`)}
-                          </LocalizedLink>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </div>
               )
             )}
@@ -298,6 +348,52 @@ export function Header() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Desktop dropdowns: render in portal so they are never clipped by overflow */}
+      {typeof document !== 'undefined' &&
+        activeDropdown &&
+        dropdownPosition &&
+        (() => {
+          const item = navStructure.find((n) => n.key === activeDropdown);
+          if (!item || !('items' in item) || !item.items) return null;
+          const maxH =
+            typeof window !== 'undefined'
+              ? Math.min(DROPDOWN_MAX_HEIGHT, window.innerHeight - dropdownPosition.top - DROPDOWN_GAP)
+              : DROPDOWN_MAX_HEIGHT;
+          return createPortal(
+            <AnimatePresence>
+              <motion.div
+                ref={dropdownRef}
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2 }}
+                className="su-card fixed w-56 bg-white text-[#0B1C2D] maroon:bg-[color:var(--ivory)] maroon:text-[color:var(--su-black)] rounded-xl shadow-2xl border border-[#0B1C2D]/10 overflow-hidden"
+                style={{
+                  zIndex: DROPDOWN_Z_INDEX,
+                  top: dropdownPosition.top,
+                  left: dropdownPosition.left,
+                  maxHeight: maxH,
+                  overflowY: 'auto',
+                }}
+                role="menu"
+                aria-label={t(`nav.${activeDropdown}`)}
+              >
+                {item.items.map((subItem) => (
+                  <LocalizedLink
+                    key={subItem.key}
+                    to={subItem.href}
+                    className="block px-4 py-3 text-sm hover:bg-[#F3F0E8] maroon:hover:bg-[#F3F0E8] transition-colors"
+                    role="menuitem"
+                  >
+                    {t(`nav.${subItem.key}`)}
+                  </LocalizedLink>
+                ))}
+              </motion.div>
+            </AnimatePresence>,
+            document.body
+          );
+        })()}
     </header>
   );
 }

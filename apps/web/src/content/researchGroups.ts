@@ -127,6 +127,21 @@ export const researchGroups: ResearchGroup[] = [
       'charl-steyl',
       'elan-van-biljon',
     ],
+    memberRoles: {
+      'steve-kroon': 'Associate Professor',
+    },
+    links: [],
+  },
+  {
+    slug: 'pleased',
+    title: 'PLeaSeD – Planning, Learning and Search for Decision-making',
+    categoryImage: researchGroupImage('pleased'),
+    summary:
+      'Research on planning under uncertainty, adversarial search, reinforcement learning, and decision-making—with applications in games, robotics, and autonomous systems.',
+    memberIds: ['steve-kroon'],
+    memberRoles: {
+      'steve-kroon': 'Associate Professor',
+    },
     links: [],
   },
   {

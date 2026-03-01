@@ -2,11 +2,16 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useParams } from 'react-router';
 import { LocalizedLink } from '../components/LocalizedLink';
-import { ArrowLeft, Mail, Phone, MapPin, GraduationCap } from 'lucide-react';
+import { ArrowLeft, Mail, Phone, MapPin, GraduationCap, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { getPerson, assetUrl, type PersonDetail } from '../api';
 import { PLACEHOLDER_IMAGE } from '../placeholder';
 import { AchievementsTimeline, type YearGroup } from '../components/AchievementsTimeline';
 import { lynetteAchievementsByYear } from '@/content/lynette-achievements';
+import { getBerndFischerYearGroups } from '@/content/bernd-fischer-publications';
+import { getJacoGeldenhuysYearGroups } from '@/content/jaco-geldenhuys-publications';
+import { getCorneliaInggsYearGroups } from '@/content/cornelia-inggs-publications';
+import { getWillemVisserYearGroups } from '@/content/willem-visser-publications';
+import { getSteveKroonYearGroups, steveKroonFeaturedPublications } from '@/content/steve-kroon-publications';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const campusBackground = '/realbackground3.jpeg';
@@ -15,6 +20,11 @@ const STATIC_IMAGES: Record<string, string> = {
   'lynette-van-zijl': '/LynettePeople.webp',
   'brink-van-der-merwe': '/BrinkPeople.jpeg',
   'walter-schulze': '/WalterPeople.jpeg',
+  'bernd-fischer': '/people/Bernd_Fischer_People.jpg',
+  'jaco-geldenhuys': '/people/Jaco_Geldenhuys_People.jpg',
+  'cornelia-inggs': '/people/Cornelia_Ings_People.jpg',
+  'willem-visser': '/people/Willem_Visser_People.jpg',
+  'steve-kroon': '/people/Steve_Kroon_People.jpg',
 };
 
 function buildYearGroupsFromPublications(
@@ -80,6 +90,7 @@ export function ProfileDetailPage() {
   const { slug } = useParams();
   const [profile, setProfile] = useState<Record<string, unknown> | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [expandedResearchCategories, setExpandedResearchCategories] = useState<Set<number>>(new Set([0, 1, 2]));
 
   const staticProfiles: Record<string, Record<string, unknown>> = {
     'whk-bester': {
@@ -317,6 +328,374 @@ export function ProfileDetailPage() {
       collaborators: [
         'Brink van der Merwe',
       ],
+    },
+
+    'bernd-fischer': {
+      id: 'bernd-fischer',
+      name: 'Prof. Bernd Fischer',
+      primaryTitle: 'Professor',
+      secondaryTitle: 'Head of Division',
+      department: 'Division of Computer Science, Department of Mathematical Sciences',
+      institution: 'Stellenbosch University',
+      office: 'General Engineering Building',
+      address: 'Private Bag X1, Matieland 7602, South Africa',
+      campusLocation: 'c.o. Banghoek Road and Joubert Street, Stellenbosch, South Africa',
+      email: 'bfischer@cs.sun.ac.za',
+      phone: '+27 21 808 4232',
+      phoneNote: 'secretary',
+      image: STATIC_IMAGES['bernd-fischer'],
+
+      bio: [
+        'Bernd Fischer is a Professor and Head of the Division of Computer Science at Stellenbosch University. His research focuses on automated software engineering, program verification, and program synthesis. He has led and contributed to tools such as CSeq, ESBMC, and AutoBayes, and has published widely on bounded model checking, certification of auto-generated code, and formal methods.',
+        'He holds a PhD from Universität Passau and has held positions at NASA Ames and the University of Southampton before joining Stellenbosch.',
+      ],
+
+      researchInterests: [
+        'Automated software engineering',
+        'Logic-based techniques',
+        'Program synthesis / program generation',
+        'Program verification',
+        'Annotation inference',
+        'Model checking',
+        'Human-oriented presentation of verification results',
+      ],
+
+      hasPublicationsTimeline: true,
+      publicationsTimeline: getBerndFischerYearGroups() as YearGroup[],
+
+      externalLinks: [
+        { label: 'Personal homepage', url: 'https://bfischer.pages.cs.sun.ac.za/' },
+        { label: 'Google Scholar', url: 'https://scholar.google.com/citations?hl=en&user=m51BXiwAAAAJ' },
+      ],
+
+      publicationSourceNote: 'Publication list sourced from Google Scholar and the Stellenbosch University publications page.',
+    },
+
+    'jaco-geldenhuys': {
+      id: 'jaco-geldenhuys',
+      name: 'Dr. Jaco Geldenhuys',
+      primaryTitle: 'Associate Professor',
+      secondaryTitle: 'Academic Staff',
+      department: 'Computer Science Division, Department of Mathematical Sciences',
+      institution: 'Stellenbosch University',
+      office: 'A519, General Engineering Building',
+      address: 'Private Bag X1, 7602 Matieland, South Africa',
+      campusLocation: 'c.o. Banghoek Road and Joubert Street, Stellenbosch, South Africa',
+      email: 'geld@sun.ac.za',
+      phone: '+27 21 808 4232',
+      phoneNote: 'secretary',
+      image: STATIC_IMAGES['jaco-geldenhuys'],
+
+      bio: [
+        'Jaco Geldenhuys is an Associate Professor in the Computer Science Division at Stellenbosch University. His research focuses on software engineering, in particular formal methods (model checking and process algebra), static analysis, testing, and open source software. He also has interests in automata and language theory and in data structures and algorithms.',
+        'He has published on symbolic execution, bounded model checking, and program analysis, and has supervised several postgraduate and honours students.',
+      ],
+
+      researchInterests: [
+        'Formal methods (model checking and process algebra)',
+        'Static analysis',
+        'Testing',
+        'Open source software',
+        'Automata and language theory',
+        'Data structures and algorithms',
+      ],
+
+      teaching: [
+        'RW114 Introduction to Computer Science',
+        'RW712 Advanced Algorithms',
+      ],
+      teachingIntro: 'Courses (2018):',
+
+      externalLinks: [
+        { label: 'Personal homepage', url: 'https://cs.sun.ac.za/~jaco/' },
+      ],
+
+      hasPublicationsTimeline: true,
+      publicationsTimeline: getJacoGeldenhuysYearGroups() as YearGroup[],
+
+      researchProjects: [
+        { name: 'Green' },
+        { name: 'Impendulo' },
+      ],
+
+      studentSupervision: {
+        current: [
+          { name: 'Ulvi Guliyev', degree: 'PhD', startYear: 2011, topic: 'program comprehension and rewriting', coSupervisor: 'Willem Visser' },
+          { name: 'Pierre le Riche', degree: 'PhD', startYear: 2012, topic: 'optimal memory management' },
+          { name: 'Marcel Dunaiski', degree: 'PhD', startYear: 2014, topic: 'bibliometrics', coSupervisor: 'Willem Visser' },
+          { name: 'Shaun Schreiber', degree: 'MSc', startYear: 2016, topic: 'texture generation', coSupervisor: 'Hennie de Villiers' },
+          { name: 'José Lambo', degree: 'Honours', startYear: 2016, topic: 'Customized CRM' },
+          { name: 'Delena Malan', degree: 'Honours', startYear: 2016, topic: 'Browser history visualization' },
+          { name: 'Iain Swarts', degree: 'Honours', startYear: 2016, topic: 'Genetic algorithms for test reduction' },
+        ],
+        recentlyGraduated: [
+          { name: 'Marcel Dunaiski', year: 'March 2014', topic: 'ranking algorithms and citation networks' },
+          { name: 'Nico Huysamen', year: 'Dec 2012', topic: 'FATKID' },
+          { name: 'Gideon Redelinghuys', year: 'March 2012', topic: 'Symbolic String Execution' },
+          { name: 'Mary Fasan', year: 'Dec 2010', topic: 'Distributed Binary Decision Diagrams' },
+        ],
+      },
+
+      software: {
+        title: 'Random software I have written',
+        items: [
+          'Change (AWK CWEB change file tool)',
+          'Directed evolution',
+          'EvolvePhoto',
+          'FourDigits',
+          'Large number arithmetic',
+          'Mersenne Twister (CWEB implementation)',
+          'Reverse an SDNFA',
+          'Suffix trees',
+          'Travelling Salesperson Programs',
+          'Turing (1999)',
+          'Word clouds (Wordle-style layout)',
+        ],
+      },
+    },
+
+    'cornelia-inggs': {
+      id: 'cornelia-inggs',
+      name: 'Dr. Cornelia P. Inggs',
+      primaryTitle: 'Senior Lecturer (part-time)',
+      secondaryTitle: 'Academic Staff',
+      department: 'Computer Science Division, Department of Mathematical Sciences',
+      institution: 'Stellenbosch University',
+      office: 'Room A509, General Engineering Building',
+      address: 'Computer Science, Stellenbosch University, Private Bag X1, 7602 Matieland, South Africa',
+      campusLocation: 'c.o. Banghoek Road and Joubert Street, Stellenbosch, South Africa',
+      email: 'cinggs@sun.ac.za',
+      image: STATIC_IMAGES['cornelia-inggs'],
+
+      bio: [
+        'Dr. Cornelia Inggs holds a PhD from The University of Manchester (UK) and is a part-time Senior Lecturer in Computer Science at Stellenbosch University, where she previously studied. Her research focuses on software verification and analysis, program performance and scalability, parallel and distributed software, and efficient search and planning algorithms for AI and machine learning.',
+      ],
+
+      researchInterests: [
+        'Software verification and analysis',
+        'Program performance and scalability',
+        'Parallel and distributed software',
+        'Efficient search and planning algorithms for AI and machine learning',
+        'Dynamic and static analysis of code',
+      ],
+
+      qualifications: [
+        { degree: 'PhD', institution: 'The University of Manchester (UK)' },
+        { degree: 'Also studied at', institution: 'Stellenbosch University' },
+      ],
+
+      teachingUndergraduate: [
+        'Concurrency (3rd year)',
+        'Object Oriented Programming (1st year)',
+        'Introduction to Computer Science (1st year)',
+        'Operating Systems (3rd year)',
+        'Scientific Computing (2nd year)',
+      ],
+      teachingPostgraduate: [
+        'Software Verification and Analysis',
+        'Model Checking',
+        'Advanced Concurrency Concepts',
+      ],
+
+      externalLinks: [
+        { label: 'Personal homepage', url: 'https://cinggs.pages.cs.sun.ac.za/' },
+      ],
+
+      hasPublicationsTimeline: true,
+      publicationsTimeline: getCorneliaInggsYearGroups() as YearGroup[],
+
+      researchCategories: [
+        {
+          title: 'Software Verification and Analysis',
+          projects: [
+            'Automated feedback to novice programmers (Claire Baissac, Erin van den Heever, Simon Steven)',
+            'Linearisability of non-blocking concurrent data structures (Nicole du Toit)',
+            'Annotating JVM bytecode for model checking and abstract interpretation (Vasco Nel-Lopes)',
+            'Learning concurrency via games (Taun Gadd, Justin Giffard – CSEDU2017)',
+            'Resource contention detection (D. Willem Venter MSc 2016)',
+            'Semantic diff (Willem H.K. Bester, Johan H. van Litsenborgh)',
+            'Hash table access patterns (Pieter van der Walt)',
+            'Reducing communication in distributed model checking (Jaco Geldenhuys, Jean Fourie MSc 2009, SAICSIT12)',
+            'CTL* model checking (FMSD 2006)',
+            'Parallel model checking (PhD 2004, Manchester)',
+            'Effective state exploration (ENTCS 2002)',
+            'LTL verification system (MSc 1999, Stellenbosch)',
+          ],
+        },
+        {
+          title: 'Test Case Generation',
+          projects: [
+            'Oracle generation using transformer models (Willem C. Visser, Marco Dewey MSc in progress)',
+            'Symbolic execution test-case generation (Willem H.K. Bester MSc 2013, SAICSIT2012 Best Paper)',
+            'Automated coverage calculation (G. Campbell Morrison MSc 2012)',
+          ],
+        },
+        {
+          title: 'Search and Planning Algorithms for AI and ML',
+          projects: [
+            'Ingenious Framework (link if exists)',
+            'Hyperparameter tuning for MCTS (Alexander Mouton MSc in progress)',
+            'Go engine (Marco Dewey Hons 2021)',
+            'UCT-treesplit (Alex Heyns Hons 2021)',
+            'Distributed UCT (Reynhardt Vermaak Hons 2021)',
+            'Information sharing strategies (Steve Kroon, Marc Christoph MSc 2020)',
+            'Distributed tournament engines',
+            'Distributed solitary robots',
+            'Parallel MCTS enhancements',
+            'General purpose parallel search algorithms',
+            'Monte-Carlo Tree Search for Go (SAICSIT2012, International Go Symposium)',
+          ],
+        },
+      ],
+
+      studentSupervision: {
+        currentStudents: [
+          { name: 'Willem C. Visser', topic: 'Oracle generation using transformer models', coSupervisor: 'Marco Dewey (MSc in progress)' },
+          { name: 'Alexander Mouton', topic: 'Hyperparameter tuning for MCTS', degree: 'MSc', startYear: 2024 },
+        ],
+        mscInProgress: [
+          { name: 'Marco Dewey', topic: 'Oracle generation / Go engine' },
+          { name: 'Alexander Mouton', topic: 'Hyperparameter tuning for MCTS' },
+        ],
+        honours: [
+          { name: 'Marco Dewey', year: 2021, topic: 'Go engine' },
+          { name: 'Alex Heyns', year: 2021, topic: 'UCT-treesplit' },
+          { name: 'Reynhardt Vermaak', year: 2021, topic: 'Distributed UCT' },
+        ],
+        pastStudents: [
+          { name: 'Marcel Dunaiski', year: 'March 2014', topic: 'ranking algorithms and citation networks' },
+          { name: 'Willem H.K. Bester', year: 2013, topic: 'Symbolic execution test-case generation (SAICSIT2012 Best Paper)' },
+          { name: 'G. Campbell Morrison', year: 2012, topic: 'Automated coverage calculation' },
+          { name: 'Jean Fourie', year: 2009, topic: 'Reducing communication in distributed model checking' },
+          { name: 'D. Willem Venter', year: 2016, topic: 'Resource contention detection' },
+        ],
+      },
+    },
+
+    'willem-visser': {
+      id: 'willem-visser',
+      name: 'Prof. Willem Visser',
+      primaryTitle: 'Professor',
+      secondaryTitle: 'Academic Staff',
+      department: 'Computer Science Division, Department of Mathematical Sciences',
+      institution: 'Stellenbosch University',
+      image: STATIC_IMAGES['willem-visser'],
+
+      bio: [
+        'Willem Visser is a Professor in the Division of Computer Science at Stellenbosch University. He was Head of Division (2009–2013) and Vice-Dean of Research in the Faculty of Science (2017–2019). His research focuses on finding bugs in software, through testing, program analysis, symbolic execution, probabilistic symbolic execution, and model checking. He is known for Java PathFinder (JPF) and Symbolic PathFinder (SPF). He has held positions at NASA Ames Research Center and SEVEN Networks.',
+      ],
+
+      researchInterests: [
+        'Testing',
+        'Program analysis',
+        'Symbolic execution',
+        'Probabilistic symbolic execution',
+        'Model checking',
+        'Java PathFinder (JPF)',
+        'Symbolic PathFinder (SPF)',
+      ],
+
+      honoursAwards: [
+        { year: '2020', title: 'SIGSOFT 2020 Impact Paper Award', detail: 'ASE 2000 – Model Checking Programs' },
+        { year: '2018', title: 'ISSTA 2018 Retrospective Impact Paper Award', detail: 'ISSTA 2004 – Test Input Generation with Java PathFinder' },
+        { year: '2017', title: 'Best Paper Award SAICSIT', detail: 'Probabilistic Programming for Java using Symbolic Execution and Model Counting' },
+        { year: '2016', title: 'NRF A Rating' },
+        { year: '2016', title: 'ICSE 2016 Program Co-Chair', detail: 'with Laurie Williams' },
+        { year: '2017–2019', title: 'Vice-Dean of Research', detail: 'Faculty of Science' },
+      ],
+
+      service: [
+        { role: 'ICSE Steering Committee' },
+        { role: 'SPIN Steering Committee' },
+        { role: 'NRF IT Ratings Panel (2011–2014, Convener 2013–2014)' },
+        { role: 'ASE Steering Committee (2008–2014)' },
+        { role: 'Associate Editor ACM TOSEM (2011–2017)' },
+        { role: 'ACM SIGSOFT Executive Committee (2012–2018)' },
+        { role: 'SAICSIT Council (2017–2019)' },
+      ],
+
+      externalLinks: [
+        { label: 'DBLP', url: 'https://dblp.org/pid/07/3180.html' },
+      ],
+
+      hasPublicationsTimeline: true,
+      publicationsTimeline: getWillemVisserYearGroups() as YearGroup[],
+      publicationSourceNote: 'Older publications available via DBLP.',
+
+      studentSupervision: {
+        current: [
+          { name: 'Phillip van Heerden', degree: 'MSc', topic: 'Symbolic Automata Learning' },
+          { name: 'David Baker-Effendi', degree: 'MSc', topic: 'Graph Databases for Multi-language and Incremental Data-flow Analysis' },
+        ],
+        recentlyGraduated: [
+          { name: 'Marcel Dunaiski', year: 'PhD' },
+          { name: 'Heila Botha', year: 'PhD' },
+          { name: 'Alexander Leid', year: 'MSc' },
+          { name: 'Jan Taljaard', year: 'MSc' },
+          { name: 'Pieter Jordaan', year: '' },
+          { name: 'Aline Uwimbabazi', year: '' },
+          { name: 'Piet Theron', year: '' },
+          { name: 'Willem Bester', year: '' },
+          { name: 'Kevin Durant', year: '' },
+          { name: 'Gideon Redelinghuys', year: '' },
+          { name: 'Pieter Kruger', year: '' },
+        ],
+      },
+
+      tools: [
+        { name: 'Java PathFinder (JPF)', url: 'https://github.com/javapathfinder/jpf-core' },
+        { name: 'Symbolic PathFinder (SPF)', url: 'https://github.com/SymbolicPathFinder/jpf-symbc' },
+        { name: 'Coastal' },
+        { name: 'Green Solver' },
+      ],
+    },
+
+    'steve-kroon': {
+      id: 'steve-kroon',
+      name: 'Prof. Steve Kroon',
+      primaryTitle: 'Associate Professor',
+      secondaryTitle: 'Academic Staff',
+      department: 'Computer Science Division, Department of Mathematical Sciences',
+      institution: 'Stellenbosch University',
+      office: 'A515, General Engineering Building',
+      email: 'kroon@sun.ac.za',
+      phone: '+27 21 808 9375',
+      image: STATIC_IMAGES['steve-kroon'],
+
+      bio: [
+        'Prof. Steve Kroon obtained MCom (Computer Science) and PhD (Mathematical Statistics) degrees from Stellenbosch University and joined the Computer Science department in 2008. He holds an NRF C2 rating. His research interests include generative modelling, Bayesian methods, search and adversarial search, decision-making and planning under uncertainty, and machine learning. He serves as reviewer and programme committee member for venues including ICML, NeurIPS, JAIR, Algorithmica, and JUCS. He is affiliated with CAIR and NITheCS.',
+      ],
+
+      researchInterests: [
+        'Generative modeling',
+        'Bayesian methods',
+        'Neural networks',
+        'Computational intelligence in games',
+        'Planning under uncertainty',
+        'Adversarial search',
+      ],
+
+      featuredPublications: steveKroonFeaturedPublications,
+
+      externalLinks: [
+        { label: 'Homepage', url: 'https://kroon.cs.sun.ac.za/index.html' },
+        { label: 'Google Scholar', url: 'https://scholar.google.com/citations?hl=en&user=-M2yWHQAAAAJ' },
+        { label: 'Curriculum Vitae', url: 'https://kroon.cs.sun.ac.za/index.html' },
+      ],
+
+      researchGroupLinks: [
+        { label: 'PLeaSeD – Planning, Learning and Search for Decision-making', slug: 'pleased' },
+        { label: 'Machine Learning and Artificial Intelligence', slug: 'ml-ai' },
+      ],
+
+      hasPublicationsTimeline: true,
+      publicationsTimeline: getSteveKroonYearGroups() as YearGroup[],
+
+      studentSupervision: {
+        current: [],
+        recentlyGraduated: [],
+      },
+      studentSupervisionNote: 'Has supervised and co-supervised PhD and Masters students in machine learning, planning, and related areas.',
     },
   };
 
@@ -584,8 +963,190 @@ export function ProfileDetailPage() {
               </motion.div>
             )}
 
+            {/* Featured publications (most-cited block) */}
+            {profile.featuredPublications && (profile.featuredPublications as Array<{ title: string; year: number; venue?: string; citations?: number; url?: string }>).length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.featuredPublications')}
+                </h2>
+                <ul className="space-y-4">
+                  {(profile.featuredPublications as Array<{ title: string; year: number; venue?: string; citations?: number; url?: string }>).map((item, index) => (
+                    <li key={index} className="bg-card rounded-lg p-4 border border-border">
+                      {item.url ? (
+                        <a href={item.url} target="_blank" rel="noopener noreferrer" className="font-medium text-foreground hover:text-primary inline-flex items-center gap-2">
+                          {item.title}
+                          <ExternalLink className="w-4 h-4 shrink-0" />
+                        </a>
+                      ) : (
+                        <span className="font-medium text-foreground">{item.title}</span>
+                      )}
+                      <div className="flex flex-wrap items-center gap-2 mt-2 text-sm text-muted-foreground">
+                        {item.year && <span>{item.year}</span>}
+                        {item.venue && <span>— {item.venue}</span>}
+                        {item.citations != null && (
+                          <span className="bg-muted px-2 py-0.5 rounded text-xs font-medium">
+                            {t('profile.citedBy')} ~{item.citations}
+                          </span>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
+            {/* Honours & Awards */}
+            {profile.honoursAwards && (profile.honoursAwards as Array<{ year?: string; title: string; detail?: string }>).length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.honoursAwards')}
+                </h2>
+                <ul className="space-y-3">
+                  {(profile.honoursAwards as Array<{ year?: string; title: string; detail?: string }>).map((item, index) => (
+                    <li key={index} className="bg-card rounded-lg p-4 border border-border text-foreground/90">
+                      {item.year && <span className="font-medium text-[#7B1E3A] mr-2">{item.year}:</span>}
+                      <span className="font-medium">{item.title}</span>
+                      {item.detail && <span className="text-muted-foreground block mt-1 ml-0 sm:ml-[4.5rem]">{item.detail}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
+            {/* Service */}
+            {profile.service && (profile.service as Array<{ role: string; period?: string }>).length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.service')}
+                </h2>
+                <ul className="space-y-2">
+                  {(profile.service as Array<{ role: string }>).map((item, index) => (
+                    <li key={index} className="flex items-start gap-3 text-foreground/90">
+                      <span className="w-2 h-2 bg-[#7B1E3A] rounded-full mt-2 flex-shrink-0"></span>
+                      <span>{item.role}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
+            {/* Research Categories (collapsible) */}
+            {profile.researchCategories && (profile.researchCategories as Array<{ title: string; projects: string[] }>).length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.researchCategories')}
+                </h2>
+                <div className="space-y-3">
+                  {(profile.researchCategories as Array<{ title: string; projects: string[] }>).map((cat, index) => {
+                    const isExpanded = expandedResearchCategories.has(index);
+                    return (
+                      <div key={index} className="bg-card rounded-xl border border-border overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => setExpandedResearchCategories((prev) => {
+                            const next = new Set(prev);
+                            if (next.has(index)) next.delete(index);
+                            else next.add(index);
+                            return next;
+                          })}
+                          className="w-full flex items-center justify-between px-6 py-4 text-left font-semibold text-foreground hover:bg-muted/50 transition-colors"
+                          aria-expanded={isExpanded}
+                        >
+                          {cat.title}
+                          {isExpanded ? <ChevronUp className="w-5 h-5 shrink-0" /> : <ChevronDown className="w-5 h-5 shrink-0" />}
+                        </button>
+                        {isExpanded && (
+                          <ul className="px-6 pb-4 pt-0 space-y-2 border-t border-border">
+                            {cat.projects.map((proj, i) => (
+                              <li key={i} className="flex items-start gap-2 text-sm text-foreground/90 pt-2">
+                                <span className="w-2 h-2 bg-[#7B1E3A] rounded-full shrink-0 mt-1.5" />
+                                <span>{proj}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+
+            {/* External Links (Homepage, Google Scholar, etc.) */}
+            {profile.externalLinks && (profile.externalLinks as Array<{ label: string; url: string }>).length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.links')}
+                </h2>
+                <ul className="space-y-3">
+                  {(profile.externalLinks as Array<{ label: string; url: string }>).map((link, index) => (
+                    <li key={index}>
+                      <a
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-primary hover:underline font-medium"
+                      >
+                        {link.label}
+                        <ExternalLink className="w-4 h-4 shrink-0" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
+            {/* Research groups (links to research page sections) */}
+            {profile.researchGroupLinks && (profile.researchGroupLinks as Array<{ label: string; slug: string }>).length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.researchGroups')}
+                </h2>
+                <ul className="space-y-3">
+                  {(profile.researchGroupLinks as Array<{ label: string; slug: string }>).map((link, index) => (
+                    <li key={index}>
+                      <LocalizedLink to={`/research#${link.slug}`} className="inline-flex items-center gap-2 text-primary hover:underline font-medium">
+                        {link.label}
+                        <ExternalLink className="w-4 h-4 shrink-0" />
+                      </LocalizedLink>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
             {/* Teaching */}
-            {profile.teaching && (
+            {((profile.teachingUndergraduate || profile.teachingPostgraduate) || profile.teaching) && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -595,13 +1156,231 @@ export function ProfileDetailPage() {
                   <div className="w-1 h-8 bg-[#7B1E3A]"></div>
                   {t('profile.teaching')}
                 </h2>
+                <div className="bg-card rounded-xl p-6 border border-border space-y-6">
+                  {((profile as any).teachingUndergraduate?.length > 0) && (
+                    <div>
+                      <p className="text-muted-foreground font-medium mb-2">Undergraduate</p>
+                      <ul className="space-y-2">
+                        {((profile as any).teachingUndergraduate as string[]).map((course: string, index: number) => (
+                          <li key={index} className="flex items-center gap-3">
+                            <GraduationCap className="w-5 h-5 text-[#7B1E3A]" />
+                            <span className="font-medium text-foreground">{course}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {((profile as any).teachingPostgraduate?.length > 0) && (
+                    <div>
+                      <p className="text-muted-foreground font-medium mb-2">Postgraduate</p>
+                      <ul className="space-y-2">
+                        {((profile as any).teachingPostgraduate as string[]).map((course: string, index: number) => (
+                          <li key={index} className="flex items-center gap-3">
+                            <GraduationCap className="w-5 h-5 text-[#7B1E3A]" />
+                            <span className="font-medium text-foreground">{course}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {profile.teaching && !(profile as any).teachingUndergraduate && !(profile as any).teachingPostgraduate && (
+                    <>
+                      <p className="text-muted-foreground mb-4">
+                        {(profile as any).teachingIntro ?? 'Teaching duties for 2023 include:'}
+                      </p>
+                      <ul className="space-y-2">
+                        {profile.teaching.map((course: string, index: number) => (
+                          <li key={index} className="flex items-center gap-3">
+                            <GraduationCap className="w-5 h-5 text-[#7B1E3A]" />
+                            <span className="font-medium text-foreground">{course}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Research Projects */}
+            {profile.researchProjects && (profile.researchProjects as Array<{ name: string; url?: string }>).length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.researchProjects')}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {(profile.researchProjects as Array<{ name: string; url?: string }>).map((proj, index) => (
+                    <div key={index} className="bg-card rounded-xl p-6 border border-border hover:border-[#7B1E3A]/30 transition-colors">
+                      {proj.url ? (
+                        <a href={proj.url} target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground hover:text-primary inline-flex items-center gap-2">
+                          {proj.name}
+                          <ExternalLink className="w-4 h-4 shrink-0" />
+                        </a>
+                      ) : (
+                        <span className="font-semibold text-foreground">{proj.name}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Student Supervision */}
+            {profile.studentSupervision && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.studentSupervision')}
+                </h2>
+                <div className="space-y-8">
+                  {((profile.studentSupervision as any).current?.length > 0) && (
+                    <div>
+                      <h3 className="font-semibold text-lg text-foreground mb-3">Current Students</h3>
+                      <ul className="space-y-2">
+                        {((profile.studentSupervision as any).current as Array<{ name: string; degree?: string; startYear?: number; topic?: string; coSupervisor?: string }>).map((s, i) => {
+                          const lead = [s.degree, s.startYear].filter(Boolean).join(', ');
+                          const desc = `${lead}${s.topic ? ` – ${s.topic}` : ''}${s.coSupervisor ? `, co-supervisor ${s.coSupervisor}` : ''}`.trim();
+                          return (
+                            <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
+                              <span className="font-medium">{s.name}</span>
+                              {desc && <span className="text-muted-foreground"> ({desc})</span>}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  )}
+                  {((profile.studentSupervision as any).currentStudents?.length > 0) && (
+                    <div>
+                      <h3 className="font-semibold text-lg text-foreground mb-3">Current Students</h3>
+                      <ul className="space-y-2">
+                        {((profile.studentSupervision as any).currentStudents as Array<{ name: string; topic?: string; coSupervisor?: string; degree?: string; startYear?: number }>).map((s, i) => (
+                          <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
+                            <span className="font-medium">{s.name}</span>
+                            <span className="text-muted-foreground">{(s.topic || s.coSupervisor) ? ` – ${[s.topic, s.coSupervisor].filter(Boolean).join(', ')}` : ''}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {((profile.studentSupervision as any).mscInProgress?.length > 0) && (
+                    <div>
+                      <h3 className="font-semibold text-lg text-foreground mb-3">MSc in progress</h3>
+                      <ul className="space-y-2">
+                        {((profile.studentSupervision as any).mscInProgress as Array<{ name: string; topic?: string }>).map((s, i) => (
+                          <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
+                            <span className="font-medium">{s.name}</span>
+                            {s.topic && <span className="text-muted-foreground"> – {s.topic}</span>}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {((profile.studentSupervision as any).honours?.length > 0) && (
+                    <div>
+                      <h3 className="font-semibold text-lg text-foreground mb-3">Honours</h3>
+                      <ul className="space-y-2">
+                        {((profile.studentSupervision as any).honours as Array<{ name: string; year?: number; topic?: string }>).map((s, i) => (
+                          <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
+                            <span className="font-medium">{s.name}</span>
+                            {(s.year || s.topic) && <span className="text-muted-foreground"> ({[s.year, s.topic].filter(Boolean).join(' – ')})</span>}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {((profile.studentSupervision as any).recentlyGraduated?.length > 0) && (
+                    <div>
+                      <h3 className="font-semibold text-lg text-foreground mb-3">Recently Graduated</h3>
+                      <ul className="space-y-2">
+                        {((profile.studentSupervision as any).recentlyGraduated as Array<{ name: string; year?: string; topic?: string }>).map((s, i) => (
+                          <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
+                            <span className="font-medium">{s.name}</span>
+                            {s.year && <span className="text-muted-foreground"> ({s.year} – {s.topic ?? ''})</span>}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {((profile.studentSupervision as any).pastStudents?.length > 0) && (
+                    <div>
+                      <h3 className="font-semibold text-lg text-foreground mb-3">Past students</h3>
+                      <ul className="space-y-2">
+                        {((profile.studentSupervision as any).pastStudents as Array<{ name: string; year?: number | string; topic?: string }>).map((s, i) => (
+                          <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
+                            <span className="font-medium">{s.name}</span>
+                            {(s.year || s.topic) && <span className="text-muted-foreground"> ({String(s.year)} – {s.topic ?? ''})</span>}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  {(profile as any).studentSupervisionNote && (
+                    <p className="text-foreground/80 text-sm leading-relaxed">
+                      {(profile as any).studentSupervisionNote as string}
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Tools & Software (name + optional url) */}
+            {profile.tools && (profile.tools as Array<{ name: string; url?: string }>).length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.toolsSoftware')}
+                </h2>
+                <ul className="space-y-3">
+                  {(profile.tools as Array<{ name: string; url?: string }>).map((tool, index) => (
+                    <li key={index}>
+                      {tool.url ? (
+                        <a href={tool.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 font-medium text-foreground hover:text-primary">
+                          {tool.name}
+                          <ExternalLink className="w-4 h-4 shrink-0" />
+                        </a>
+                      ) : (
+                        <span className="font-medium text-foreground">{tool.name}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
+            {/* Software */}
+            {profile.software && (profile.software as any).items?.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.software')}
+                </h2>
                 <div className="bg-card rounded-xl p-6 border border-border">
-                  <p className="text-muted-foreground mb-4">Teaching duties for 2023 include:</p>
+                  {(profile.software as any).title && (
+                    <p className="text-muted-foreground mb-4 font-medium">{(profile.software as any).title}</p>
+                  )}
                   <ul className="space-y-2">
-                    {profile.teaching.map((course: string, index: number) => (
-                      <li key={index} className="flex items-center gap-3">
-                        <GraduationCap className="w-5 h-5 text-[#7B1E3A]" />
-                        <span className="font-medium text-foreground">{course}</span>
+                    {((profile.software as any).items as string[]).map((item, i) => (
+                      <li key={i} className="flex items-center gap-3">
+                        <span className="w-2 h-2 bg-[#7B1E3A] rounded-full shrink-0" />
+                        <span className="text-foreground/90">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -695,6 +1474,18 @@ export function ProfileDetailPage() {
               !profile?.selectedPublications?.length && (
                 <AchievementsEmptyState t={t} />
               )}
+
+            {/* Publication list source note */}
+            {profile?.publicationSourceNote && (
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="text-sm text-muted-foreground border-t border-border pt-6 mt-8"
+              >
+                {profile.publicationSourceNote as string}
+              </motion.p>
+            )}
 
             {/* Scholar Metrics (for Brink) */}
             {profile.scholarMetrics && (

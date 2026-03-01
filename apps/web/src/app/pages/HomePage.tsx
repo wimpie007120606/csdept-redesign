@@ -283,9 +283,9 @@ export function HomePage() {
                 >
                   <LocalizedLink
                     to={`/research#${group.slug}`}
-                    className="block h-full rounded-2xl focus:outline-none focus:ring-2 focus:ring-[color:var(--su-maroon)] focus:ring-inset"
+                    className="block h-full rounded-2xl focus:outline-none focus:ring-2 focus:ring-[color:var(--research-card-accent)] focus:ring-inset"
                   >
-                    <div className="su-card relative h-full bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl border border-border hover:border-[#7B1E3A]/30 transition-all duration-300 hover:-translate-y-1">
+                    <div className="su-card relative h-full bg-card rounded-2xl overflow-hidden shadow-lg hover:shadow-xl border border-border hover:border-[color:var(--research-card-accent)]/30 transition-all duration-300 hover:-translate-y-1">
                       <div className="aspect-[16/10] overflow-hidden bg-muted">
                         <img
                           src={group.categoryImage}
@@ -306,7 +306,7 @@ export function HomePage() {
                         <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 mb-4">
                           {summary}
                         </p>
-                        <span className="inline-flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+                        <span className="inline-flex items-center gap-2 font-semibold text-sm group-hover:gap-3 transition-all text-[color:var(--research-card-accent)] group-hover:text-[color:var(--research-card-accent-hover)] underline-offset-2 hover:underline">
                           {t('research.exploreGroup')}
                           <ArrowRight className="w-4 h-4" />
                         </span>

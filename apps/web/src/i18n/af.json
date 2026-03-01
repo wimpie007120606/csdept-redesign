@@ -135,6 +135,10 @@
       "nlp": {
         "title": "Verwerking van Natuurlike Taal",
         "summary": "Werk aan verwerking van natuurlike taal, rekenaarlinguistiek en ondersteunende tegnologieë wat taal en berekening verbind."
+      },
+      "pleased": {
+        "title": "PLeaSeD – Beplanning, Leer en Soek vir Besluitneming",
+        "summary": "Navorsing oor beplanning onder onsekerheid, adversariale soek, versterkingsleer en besluitneming—met toepassings in speletjies, robotika en outonome stelsels."
       }
     },
     "metrics": {
@@ -554,7 +558,18 @@
     "publications": "Publikasies",
     "contact": "Kontak",
     "researchInterests": "Navorsingsbelangstellings",
+    "links": "Skakels",
     "teaching": "Onderrig",
+    "researchProjects": "Navorsingsprojekte",
+    "researchCategories": "Navorsingsareas",
+    "honoursAwards": "Eerbewyse & Toekennings",
+    "service": "Diens",
+    "toolsSoftware": "Instrumente & Sagteware",
+    "featuredPublications": "Uitgeligte publikasies",
+    "researchGroups": "Navorsingsgroepe",
+    "studentSupervision": "Studenteleiding",
+    "citedBy": "Aangehaal deur",
+    "software": "Sagteware",
     "qualifications": "Kwalifikasies",
     "programmeCommittees": "Programkomitees (Laaste 5 Jaar)",
     "scholarMetrics": "Geleerde Metrieke",

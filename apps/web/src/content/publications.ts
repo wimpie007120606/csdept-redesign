@@ -5,6 +5,11 @@
  */
 
 import { lynetteAchievementsByYear } from './lynette-achievements';
+import { berndFischerPublications } from './bernd-fischer-publications';
+import { jacoGeldenhuysPublications } from './jaco-geldenhuys-publications';
+import { corneliaInggsPublications } from './cornelia-inggs-publications';
+import { willemVisserPublications } from './willem-visser-publications';
+import { steveKroonPublications } from './steve-kroon-publications';
 
 /** Normalized publication for Research page. Citation-style (Lynette) or structured (others). */
 export interface NormalizedPublication {
@@ -35,6 +40,11 @@ const LYNETTE_SLUG = 'lynette-van-zijl';
 const WILLEM_SLUG = 'whk-bester';
 const BRINK_SLUG = 'brink-van-der-merwe';
 const WALTER_SLUG = 'walter-schulze';
+const BERND_SLUG = 'bernd-fischer';
+const JACO_SLUG = 'jaco-geldenhuys';
+const CORNELIA_SLUG = 'cornelia-inggs';
+const WILLEM_VISSER_SLUG = 'willem-visser';
+const STEVE_KROON_SLUG = 'steve-kroon';
 
 /** Willem Bester — from ProfileDetailPage static profile (real publications only). */
 const willemPublications: Omit<NormalizedPublication, 'id' | 'personSlugs'>[] = [
@@ -138,6 +148,76 @@ function buildStructuredList(
   }));
 }
 
+/** Bernd Fischer — from SU publications page / Google Scholar (bernd-fischer-publications.ts). */
+function buildBerndPublications(): NormalizedPublication[] {
+  return berndFischerPublications.map((p, i) => ({
+    id: `bernd-fischer-${p.year}-${i}`,
+    year: p.year,
+    personSlugs: [BERND_SLUG],
+    title: p.title,
+    authors: p.authors,
+    venue: p.venue,
+    details: p.note ?? undefined,
+    links: p.links,
+  }));
+}
+
+/** Jaco Geldenhuys — from profile (jaco-geldenhuys-publications.ts). */
+function buildJacoPublications(): NormalizedPublication[] {
+  return jacoGeldenhuysPublications.map((p, i) => ({
+    id: `jaco-geldenhuys-${p.year}-${i}`,
+    year: p.year,
+    personSlugs: [JACO_SLUG],
+    title: p.title,
+    authors: p.authors,
+    venue: p.venue,
+    details: p.note ?? undefined,
+    links: p.links,
+  }));
+}
+
+/** Cornelia Inggs — from profile (cornelia-inggs-publications.ts). */
+function buildCorneliaPublications(): NormalizedPublication[] {
+  return corneliaInggsPublications.map((p, i) => ({
+    id: `cornelia-inggs-${p.year}-${i}`,
+    year: p.year,
+    personSlugs: [CORNELIA_SLUG],
+    title: p.title,
+    authors: p.authors,
+    venue: p.venue,
+    details: p.note ?? undefined,
+    links: p.links,
+  }));
+}
+
+/** Willem Visser (Professor) — from profile (willem-visser-publications.ts). */
+function buildWillemVisserPublications(): NormalizedPublication[] {
+  return willemVisserPublications.map((p, i) => ({
+    id: `willem-visser-${p.year}-${i}`,
+    year: p.year,
+    personSlugs: [WILLEM_VISSER_SLUG],
+    title: p.title,
+    authors: p.authors,
+    venue: p.venue,
+    details: p.note ?? undefined,
+    links: p.links,
+  }));
+}
+
+/** Steve Kroon (Associate Professor) — from profile (steve-kroon-publications.ts). */
+function buildSteveKroonPublications(): NormalizedPublication[] {
+  return steveKroonPublications.map((p, i) => ({
+    id: `steve-kroon-${p.year}-${i}`,
+    year: p.year,
+    personSlugs: [STEVE_KROON_SLUG],
+    title: p.title,
+    authors: p.authors,
+    venue: p.venue,
+    details: p.details ?? p.note ?? undefined,
+    links: p.links,
+  }));
+}
+
 /** De-duplicate by (citation or title) + year + first author; merge personSlugs. */
 function deduplicate(publications: NormalizedPublication[]): NormalizedPublication[] {
   const byKey = new Map<string, NormalizedPublication>();
@@ -165,7 +245,12 @@ export function getAllPublications(): NormalizedPublication[] {
   const willem = buildStructuredList(willemPublications, WILLEM_SLUG);
   const brink = buildStructuredList(brinkPublications, BRINK_SLUG);
   const walter = buildStructuredList(walterPublications, WALTER_SLUG);
-  const combined = [...lynette, ...willem, ...brink, ...walter];
+  const bernd = buildBerndPublications();
+  const jaco = buildJacoPublications();
+  const cornelia = buildCorneliaPublications();
+  const willemVisser = buildWillemVisserPublications();
+  const steveKroon = buildSteveKroonPublications();
+  const combined = [...lynette, ...willem, ...brink, ...walter, ...bernd, ...jaco, ...cornelia, ...willemVisser, ...steveKroon];
   const deduped = deduplicate(combined);
   return deduped.sort((a, b) => b.year - a.year);
 }
@@ -179,6 +264,11 @@ export function getPeopleWithPublications(): PersonWithPublications[] {
     [WILLEM_SLUG, 'W. H. K. Bester'],
     [BRINK_SLUG, 'Prof. Brink van der Merwe'],
     [WALTER_SLUG, 'Walter Schulze'],
+    [BERND_SLUG, 'Prof. Bernd Fischer'],
+    [JACO_SLUG, 'Dr. Jaco Geldenhuys'],
+    [CORNELIA_SLUG, 'Dr. Cornelia P. Inggs'],
+    [WILLEM_VISSER_SLUG, 'Prof. Willem Visser'],
+    [STEVE_KROON_SLUG, 'Prof. Steve Kroon'],
   ]);
   for (const p of all) {
     for (const slug of p.personSlugs) {

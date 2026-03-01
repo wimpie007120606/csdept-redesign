@@ -33,6 +33,11 @@ const SLUG_TO_NAME: Record<string, string> = {
   'whk-bester': 'W. H. K. Bester',
   'brink-van-der-merwe': 'Prof. Brink van der Merwe',
   'walter-schulze': 'Walter Schulze',
+  'bernd-fischer': 'Prof. Bernd Fischer',
+  'jaco-geldenhuys': 'Dr. Jaco Geldenhuys',
+  'cornelia-inggs': 'Dr. Cornelia P. Inggs',
+  'willem-visser': 'Prof. Willem Visser',
+  'steve-kroon': 'Prof. Steve Kroon',
 };
 
 interface GroupMemberView {
@@ -195,7 +200,7 @@ export function ResearchPage() {
               <a
                 key={group.slug}
                 href={`#${group.slug}`}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground px-3 py-2 rounded-lg hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground px-3 py-2 rounded-lg hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-[color:var(--research-card-accent)] focus:ring-offset-2"
               >
                 {truncated}
               </a>
@@ -229,9 +234,9 @@ export function ResearchPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 viewport={{ once: true }}
-                className="group bg-card rounded-2xl border border-border shadow-lg overflow-hidden hover:shadow-xl hover:border-[#7B1E3A]/30 transition-all duration-300"
+                className="group bg-card rounded-2xl border border-border shadow-lg overflow-hidden hover:shadow-xl hover:border-[color:var(--research-card-accent)]/30 transition-all duration-300"
               >
-                <a href={`#${group.slug}`} className="block focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-inset rounded-2xl">
+                <a href={`#${group.slug}`} className="block focus:outline-none focus:ring-2 focus:ring-[color:var(--research-card-accent)] focus:ring-inset rounded-2xl">
                   <div className="aspect-[16/10] overflow-hidden bg-muted">
                     <img
                       src={group.categoryImage}
@@ -251,7 +256,7 @@ export function ResearchPage() {
                     <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 mb-4">
                       {t(`research.groups.${group.slug}.summary`)}
                     </p>
-                    <span className="inline-flex items-center gap-2 text-[#7B1E3A] font-semibold text-sm group-hover:gap-3 transition-all">
+                    <span className="inline-flex items-center gap-2 font-semibold text-sm group-hover:gap-3 transition-all text-[color:var(--research-card-accent)] group-hover:text-[color:var(--research-card-accent-hover)] underline-offset-2 hover:underline">
                       {t('research.exploreGroup')}
                       <ArrowRight className="w-4 h-4" />
                     </span>
@@ -337,7 +342,7 @@ export function ResearchPage() {
                     {/* Current members */}
                     <div className="mb-8">
                       <h4 className="font-['Spectral'] text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
-                        <Users className="w-5 h-5 text-[#7B1E3A]" />
+                        <Users className="w-5 h-5 text-[color:var(--research-card-accent)]" />
                         {t('research.currentMembers')}
                       </h4>
                       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -365,7 +370,7 @@ export function ResearchPage() {
                               {hasProfile && slug ? (
                                 <LocalizedLink
                                   to={`/people/${slug}`}
-                                  className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-border hover:border-[#7B1E3A]/50 hover:bg-muted/50 transition-all focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                                  className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-border hover:border-[color:var(--research-card-accent)]/50 hover:bg-muted/50 transition-all focus:outline-none focus:ring-2 focus:ring-[color:var(--research-card-accent)] focus:ring-offset-2"
                                 >
                                   {content}
                                 </LocalizedLink>
@@ -396,7 +401,7 @@ export function ResearchPage() {
                                 href={link.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted text-foreground font-medium hover:bg-[#7B1E3A] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted text-foreground font-medium hover:bg-[color:var(--research-card-accent)] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[color:var(--research-card-accent)] focus:ring-offset-2"
                               >
                                 {link.label}
                                 <ExternalLink className="w-4 h-4" />
@@ -405,7 +410,7 @@ export function ResearchPage() {
                               <LocalizedLink
                                 key={link.url}
                                 to={link.url}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted text-foreground font-medium hover:bg-[#7B1E3A] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted text-foreground font-medium hover:bg-[color:var(--research-card-accent)] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[color:var(--research-card-accent)] focus:ring-offset-2"
                               >
                                 {link.label}
                               </LocalizedLink>
@@ -419,7 +424,7 @@ export function ResearchPage() {
                     <div className="mt-8 pt-6 border-t border-border">
                       <a
                         href="#research-overview-heading"
-                        className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2 rounded-lg py-2"
+                        className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-[color:var(--research-card-accent)] focus:ring-offset-2 rounded-lg py-2"
                       >
                         <ArrowUp className="w-4 h-4" />
                         {t('research.backToTop')}

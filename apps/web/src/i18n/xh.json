@@ -135,6 +135,10 @@
       "nlp": {
         "title": "Ukucoca ulwimi lwemvelo",
         "summary": "Umsebenzi wokucoca ulwimi lwemvelo, i-computational linguistics, nobuchwepheshe obuncedayo obudibanisa ulwimi ne-computation."
+      },
+      "pleased": {
+        "title": "PLeaSeD – Ucwangciso, Ukufunda nokucinga ngoqoqosho",
+        "summary": "Uphando ngocwangciso phantsi kokungaqiniseki, ukucinga ngokuchasene, ukufunda ukuqinisa, nokuthatha izigqibo—nezicelo kumidlalo, irobhoti neenkqubo ezi-zimeleyo."
       }
     },
     "metrics": {
@@ -554,7 +558,18 @@
     "publications": "Iincwadi",
     "contact": "Qhagamshelana",
     "researchInterests": "Iintlobo zoPhando",
+    "links": "Iilinki",
     "teaching": "Ukufundisa",
+    "researchProjects": "Iiprojekthi zoPhando",
+    "researchCategories": "Iindawo zoPhando",
+    "honoursAwards": "Iindondo neeMivuzo",
+    "service": "Inkonzo",
+    "toolsSoftware": "Iithuluzi neSoftware",
+    "featuredPublications": "Iincwadi ezivelisiweyo",
+    "researchGroups": "Amaqela ophando",
+    "studentSupervision": "Ulawulo lwabafundi",
+    "citedBy": "Ikhankanyiwe ngu",
+    "software": "Isoftware",
     "qualifications": "Iziqu",
     "programmeCommittees": "Amakomiti eenkqubo (Iminyaka emi-5 iphelileyo)",
     "scholarMetrics": "Iimetrics zeScholar",
