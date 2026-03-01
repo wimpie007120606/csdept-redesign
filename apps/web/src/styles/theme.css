@@ -280,6 +280,7 @@
     @apply border-border outline-ring/50;
   }
 
+  /* Prevent horizontal scroll (tablet Safari, etc.). Avoid width: 100vw on children; use 100% instead. */
   html,
   body {
     height: auto;

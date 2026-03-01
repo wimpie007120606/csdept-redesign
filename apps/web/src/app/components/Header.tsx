@@ -58,16 +58,16 @@ export function Header() {
         isScrolled ? 'shadow-lg' : ''
       }`}
     >
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex items-center justify-between h-24">
+      <div className="container mx-auto px-4 min-[1025px]:px-8 max-w-[100%] overflow-hidden">
+        <div className="flex items-center justify-between h-24 min-w-0 gap-2">
           {/* Logo + Brand */}
-          <LocalizedLink to="/" className="flex items-center gap-4 group" aria-label={t('nav.stellenboschUniversity')}>
+          <LocalizedLink to="/" className="flex items-center gap-2 min-[1025px]:gap-4 group min-w-0 flex-shrink" aria-label={t('nav.stellenboschUniversity')}>
             <img
               src={suLogo}
               alt="Stellenbosch University logo"
               className="w-14 h-14 object-contain transition-transform group-hover:scale-105"
             />
-            <div className="hidden md:flex flex-col leading-tight">
+            <div className="hidden sm:flex flex-col leading-tight min-w-0">
               <span className="text-xs font-semibold tracking-[0.18em] uppercase text-white">
                 {t('nav.stellenboschUniversity')}
               </span>
@@ -77,8 +77,8 @@ export function Header() {
             </div>
           </LocalizedLink>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1 text-white">
+          {/* Desktop Navigation — visible only from 1025px (tablets/mobile use hamburger) */}
+          <nav className="hidden min-[1025px]:flex items-center space-x-1 text-white flex-shrink-0">
             {navStructure.map((item) =>
               'href' in item && item.href ? (
                 <LocalizedLink
@@ -129,60 +129,64 @@ export function Header() {
             )}
           </nav>
 
-          {/* Right Side Actions: Language + Theme + Mobile menu */}
-          <div className="flex items-center gap-2 text-white">
-            <div
-              className="flex rounded-lg overflow-hidden border border-white/30"
-              role="group"
-              aria-label={t('common.language')}
-            >
-              <button
-                onClick={() => handleLanguageChange('en')}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-                  language === 'en'
-                    ? 'bg-white text-[color:var(--su-maroon)]'
-                    : 'bg-transparent text-white hover:bg-white/10'
-                }`}
-                aria-label={t('nav.english')}
-                aria-pressed={language === 'en'}
+          {/* Right side: desktop = language + theme; mobile/tablet = hamburger only */}
+          <div className="flex items-center gap-2 text-white flex-shrink-0">
+            {/* Language + Theme — desktop only (in drawer on mobile/tablet) */}
+            <div className="hidden min-[1025px]:flex items-center gap-2">
+              <div
+                className="flex rounded-lg overflow-hidden border border-white/30"
+                role="group"
+                aria-label={t('common.language')}
               >
-                EN
-              </button>
+                <button
+                  onClick={() => handleLanguageChange('en')}
+                  className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                    language === 'en'
+                      ? 'bg-white text-[color:var(--su-maroon)]'
+                      : 'bg-transparent text-white hover:bg-white/10'
+                  }`}
+                  aria-label={t('nav.english')}
+                  aria-pressed={language === 'en'}
+                >
+                  EN
+                </button>
+                <button
+                  onClick={() => handleLanguageChange('af')}
+                  className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                    language === 'af'
+                      ? 'bg-white text-[color:var(--su-maroon)]'
+                      : 'bg-transparent text-white hover:bg-white/10'
+                  }`}
+                  aria-label={t('nav.afrikaans')}
+                  aria-pressed={language === 'af'}
+                >
+                  AF
+                </button>
+                <button
+                  onClick={() => handleLanguageChange('xh')}
+                  className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+                    language === 'xh'
+                      ? 'bg-white text-[color:var(--su-maroon)]'
+                      : 'bg-transparent text-white hover:bg-white/10'
+                  }`}
+                  aria-label={t('nav.isiXhosa')}
+                  aria-pressed={language === 'xh'}
+                >
+                  XH
+                </button>
+              </div>
               <button
-                onClick={() => handleLanguageChange('af')}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-                  language === 'af'
-                    ? 'bg-white text-[color:var(--su-maroon)]'
-                    : 'bg-transparent text-white hover:bg-white/10'
-                }`}
-                aria-label={t('nav.afrikaans')}
-                aria-pressed={language === 'af'}
+                onClick={() => setTheme(theme === 'maroon' ? 'light' : 'maroon')}
+                className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+                aria-label={t('common.toggleTheme')}
               >
-                AF
-              </button>
-              <button
-                onClick={() => handleLanguageChange('xh')}
-                className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-                  language === 'xh'
-                    ? 'bg-white text-[color:var(--su-maroon)]'
-                    : 'bg-transparent text-white hover:bg-white/10'
-                }`}
-                aria-label={t('nav.isiXhosa')}
-                aria-pressed={language === 'xh'}
-              >
-                XH
+                {theme === 'maroon' ? <Sun className="w-5 h-5" /> : <Palette className="w-5 h-5" />}
               </button>
             </div>
-            <button
-              onClick={() => setTheme(theme === 'maroon' ? 'light' : 'maroon')}
-              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-              aria-label={t('common.toggleTheme')}
-            >
-              {theme === 'maroon' ? <Sun className="w-5 h-5" /> : <Palette className="w-5 h-5" />}
-            </button>
+            {/* Hamburger — mobile/tablet only (≤1024px) */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+              className="flex min-[1025px]:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
               aria-label={t('common.toggleMenu')}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -191,7 +195,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile/Tablet Menu (≤1024px): drawer with nav links + language + theme */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -199,7 +203,7 @@ export function Header() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="lg:hidden bg-white maroon:bg-white border-t border-[#0B1C2D]/10"
+            className="min-[1025px]:hidden bg-white maroon:bg-[color:var(--ivory)] border-t border-[#0B1C2D]/10 max-h-[min(80vh,400px)] overflow-y-auto overflow-x-hidden"
           >
             <nav className="container mx-auto px-4 py-4 space-y-1">
               {navStructure.map((item) =>
@@ -207,7 +211,7 @@ export function Header() {
                   <LocalizedLink
                     key={item.key}
                     to={item.href}
-                    className="nav-link block px-4 py-3 rounded-lg text-sm font-medium text-[#0B1C2D] maroon:text-[#FAF8F3] hover:bg-[#F3F0E8] maroon:hover:bg-white/10 transition-colors border-b-2 border-transparent"
+                    className="nav-link block px-4 py-3 rounded-lg text-sm font-medium text-[#0B1C2D] maroon:text-[color:var(--su-black)] hover:bg-[#F3F0E8] maroon:hover:bg-white/10 transition-colors border-b-2 border-transparent break-words"
                     data-current={isNavActive(item.href) ? 'true' : undefined}
                   >
                     {t(`nav.${item.key}`)}
@@ -222,7 +226,7 @@ export function Header() {
                         <LocalizedLink
                           key={subItem.key}
                           to={subItem.href}
-                          className="block pl-8 pr-4 py-2 rounded-lg text-sm text-[#0B1C2D] maroon:text-[#FAF8F3] hover:bg-[#F3F0E8] maroon:hover:bg-white/10 transition-colors"
+                          className="block pl-8 pr-4 py-2 rounded-lg text-sm text-[#0B1C2D] maroon:text-[color:var(--su-black)] hover:bg-[#F3F0E8] maroon:hover:bg-white/10 transition-colors break-words"
                         >
                           {t(`nav.${subItem.key}`)}
                         </LocalizedLink>
@@ -230,6 +234,66 @@ export function Header() {
                   </div>
                 )
               )}
+              {/* Language + Theme inside drawer for mobile/tablet */}
+              <div className="mt-6 pt-4 border-t border-[#0B1C2D]/10 flex flex-wrap items-center gap-4">
+                <span className="text-sm font-semibold text-[#0B1C2D] maroon:text-[color:var(--su-black)] w-full">
+                  {t('common.language')}
+                </span>
+                <div
+                  className="flex rounded-lg overflow-hidden border border-[#0B1C2D]/20"
+                  role="group"
+                  aria-label={t('common.language')}
+                >
+                  <button
+                    onClick={() => handleLanguageChange('en')}
+                    className={`px-3 py-2 text-sm font-medium transition-colors ${
+                      language === 'en'
+                        ? 'bg-[color:var(--su-maroon)] text-white'
+                        : 'bg-[#F3F0E8] text-[#0B1C2D] hover:bg-[#E8E4DC]'
+                    }`}
+                    aria-label={t('nav.english')}
+                    aria-pressed={language === 'en'}
+                  >
+                    EN
+                  </button>
+                  <button
+                    onClick={() => handleLanguageChange('af')}
+                    className={`px-3 py-2 text-sm font-medium transition-colors ${
+                      language === 'af'
+                        ? 'bg-[color:var(--su-maroon)] text-white'
+                        : 'bg-[#F3F0E8] text-[#0B1C2D] hover:bg-[#E8E4DC]'
+                    }`}
+                    aria-label={t('nav.afrikaans')}
+                    aria-pressed={language === 'af'}
+                  >
+                    AF
+                  </button>
+                  <button
+                    onClick={() => handleLanguageChange('xh')}
+                    className={`px-3 py-2 text-sm font-medium transition-colors ${
+                      language === 'xh'
+                        ? 'bg-[color:var(--su-maroon)] text-white'
+                        : 'bg-[#F3F0E8] text-[#0B1C2D] hover:bg-[#E8E4DC]'
+                    }`}
+                    aria-label={t('nav.isiXhosa')}
+                    aria-pressed={language === 'xh'}
+                  >
+                    XH
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-[#0B1C2D] maroon:text-[color:var(--su-black)]">
+                    {t('common.toggleTheme')}
+                  </span>
+                  <button
+                    onClick={() => setTheme(theme === 'maroon' ? 'light' : 'maroon')}
+                    className="p-2 rounded-lg bg-[#F3F0E8] hover:bg-[#E8E4DC] text-[#0B1C2D] transition-colors"
+                    aria-label={t('common.toggleTheme')}
+                  >
+                    {theme === 'maroon' ? <Sun className="w-5 h-5" /> : <Palette className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
             </nav>
           </motion.div>
         )}
