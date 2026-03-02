@@ -319,6 +319,7 @@
     "addressLine3": "Ibhagi yangasese X1, Matieland, 7602"
   },
   "common": {
+    "close": "Vala",
     "backToPeople": "Buyela kuAbantu",
     "backToHome": "Buyela ekhaya",
     "viewProfile": "Jonga iprofayili",
@@ -376,8 +377,8 @@
     "undergradHeroTitle": "BSc kwiComputer Science",
     "undergradHeroSub": "Yakha isiseko esinamandla kwiComputer Science uze ulungiselele umsebenzi ophumelelayo kubuchwepheshe. Joyina inkqubo ehlanganisa uphuculo lwethiyori namakhono asebenzayo.",
     "postgradHeroLabel": "Inkqubo yeKhono eliphezulu",
-    "postgradHeroTitle": "MSc & PhD kwiComputer Science",
-    "postgradHeroSub": "Phucula uphando lwakho nobuchule ngolawulo ngezibonelelo ezinggangathweni womhlaba.",
+    "postgradHeroTitle": "Honours, MSc & PhD kwiComputer Science",
+    "postgradHeroSub": "Phucula uphando lwakho nobuchule ngeenkqubo zethu zekhono eliphezulu ngolawulo ngezibonelelo ezinggangathweni womhlaba.",
     "postgrad": {
       "mainTitle": "Iifundo zeKhono eliphezulu kwiComputer Science",
       "s1Title": "Zintoni imiqathango yokungena?",
@@ -560,7 +561,14 @@
     "addToCalendar": "Yongeza kwikhalenda",
     "addToCalendarApple": "Apple / iCal (.ics)",
     "addToCalendarGoogle": "Ikhalenda kaGoogle",
-    "addToCalendarOutlook": "Ikhalenda ye-Outlook"
+    "addToCalendarOutlook": "Ikhalenda ye-Outlook",
+    "prevMonth": "Inyanga edlulileyo",
+    "nextMonth": "Inyanga ezayo",
+    "showOnlyUpcoming": "Bonisa ezizayo kuphela",
+    "calendar": "Ikhalenda yeemeko",
+    "eventsOnThisDay": "Iimeko kule mini",
+    "noEventsOnThisDay": "Akukho meko kule mini",
+    "viewEvent": "Jonga imeko"
   },
   "resources": {
     "title": "Izibonelelo",

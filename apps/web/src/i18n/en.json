@@ -319,6 +319,7 @@
     "addressLine3": "Private Bag X1, Matieland, 7602"
   },
   "common": {
+    "close": "Close",
     "backToPeople": "Back to People",
     "backToHome": "Go back home",
     "viewProfile": "View profile",
@@ -376,8 +377,8 @@
     "undergradHeroTitle": "BSc in Computer Science",
     "undergradHeroSub": "Build a strong foundation in computer science and prepare for a successful career in technology. Join a programme that combines theoretical excellence with practical skills.",
     "postgradHeroLabel": "Postgraduate Programme",
-    "postgradHeroTitle": "MSc & PhD in Computer Science",
-    "postgradHeroSub": "Advance your research and expertise with world-class supervision and facilities.",
+    "postgradHeroTitle": "Honours, MSc & PhD in Computer Science",
+    "postgradHeroSub": "Advance your research and expertise through our postgraduate programmes with world-class supervision and facilities.",
     "postgrad": {
       "mainTitle": "Postgraduate Studies in Computer Science",
       "s1Title": "What are the entry requirements?",
@@ -567,7 +568,14 @@
     "addToCalendar": "Add to Calendar",
     "addToCalendarApple": "Apple / iCal (.ics)",
     "addToCalendarGoogle": "Google Calendar",
-    "addToCalendarOutlook": "Outlook Calendar"
+    "addToCalendarOutlook": "Outlook Calendar",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "showOnlyUpcoming": "Show only upcoming",
+    "calendar": "Events calendar",
+    "eventsOnThisDay": "Events on this day",
+    "noEventsOnThisDay": "No events on this day",
+    "viewEvent": "View event"
   },
   "resources": {
     "title": "Resources",

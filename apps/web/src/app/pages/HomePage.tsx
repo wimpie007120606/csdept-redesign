@@ -17,6 +17,8 @@ import { useNewsForHome, formatNewsDate } from '../hooks/useNews';
 import { type CalendarEvent } from '../utils/calendar';
 import { AddToCalendarDropdown } from '../components/events/AddToCalendarDropdown';
 import { researchGroups, RESEARCH_GROUP_IMAGE_FALLBACK } from '@/content/researchGroups';
+import { upcomingEvents as siteUpcomingEvents } from '@/content/events';
+import { MiniEventsCalendar } from '../components/events/MiniEventsCalendar';
 
 const heroBackground = '/realbackground2.jpg';
 
@@ -504,7 +506,7 @@ export function HomePage() {
                 {t('home.joinEvents')}
               </h2>
             </div>
-<LocalizedLink 
+            <LocalizedLink
               to="/events"
               className="hidden md:inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all"
             >
@@ -513,7 +515,18 @@ export function HomePage() {
             </LocalizedLink>
           </div>
 
-          <div className="space-y-4">
+          <div className="flex flex-col lg:flex-row gap-10 mb-12">
+            <div className="lg:w-[280px] flex-shrink-0">
+              <MiniEventsCalendar
+                events={siteUpcomingEvents}
+                compact
+                showOnlyUpcomingDefault={true}
+                onScrollToEvent={(id) => {
+                  window.location.href = `/${language}/events#event-${id}`;
+                }}
+              />
+            </div>
+            <div className="flex-1 min-w-0 space-y-4">
             {upcomingEvents.map((event, index) => {
               const dateStr = t(event.dateKey);
               const parts = dateStr.split(' ');
@@ -565,6 +578,7 @@ export function HomePage() {
                 </div>
               </motion.div>
             );})}
+            </div>
           </div>
         </div>
       </section>

@@ -319,6 +319,7 @@
     "addressLine3": "Privaatsak X1, Matieland, 7602"
   },
   "common": {
+    "close": "Maak toe",
     "backToPeople": "Terug na Mense",
     "backToHome": "Gaan terug huis toe",
     "viewProfile": "Bekyk profiel",
@@ -376,8 +377,8 @@
     "undergradHeroTitle": "BSc in Rekenaarwetenskap",
     "undergradHeroSub": "Bou 'n sterk grondslag in rekenaarwetenskap en berei voor vir 'n suksesvolle loopbaan in tegnologie. Sluit aan by 'n program wat teoretiese uitnemendheid met praktiese vaardighede kombineer.",
     "postgradHeroLabel": "Nagraadse Program",
-    "postgradHeroTitle": "MSc & PhD in Rekenaarwetenskap",
-    "postgradHeroSub": "Bevorder jou navorsing en kundigheid met wêreldklas toesig en fasiliteite.",
+    "postgradHeroTitle": "Honours, MSc & PhD in Rekenaarwetenskap",
+    "postgradHeroSub": "Bevorder jou navorsing en kundigheid deur ons nagraadse programme met wêreldklas toesig en fasiliteite.",
     "postgrad": {
       "mainTitle": "Nagraadse Studies in Rekenaarwetenskap",
       "s1Title": "Wat is die toelatingsvereistes?",
@@ -560,7 +561,14 @@
     "addToCalendar": "Voeg by kalender",
     "addToCalendarApple": "Apple / iCal (.ics)",
     "addToCalendarGoogle": "Google Kalender",
-    "addToCalendarOutlook": "Outlook-kalender"
+    "addToCalendarOutlook": "Outlook-kalender",
+    "prevMonth": "Vorige maand",
+    "nextMonth": "Volgende maand",
+    "showOnlyUpcoming": "Toon slegs komende",
+    "calendar": "Gebeurtenis-kalender",
+    "eventsOnThisDay": "Gebeurtenisse op hierdie dag",
+    "noEventsOnThisDay": "Geen gebeurtenisse op hierdie dag",
+    "viewEvent": "Bekyk gebeurtenis"
   },
   "resources": {
     "title": "Hulpbronne",

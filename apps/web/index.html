@@ -5,6 +5,17 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>University Computer Science Website</title>
+      <script>
+        (function() {
+          var key = 'csdept-theme';
+          var stored = localStorage.getItem(key);
+          if (stored === 'maroon') {
+            document.documentElement.classList.add('maroon');
+          } else {
+            document.documentElement.classList.remove('maroon');
+          }
+        })();
+      </script>
     </head>
 
     <body>

@@ -1,135 +1,36 @@
-import { useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useLocation } from 'react-router';
 import { motion } from 'motion/react';
-import { Calendar, MapPin, Clock, ArrowRight } from 'lucide-react';
+import { MapPin, Clock, ArrowRight } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
-import { type CalendarEvent } from '../utils/calendar';
 import { useNewsletterModal } from '../components/newsletter/NewsletterModal';
 import { AddToCalendarDropdown } from '../components/events/AddToCalendarDropdown';
+import { MiniEventsCalendar } from '../components/events/MiniEventsCalendar';
+import { upcomingEvents } from '@/content/events';
+import { buildCalendarEvent } from '../utils/calendarUtils';
 
 const campusBackground = '/realbackground3.jpeg';
 
 export function EventsPage() {
   const { t } = useTranslation();
   const { openModal } = useNewsletterModal();
+  const location = useLocation();
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
 
-  const upcomingEvents = [
-    {
-      id: 'ai-ml-symposium-2026',
-      date: { day: '5', month: 'Mar' },
-      year: 2026,
-      title: 'AI & Machine Learning Symposium 2026',
-      time: '09:00 - 17:00',
-      location: 'Main Auditorium, Stellenbosch Campus',
-      description: 'Annual symposium featuring keynotes from leading AI researchers, technical presentations, and networking opportunities.',
-      type: 'Conference',
-    },
-    {
-      id: 'phd-research-seminar-mar',
-      date: { day: '12', month: 'Mar' },
-      year: 2026,
-      title: 'PhD Research Seminar Series',
-      time: '14:00 - 16:00',
-      location: 'Seminar Room 1',
-      description: 'Monthly seminar showcasing cutting-edge research from our doctoral candidates.',
-      type: 'Seminar',
-    },
-    {
-      id: 'industry-career-fair-mar',
-      date: { day: '20', month: 'Mar' },
-      year: 2026,
-      title: 'Industry Career Fair',
-      time: '10:00 - 18:00',
-      location: 'Campus Center',
-      description: 'Connect with leading tech companies, explore career opportunities, and network with industry professionals.',
-      type: 'Career',
-    },
-    {
-      id: 'cybersecurity-workshop-mar',
-      date: { day: '28', month: 'Mar' },
-      year: 2026,
-      title: 'Cybersecurity Workshop',
-      time: '13:00 - 17:00',
-      location: 'Computer Lab 2',
-      description: 'Hands-on workshop on modern cybersecurity practices and tools for students and professionals.',
-      type: 'Workshop',
-    },
-    {
-      id: 'robotics-competition-finals-apr',
-      date: { day: '5', month: 'Apr' },
-      year: 2026,
-      title: 'Robotics Competition Finals',
-      time: '10:00 - 16:00',
-      location: 'Engineering Building',
-      description: 'Watch student teams compete in autonomous robotics challenges with their innovative designs.',
-      type: 'Competition',
-    },
-    {
-      id: 'guest-lecture-quantum-computing-apr',
-      date: { day: '15', month: 'Apr' },
-      year: 2026,
-      title: 'Guest Lecture: Future of Quantum Computing',
-      time: '15:00 - 16:30',
-      location: 'Main Auditorium',
-      description: 'Distinguished guest speaker from MIT discusses quantum computing breakthroughs and future directions.',
-      type: 'Lecture',
-    },
-  ];
+  const scrollToEvent = useCallback((id: string) => {
+    const el = document.getElementById(`event-${id}`);
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, []);
 
-  type UpcomingEvent = (typeof upcomingEvents)[number];
-
-  const monthMap: Record<string, number> = {
-    Jan: 0,
-    Feb: 1,
-    Mar: 2,
-    Apr: 3,
-    May: 4,
-    Jun: 5,
-    Jul: 6,
-    Aug: 7,
-    Sep: 8,
-    Oct: 9,
-    Nov: 10,
-    Dec: 11,
-  };
-
-  function buildCalendarEvent(event: UpcomingEvent): CalendarEvent | null {
-    const monthIndex = monthMap[event.date.month];
-    const day = parseInt(event.date.day, 10);
-    if (Number.isNaN(day) || monthIndex === undefined) {
-      if (import.meta.env.DEV) {
-        // eslint-disable-next-line no-console
-        console.warn('[events] Invalid date for calendar event', event);
-      }
-      return null;
+  // When navigating from Home with hash (e.g. #event-ai-ml-symposium-2026), scroll to that card
+  useEffect(() => {
+    const hash = location.hash?.slice(1);
+    if (hash && hash.startsWith('event-')) {
+      const id = hash.replace(/^event-/, '');
+      const el = document.getElementById(`event-${id}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-
-    const [startStr, endStr] = event.time.split('-').map((part) => part.trim());
-    const [startHourStr, startMinuteStr] = (startStr ?? '').split(':');
-    const [endHourStr, endMinuteStr] = (endStr ?? '').split(':');
-
-    const startHour = Number.parseInt(startHourStr ?? '0', 10);
-    const startMinute = Number.parseInt(startMinuteStr ?? '0', 10);
-    const endHour = Number.isNaN(Number.parseInt(endHourStr ?? '', 10))
-      ? startHour + 1
-      : Number.parseInt(endHourStr ?? '0', 10);
-    const endMinute = Number.isNaN(Number.parseInt(endMinuteStr ?? '', 10))
-      ? startMinute
-      : Number.parseInt(endMinuteStr ?? '0', 10);
-
-    const start = new Date(event.year, monthIndex, day, startHour, startMinute, 0);
-    const end = new Date(event.year, monthIndex, day, endHour, endMinute, 0);
-
-    return {
-      id: event.id,
-      title: event.title,
-      description: event.description,
-      location: event.location,
-      start,
-      end,
-      timezone: 'Africa/Johannesburg',
-    };
-  }
+  }, [location.hash]);
 
   return (
     <div className="pt-20">
@@ -179,19 +80,22 @@ export function EventsPage() {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"></div>
       </section>
 
-      {/* Events List */}
+      {/* Events List + Mini Calendar */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-5xl mx-auto space-y-6">
-            {upcomingEvents.map((event, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="event-card group bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300"
-              >
+          <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-10 lg:gap-12">
+            {/* Events list - main content */}
+            <div className="flex-1 min-w-0 space-y-6 order-2 lg:order-1">
+              {upcomingEvents.map((event, index) => (
+                <motion.div
+                  key={event.id}
+                  id={`event-${event.id}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="event-card group bg-card rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 scroll-mt-24"
+                >
                 <div className="flex flex-col lg:flex-row">
                   {/* Date Badge */}
                   <div className="lg:w-32 flex-shrink-0 bg-gradient-to-br from-primary to-secondary text-white p-6 flex flex-col items-center justify-center">
@@ -230,7 +134,16 @@ export function EventsPage() {
                   </div>
                 </div>
               </motion.div>
-            ))}
+              ))}
+            </div>
+            {/* Mini Calendar - beside list on desktop, above on mobile */}
+            <div className="lg:w-[320px] flex-shrink-0 order-1 lg:order-2">
+              <MiniEventsCalendar
+                events={upcomingEvents}
+                onScrollToEvent={scrollToEvent}
+                showOnlyUpcomingDefault={true}
+              />
+            </div>
           </div>
         </div>
       </section>
