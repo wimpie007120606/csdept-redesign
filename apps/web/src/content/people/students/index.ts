@@ -32,6 +32,12 @@ function withSlug(row: StudentRow, level: Student['level']): Student {
 const doctoralData = Array.isArray(doctoralJson) ? (doctoralJson as StudentRow[]) : [];
 const mastersData = Array.isArray(mastersJson) ? (mastersJson as StudentRow[]) : [];
 
+if (doctoralData.length === 0 || mastersData.length === 0) {
+  const msg = `[students] Students data must be non-empty: doctoral=${doctoralData.length} masters=${mastersData.length}. Populate doctoral.json and masters.json in apps/web/src/content/people/students/.`;
+  console.error(msg);
+  throw new Error(msg);
+}
+
 export function getDoctoralStudents(): Student[] {
   return doctoralData.map((row) => withSlug(row, 'doctoral'));
 }

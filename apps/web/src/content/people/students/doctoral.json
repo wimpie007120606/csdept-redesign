@@ -1,1 +1,47 @@
-[]
+[
+    {
+      "name": "Willem Bester",
+      "supervisor": "Brink van der Merwe",
+      "topic": "The pathology, amelioration and cure of catastrophic backtracking in extended regular expressions"
+    },
+    {
+      "name": "Dirko Coetsee",
+      "supervisor": "McElory Hoffmann, Steve Kroon",
+      "topic": "Automated spreadsheet integration"
+    },
+    {
+      "name": "Jordan Masakuna",
+      "supervisor": "Dr Simukai Utete, Steve Kroon",
+      "topic": "Robot games with randomisation"
+    },
+    {
+      "name": "Adekunle Adekoya",
+      "supervisor": "Andries Engelbrecht",
+      "topic": "Multi-Objective Optimization for Dynamic Incremental Machine Learning Algorithms"
+    },
+    {
+      "name": "Winston Anderson",
+      "supervisor": "Lynette van Zijl",
+      "topic": "The Role of Multilingual Semantic and Semantic Web Technologies in Automated Assessment"
+    },
+    {
+      "name": "Dave Bockus",
+      "supervisor": "Andries Engelbrecht",
+      "topic": "High Dimensional Fitness Landscape Analysis"
+    },
+    {
+      "name": "Taivvo Omomule",
+      "supervisor": "Andries Engelbrecht",
+      "topic": "Mixtures of Heterogeneous Experts"
+    },
+    {
+      "name": "Moeketsi Raselimo",
+      "supervisor": "Bernd Fischer",
+      "topic": "Fault Localization and Repair for Grammarware"
+    },
+    {
+      "name": "Amani Saad",
+      "supervisor": "Andries Engelbrecht",
+      "topic": "Differential Evolution and optimal Population Sizes"
+    }
+  ]
