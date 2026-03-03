@@ -21,6 +21,8 @@ import { upcomingEvents as siteUpcomingEvents } from '@/content/events';
 import { MiniEventsCalendar } from '../components/events/MiniEventsCalendar';
 
 const heroBackground = '/realbackground2.jpg';
+/** Moving hero background (homepage only) — SU official video. */
+const HERO_VIDEO_URL = 'https://www.sun.ac.za/sites/default/files/hero-video.mp4';
 
 /** Month name (short) to index for Home page event dates (e.g. "Mar" -> 2). */
 const HOME_MONTH_MAP: Record<string, number> = {
@@ -72,10 +74,10 @@ function homeEventToCalendarEvent(
 const NEWS_FALLBACK_IMAGE = '/realbackground2.jpg';
 
 const homePeople = [
-  { name: 'W. H. K. Bester', slug: 'whk-bester', image: '/WillemPeople.jpg', title: 'Technical Officer' },
-  { name: 'Lynette van Zijl', slug: 'lynette-van-zijl', image: '/LynettePeople.webp', title: 'Professor' },
-  { name: 'Prof. Brink van der Merwe', slug: 'brink-van-der-merwe', image: '/BrinkPeople.jpeg', title: 'Professor' },
-  { name: 'Walter Schulze', slug: 'walter-schulze', image: '/WalterPeople.jpeg', title: 'Researcher' },
+  { name: 'W. H. K. Bester', slug: 'whk-bester', image: '/people/WillemPeople.jpg', title: 'Technical Officer' },
+  { name: 'Lynette van Zijl', slug: 'lynette-van-zijl', image: '/people/LynettePeople.webp', title: 'Professor' },
+  { name: 'Prof. Brink van der Merwe', slug: 'brink-van-der-merwe', image: '/people/BrinkPeople.jpeg', title: 'Professor' },
+  { name: 'Walter Schulze', slug: 'walter-schulze', image: '/people/WalterPeople.jpeg', title: 'Researcher' },
 ];
 
 export function HomePage() {
@@ -104,15 +106,27 @@ export function HomePage() {
 
   return (
     <div className="pt-20">
-      {/* Hero Section - same layout as other pages */}
+      {/* Hero Section - same layout as other pages; moving video background (homepage only) */}
       <section className="relative py-32 text-white overflow-hidden min-h-[500px] flex items-center">
-        {/* Background Image */}
+        {/* Fallback static background */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${heroBackground})` }}
+          aria-hidden
+        />
+        {/* Moving hero video (SU official); muted autoplay for background use */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={HERO_VIDEO_URL}
+          poster={heroBackground}
+          muted
+          autoPlay
+          loop
+          playsInline
+          aria-hidden
         />
         {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0B1C2D]/90 via-[#0B1C2D]/85 to-[#0B1C2D]/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B1C2D]/90 via-[#0B1C2D]/85 to-[#0B1C2D]/80" aria-hidden />
 
         <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <div className="max-w-5xl">
