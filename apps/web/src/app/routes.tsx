@@ -15,7 +15,6 @@ import { ProfileDetailPage } from "./pages/ProfileDetailPage";
 import { StudentsLandingPage } from "./pages/StudentsLandingPage";
 import { DoctoralStudentsPage } from "./pages/DoctoralStudentsPage";
 import { MastersStudentsPage } from "./pages/MastersStudentsPage";
-import { StudentProfilePage } from "./pages/StudentProfilePage";
 import { ResearchPage } from "./pages/ResearchPage";
 import { NewsPage } from "./pages/NewsPage";
 import { NewsReaderPage } from "./pages/NewsReaderPage";
@@ -33,6 +32,12 @@ import { RouteErrorPage } from "./pages/RouteErrorPage";
 function RedirectLinksToResources() {
   const { lang } = useParams<{ lang: string }>();
   return <Navigate to={`/${lang ?? "en"}/resources/links`} replace />;
+}
+
+/** Students are list-only: redirect any /people/students/:slug to students listing. */
+function RedirectStudentSlugToStudents() {
+  const { lang } = useParams<{ lang: string }>();
+  return <Navigate to={`/${lang ?? "en"}/people/students`} replace />;
 }
 
 
@@ -55,7 +60,7 @@ export const router = createBrowserRouter([
       { path: "people/students", Component: StudentsLandingPage },
       { path: "people/students/doctoral", Component: DoctoralStudentsPage },
       { path: "people/students/masters", Component: MastersStudentsPage },
-      { path: "people/students/:studentSlug", Component: StudentProfilePage },
+      { path: "people/students/:studentSlug", Component: RedirectStudentSlugToStudents },
       { path: "people/:slug", Component: ProfileDetailPage },
       { path: "research", Component: ResearchPage },
       { path: "news", Component: NewsPage },

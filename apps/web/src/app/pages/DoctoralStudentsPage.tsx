@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { LocalizedLink } from '../components/LocalizedLink';
-import { ArrowLeft, ArrowRight, Search, User } from 'lucide-react';
+import { ArrowLeft, Search, User } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { getDoctoralStudents, type Student } from '@/content/people/students';
 
@@ -78,48 +78,38 @@ export function DoctoralStudentsPage() {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
+                    className="block bg-[#7B1E3A] rounded-2xl shadow-lg overflow-hidden"
                   >
-                    <LocalizedLink
-                      to={`/people/students/${student.slug}`}
-                      className="group block bg-[#7B1E3A] rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
-                    >
-                      <div className="flex flex-col md:flex-row">
-                        <div className="md:w-1/3 h-64 md:h-auto relative overflow-hidden bg-[#5a1630] flex items-center justify-center">
-                          <img
-                            src={PLACEHOLDER_PHOTO}
-                            alt=""
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#7B1E3A]/60 to-transparent md:bg-gradient-to-r md:from-[#7B1E3A] md:to-transparent" />
-                          <User className="w-16 h-16 text-white/40 absolute inset-0 m-auto" aria-hidden />
-                        </div>
-                        <div className="md:w-2/3 p-8 lg:p-10 text-white">
-                          <div className="space-y-6">
-                            <div>
-                              <h2 className="font-['Spectral'] text-3xl lg:text-4xl font-bold text-white mb-2">
-                                {student.name}
-                              </h2>
-                              <p className="text-[#C8A951] text-lg font-medium mb-1">
-                                {t('people.doctoralStudentLabel')}
-                              </p>
-                              <p className="text-white/60 text-sm mt-2">
-                                {t('people.supervisor')}: {student.supervisor}
-                              </p>
-                            </div>
-                            <div className="space-y-2">
-                              <p className="text-white/80 text-sm line-clamp-2">{student.topic}</p>
-                            </div>
-                            <div className="pt-2">
-                              <span className="inline-flex items-center gap-2 text-[#C8A951] font-semibold group-hover:gap-3 transition-all">
-                                {t('people.viewFullProfile')}
-                                <ArrowRight className="w-5 h-5" />
-                              </span>
-                            </div>
+                    <div className="flex flex-col md:flex-row">
+                      <div className="md:w-1/3 h-64 md:h-auto relative overflow-hidden bg-[#5a1630] flex items-center justify-center">
+                        <img
+                          src={PLACEHOLDER_PHOTO}
+                          alt=""
+                          className="w-full h-full object-cover opacity-80"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#7B1E3A]/60 to-transparent md:bg-gradient-to-r md:from-[#7B1E3A] md:to-transparent" />
+                        <User className="w-16 h-16 text-white/40 absolute inset-0 m-auto" aria-hidden />
+                      </div>
+                      <div className="md:w-2/3 p-8 lg:p-10 text-white">
+                        <div className="space-y-6">
+                          <div>
+                            <h2 className="font-['Spectral'] text-3xl lg:text-4xl font-bold text-white mb-2">
+                              {student.name}
+                            </h2>
+                            <p className="text-[#C8A951] text-lg font-medium mb-1">
+                              {t('people.doctoralStudentLabel')}
+                            </p>
+                            <p className="text-white/60 text-sm mt-2">
+                              {t('people.supervisor')}: {student.supervisor}
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <p className="text-white/80 text-sm line-clamp-2">{student.topic}</p>
                           </div>
                         </div>
                       </div>
-                    </LocalizedLink>
+                    </div>
                   </motion.div>
                 ))}
               </div>

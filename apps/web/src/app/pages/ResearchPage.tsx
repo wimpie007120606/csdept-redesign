@@ -46,8 +46,10 @@ interface GroupMemberView {
   name: string;
   role?: string;
   slug?: string;
-  /** Staff preferred: link to staff profile first, else student. */
+  /** Staff preferred: link to staff profile first, else student listing (not student profile). */
   linkTo?: 'staff' | 'student' | null;
+  /** When linkTo === 'student', path to listing page (doctoral or masters), not profile. */
+  listingPath?: string;
 }
 
 function filterPublications(
@@ -88,12 +90,14 @@ function buildGroupMembers(group: ResearchGroup): (GroupMemberView & { photo?: s
     }
     const student = getStudentBySlug(id);
     if (student) {
+      const listingPath = `/people/students/${student.level === 'doctoral' ? 'doctoral' : 'masters'}`;
       return {
         id,
         name: student.name,
         role: group.memberRoles?.[id],
         slug: id,
         linkTo: 'student' as const,
+        listingPath,
         photo: null,
       };
     }
@@ -363,8 +367,8 @@ export function ResearchPage() {
                       </h4>
                       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {buildGroupMembers(group).map((member) => {
-                          const hasProfile = Boolean(member.slug && member.linkTo);
-                          const profileUrl = member.linkTo === 'staff' ? `/people/${member.slug}` : member.linkTo === 'student' ? `/people/students/${member.slug}` : null;
+                          const hasProfile = Boolean((member.linkTo === 'staff' && member.slug) || (member.linkTo === 'student' && member.listingPath));
+                          const profileUrl = member.linkTo === 'staff' ? `/people/${member.slug}` : member.linkTo === 'student' ? member.listingPath ?? '/people/students' : null;
                           const content = (
                             <>
                               <MemberAvatar

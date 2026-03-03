@@ -15,6 +15,7 @@ import { getWillemVisserYearGroups } from '@/content/willem-visser-publications'
 import { getSteveKroonYearGroups, steveKroonFeaturedPublications } from '@/content/steve-kroon-publications';
 import { getPhotoForSlug, getFallbackCardBySlug } from '@/content/people';
 import { resolvePersonLink } from '@/app/utils/researchPeople';
+import { getStudentBySlug } from '@/content/people/students';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const campusBackground = '/realbackground3.jpeg';
@@ -1340,7 +1341,8 @@ export function ProfileDetailPage() {
                       <ul className="space-y-2">
                         {((profile.studentSupervision as any).currentStudents as Array<{ name: string; topic?: string; coSupervisor?: string; degree?: string; startYear?: number }>).map((s, i) => {
                           const link = resolvePersonLink(s.name);
-                          const href = link?.type === 'staff' ? `/people/${link.slug}` : link?.type === 'student' ? `/people/students/${link.slug}` : null;
+                          const studentListingHref = link?.type === 'student' ? (() => { const st = getStudentBySlug(link.slug); return st ? `/people/students/${st.level === 'doctoral' ? 'doctoral' : 'masters'}` : null; })() : null;
+                          const href = link?.type === 'staff' ? `/people/${link.slug}` : studentListingHref;
                           return (
                             <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
                               {href ? (
@@ -1363,7 +1365,8 @@ export function ProfileDetailPage() {
                       <ul className="space-y-2">
                         {((profile.studentSupervision as any).mscInProgress as Array<{ name: string; topic?: string }>).map((s, i) => {
                           const link = resolvePersonLink(s.name);
-                          const href = link?.type === 'staff' ? `/people/${link.slug}` : link?.type === 'student' ? `/people/students/${link.slug}` : null;
+                          const studentListingHref = link?.type === 'student' ? (() => { const st = getStudentBySlug(link.slug); return st ? `/people/students/${st.level === 'doctoral' ? 'doctoral' : 'masters'}` : null; })() : null;
+                          const href = link?.type === 'staff' ? `/people/${link.slug}` : studentListingHref;
                           return (
                             <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
                               {href ? (
