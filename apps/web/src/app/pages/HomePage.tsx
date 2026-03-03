@@ -21,8 +21,8 @@ import { upcomingEvents as siteUpcomingEvents } from '@/content/events';
 import { MiniEventsCalendar } from '../components/events/MiniEventsCalendar';
 
 const heroBackground = '/realbackground2.jpg';
-/** Moving hero background (homepage only) — SU official video. */
-const HERO_VIDEO_URL = 'https://www.sun.ac.za/sites/default/files/hero-video.mp4';
+/** Moving hero background (homepage only). Use local file so it always loads (no cross-origin block). */
+const HERO_VIDEO_URL = '/hero-video.mp4';
 
 /** Month name (short) to index for Home page event dates (e.g. "Mar" -> 2). */
 const HOME_MONTH_MAP: Record<string, number> = {
