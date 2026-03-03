@@ -3,9 +3,7 @@ import { LocalizedLink } from '../components/LocalizedLink';
 import {
   BookOpen,
   Award,
-  TrendingUp,
   Users,
-  Calendar,
   FileText,
   CheckCircle,
   ArrowRight,
@@ -13,9 +11,11 @@ import {
   Globe,
   Code,
   Briefcase,
+  ExternalLink,
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { getGeneralCSAllModulesByYear } from '@/content/bscComputerScienceProgramme';
+import { SCIENCE_YEARBOOK_PDF_PATH } from '@/content/downloads';
 
 const campusBackground = '/realbackground2.jpg';
 const classroomImage = '/first-year-science-student-asking-question-chemistry.jpg';
@@ -253,6 +253,51 @@ export function UndergraduatePage() {
               </motion.div>
             ))}
           </div>
+
+          {/* Science Yearbook */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-12 max-w-2xl mx-auto"
+          >
+            <div className="rounded-2xl border border-[#7B1E3A]/20 bg-card shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="p-6 sm:p-8">
+                <div className="flex flex-wrap items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-[#7B1E3A]/10 flex items-center justify-center flex-shrink-0">
+                    <FileText className="w-6 h-6 text-[#7B1E3A]" aria-hidden />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-['Spectral'] text-xl font-bold text-foreground mb-2">
+                      {t('study.scienceYearbookTitle')}
+                    </h3>
+                    <p className="text-muted-foreground text-sm sm:text-base leading-relaxed mb-4">
+                      {t('study.scienceYearbookDescription')}
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <a
+                        href={SCIENCE_YEARBOOK_PDF_PATH}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#7B1E3A] text-white text-sm font-medium hover:bg-[#7B1E3A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                      >
+                        <ExternalLink className="w-4 h-4" aria-hidden />
+                        {t('study.scienceYearbookView')}
+                      </a>
+                      <a
+                        href={SCIENCE_YEARBOOK_PDF_PATH}
+                        download
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-muted/50 text-foreground text-sm font-medium hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
+                      >
+                        <Download className="w-4 h-4" aria-hidden />
+                        {t('study.scienceYearbookDownload')}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -412,7 +457,7 @@ export function UndergraduatePage() {
               Join the next generation of computer scientists and innovators
             </p>
             <a
-              href="https://www.sun.ac.za/english/apply"
+              href="https://www.su.ac.za/en"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#7B1E3A] rounded-xl font-semibold hover:bg-[#C8A951] hover:text-white transition-all duration-300 shadow-2xl"
