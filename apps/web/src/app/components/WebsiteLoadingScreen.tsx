@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import './WebsiteLoadingScreen.css';
 
-const DISPLAY_MS = 3000;
+const DISPLAY_MS = 6000;
 const FADEOUT_MS = 400;
 
-/** Show loader on initial load and on every full page reload (not on client-side navigation). */
+/** Only call inside useEffect so we never touch window/performance at build or SSR. */
 function shouldShowLoader(): boolean {
   if (typeof window === 'undefined') return false;
   try {
@@ -16,14 +16,18 @@ function shouldShowLoader(): boolean {
 }
 
 export function WebsiteLoadingScreen() {
-  const [visible, setVisible] = useState(shouldShowLoader);
+  const [visible, setVisible] = useState<boolean | null>(null);
   const [fadeOut, setFadeOut] = useState(false);
   const [unmounted, setUnmounted] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (!visible) return;
+    setVisible(shouldShowLoader());
+  }, []);
+
+  useEffect(() => {
+    if (visible !== true) return;
 
     timerRef.current = setTimeout(() => {
       setFadeOut(true);
