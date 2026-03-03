@@ -708,9 +708,11 @@ export function ProfileDetailPage() {
     }
     let cancelled = false;
     const fallback = staticProfiles[normalizedSlug] ?? null;
+    const keepStaticForFirst9 = Boolean(fallback && ENRICHMENT_NOT_REQUIRED.has(normalizedSlug));
     setProfile(fallback ? { ...fallback } : null);
 
     function setProfileFromMinimal() {
+      if (keepStaticForFirst9) return; // never overwrite full static profile with minimal
       const minimal = getMinimalProfileForSlug(normalizedSlug, PLACEHOLDER_IMAGE);
       if (minimal && !cancelled) setProfile(minimal);
     }
@@ -728,7 +730,7 @@ export function ProfileDetailPage() {
       .then((apiPerson) => {
         if (cancelled) return;
         if (!apiPerson) {
-          setProfileFromMinimal();
+          setProfileFromMinimal(); // no-op when keepStaticForFirst9; profile already set to fallback
           return;
         }
         try {
