@@ -698,7 +698,7 @@ export function ProfileDetailPage() {
     },
   };
 
-  const normalizedSlug = slug ? decodeURIComponent(slug).trim() : '';
+  const normalizedSlug = slug ? decodeURIComponent(slug).trim().toLowerCase() : '';
 
   useEffect(() => {
     if (!normalizedSlug) {
@@ -713,6 +713,15 @@ export function ProfileDetailPage() {
       const minimal = getMinimalProfileForSlug(normalizedSlug, PLACEHOLDER_IMAGE);
       if (minimal && !cancelled) setProfile(minimal);
     }
+
+    const timeoutMs = 10000;
+    const timeoutId = setTimeout(() => {
+      if (!cancelled) {
+        console.warn('[ProfileDetailPage] getPerson timeout for slug:', normalizedSlug);
+        setProfileFromMinimal();
+        setLoaded(true);
+      }
+    }, timeoutMs);
 
     getPerson(normalizedSlug)
       .then((apiPerson) => {
@@ -790,10 +799,14 @@ export function ProfileDetailPage() {
         if (!cancelled) setProfileFromMinimal();
       })
       .finally(() => {
+        clearTimeout(timeoutId);
         if (!cancelled) setLoaded(true);
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
   }, [normalizedSlug]);
 
   // Guard rendering while loading or when no matching profile exists.
@@ -818,11 +831,12 @@ export function ProfileDetailPage() {
   }
 
   if (!loaded && !profile) {
-    // Simple loading state; could be replaced with a skeleton.
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center bg-background">
         <div className="text-center px-4">
-          <p className="text-muted-foreground">{t('errors.somethingWrong')}</p>
+          <p className="text-muted-foreground" role="status" aria-live="polite">
+            Loading profile…
+          </p>
         </div>
       </div>
     );
