@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import './WebsiteLoadingScreen.css';
 
-const DISPLAY_MS = 6000;
-const FADEOUT_MS = 400;
+export const WEBSITE_LOADING_DISPLAY_MS = 6000;
+export const WEBSITE_LOADING_FADEOUT_MS = 400;
+
+const DISPLAY_MS = WEBSITE_LOADING_DISPLAY_MS;
+const FADEOUT_MS = WEBSITE_LOADING_FADEOUT_MS;
 
 /** Only call inside useEffect so we never touch window/performance at build or SSR. */
 function shouldShowLoader(): boolean {

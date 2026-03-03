@@ -5,12 +5,20 @@ import { Footer } from './Footer';
 import { ScrollToTop } from './ScrollToTop';
 import { Toaster } from './ui/sonner';
 import { QuickHelpChatbot } from './QuickHelpChatbot';
-import { WebsiteLoadingScreen } from './WebsiteLoadingScreen';
+import {
+  WebsiteLoadingScreen,
+  WEBSITE_LOADING_DISPLAY_MS,
+  WEBSITE_LOADING_FADEOUT_MS,
+} from './WebsiteLoadingScreen';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { isSupportedLang } from '../utils/langPath';
 import { NewsletterModal, NewsletterModalProvider } from './newsletter/NewsletterModal';
 
 const campusBackground = '/realbackground2.jpg';
+
+const NEWSLETTER_EXTRA_DELAY_MS = 3000;
+const NEWSLETTER_OPEN_DELAY_MS =
+  WEBSITE_LOADING_DISPLAY_MS + WEBSITE_LOADING_FADEOUT_MS + NEWSLETTER_EXTRA_DELAY_MS;
 
 export function Layout() {
   const { lang } = useParams<{ lang: string }>();
@@ -22,7 +30,7 @@ export function Layout() {
   }, [lang, setLanguage]);
 
   useEffect(() => {
-    const t = setTimeout(() => setNewsletterOpen(true), 6000);
+    const t = setTimeout(() => setNewsletterOpen(true), NEWSLETTER_OPEN_DELAY_MS);
     return () => clearTimeout(t);
   }, []);
 
