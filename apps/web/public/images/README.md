@@ -13,23 +13,19 @@ Place category banner/thumbnail images in **`public/images/research/`** with the
 
 Supported formats: `.jpg`, `.jpeg`, `.png`, `.webp` (use one per category).
 
-## Member photos (Research page & People)
+## Staff / people photos (People page, profiles, research groups)
 
-Naming convention: **`NameSurnamePeople`** (no spaces; each word capitalised).
+Staff images live in **`public/people/`** and are served at paths like `/people/FileName.jpg`.
 
-Place files in **`public/images/people/`** or in **`public/`** for the four main staff (they are also referenced from the People page):
+**Standard naming:** **`FirstName_LastName_People.jpg`** (underscore between first and last name; extension `.jpg` or `.jpeg`). Use a single extension only (no `.jpg.jpg`).
 
-- `WillemBesterPeople.jpg` (or `.jpeg`, `.png`, `.webp`) — W. H. K. Bester
-- `LynetteVanZijlPeople.webp` — Lynette van Zijl
-- `BrinkVanDerMerwePeople.jpeg` — Brink van der Merwe
-- `WalterSchulzePeople.jpeg` — Walter Schulze
+Examples:
 
-Examples for other members:
+- `Willem_Visser_People.jpg`
+- `Cornelia_Ings_People.jpg`
+- `Jaco_Geldenhuys_People.jpg`
+- `Bernd_Fischer_People.jpg`
 
-- `SarahAndersonPeople.jpg`
-- `DavidChenPeople.jpg`
-- `MichaelLeePeople.jpg`
-- `JamesWilsonPeople.jpg`
-- `RobertTaylorPeople.jpg`
+Legacy names (still supported via known mappings): `WillemPeople.jpg`, `LynettePeople.webp`, `BrinkPeople.jpeg`, `WalterPeople.jpeg`.
 
-The app tries `.jpg`, `.jpeg`, `.png`, `.webp` in order. If no image is found, a fallback avatar with initials is shown.
+Paths are case-sensitive (Linux production). If no image is found, the app shows a placeholder avatar.

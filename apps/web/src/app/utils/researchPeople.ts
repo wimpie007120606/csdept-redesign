@@ -35,9 +35,19 @@ const KNOWN_IMAGES: Record<string, string> = {
 };
 
 /**
- * Member photo base filename: "NameSurnamePeople" (e.g. LynetteVanZijlPeople).
- * Strip titles (Prof., Dr.), then capitalize each word and concatenate + "People".
+ * Standard staff image filename: First_Last_People.jpg (e.g. Cornelia_Ings_People.jpg).
+ * Strip titles, then capitalize each word and join with underscore + _People.jpg.
  */
+function getStaffImageFilename(displayName: string): string {
+  const cleaned = displayName
+    .replace(/\b(Prof\.|Dr\.|Mr\.|Ms\.)\s*/gi, '')
+    .trim();
+  const parts = cleaned.split(/\s+/).filter(Boolean);
+  const pascal = parts.map((p) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join('_');
+  return `${pascal}_People.jpg`;
+}
+
+/** Legacy: "NameSurnamePeople" (no underscore) for backwards compatibility. */
 export function getMemberImageBaseName(displayName: string): string {
   const cleaned = displayName
     .replace(/\b(Prof\.|Dr\.|Mr\.|Ms\.)\s*/gi, '')
@@ -51,25 +61,25 @@ const EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp'] as const;
 
 /**
  * Preferred image path for a member. Returns known path if any,
- * otherwise /people/{BaseName}.jpg (files live in public/people/).
+ * otherwise /people/First_Last_People.jpg (matches public/people/ naming).
  */
 export function getMemberImagePath(displayName: string): string {
   const normalized = normalizeName(displayName);
   const known = KNOWN_IMAGES[normalized];
   if (known) return known;
-  const base = getMemberImageBaseName(displayName);
-  return `/people/${base}.jpg`;
+  const filename = getStaffImageFilename(displayName);
+  return `/people/${filename}`;
 }
 
 /**
  * Base URL without extension (for trying multiple extensions).
- * Known paths are returned as-is; others return path without extension.
+ * Known paths are returned as-is; others use First_Last_People base.
  */
 export function getMemberImagePathsToTry(displayName: string): string[] {
   const normalized = normalizeName(displayName);
   const known = KNOWN_IMAGES[normalized];
   if (known) return [known];
-  const base = getMemberImageBaseName(displayName);
-  const basePath = `/people/${base}`;
+  const filename = getStaffImageFilename(displayName);
+  const basePath = `/people/${filename.replace(/\.(jpg|jpeg|png|webp)$/i, '')}`;
   return EXTENSIONS.map((ext) => basePath + ext);
 }
