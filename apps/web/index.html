@@ -259,7 +259,10 @@
         var el = document.getElementById('preloader');
         if (!el) return;
         document.body.style.overflow = 'hidden';
-        var fadeMs = 400;
+        var start = Date.now();
+        var MIN_LOADER_TIME = 6000;
+        var FADEOUT_MS = 400;
+        var MAX_WAIT = 10000;
         var done = false;
         function removePreloader() {
           if (done) return;
@@ -268,16 +271,18 @@
           setTimeout(function() {
             if (el.parentNode) el.parentNode.removeChild(el);
             document.body.style.overflow = '';
-          }, fadeMs);
+          }, FADEOUT_MS);
         }
-        setTimeout(removePreloader, 3000);
+        var elapsed = Date.now() - start;
+        var remaining = Math.max(0, MIN_LOADER_TIME - elapsed);
+        setTimeout(removePreloader, remaining);
         setTimeout(function() {
           if (!done && el.parentNode) {
             done = true;
             el.parentNode.removeChild(el);
             document.body.style.overflow = '';
           }
-        }, 8000);
+        }, MAX_WAIT);
       })();
     </script>
   </body>
