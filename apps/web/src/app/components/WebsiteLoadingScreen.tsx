@@ -60,19 +60,30 @@ export function WebsiteLoadingScreen() {
       aria-live="polite"
       aria-label="Loading"
     >
-      <div className="website-loading-screen__inner">
-        <div className="website-loading-screen__base" aria-hidden />
-        <div className="website-loading-screen__glow" aria-hidden />
-        <div className="website-loading-screen__line" aria-hidden />
-        <div className="website-loading-screen__content">
-          <img
-            src={SU_LOGO}
-            alt="Stellenbosch University"
-            className="website-loading-screen__logo"
-          />
-          <div className="website-loading-screen__accent" aria-hidden />
-          <p className="website-loading-screen__subtitle">Computer Science Division</p>
-          <p className="website-loading-screen__loading-text">Loading...</p>
+      <div className="website-loading-screen__mac-container">
+        <div className="website-loading-screen__macbook">
+          <div className="website-loading-screen__bezel">
+            <div className="website-loading-screen__camera" aria-hidden />
+            <div className="website-loading-screen__screen">
+              <div className="website-loading-screen__base" aria-hidden />
+              <div className="website-loading-screen__glow" aria-hidden />
+              <div className="website-loading-screen__line" aria-hidden />
+              <div className="website-loading-screen__content">
+                <img
+                  src={SU_LOGO}
+                  alt="Stellenbosch University"
+                  className="website-loading-screen__logo"
+                />
+                <div className="website-loading-screen__accent" aria-hidden />
+                <p className="website-loading-screen__subtitle">Computer Science Division</p>
+                <p className="website-loading-screen__loading-text">Loading...</p>
+              </div>
+            </div>
+          </div>
+          <div className="website-loading-screen__base-bar">
+            <div className="website-loading-screen__keyboard" aria-hidden />
+            <div className="website-loading-screen__trackpad" aria-hidden />
+          </div>
         </div>
       </div>
     </div>
