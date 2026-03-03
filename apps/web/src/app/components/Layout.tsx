@@ -4,6 +4,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { ScrollToTop } from './ScrollToTop';
 import { Toaster } from './ui/sonner';
+import { QuickHelpChatbot } from './QuickHelpChatbot';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { isSupportedLang } from '../utils/langPath';
 import { NewsletterModal, NewsletterModalProvider } from './newsletter/NewsletterModal';
@@ -57,6 +58,7 @@ export function Layout() {
         isOpen={newsletterOpen}
         onClose={() => setNewsletterOpen(false)}
       />
+      <QuickHelpChatbot />
       <Toaster richColors position="top-center" />
     </NewsletterModalProvider>
   );

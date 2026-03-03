@@ -355,6 +355,14 @@
     "goToNextPage": "Yiya kwipheji elilandelayo",
     "toggleSidebar": "Tshintsha i-Sidebar"
   },
+  "quickHelp": {
+    "title": "Uncedo Olukhawulelayo",
+    "subtitle": "Inzululwazi yeKhompyutha • iYunivesithi yaseStellenbosch",
+    "openLabel": "Vula uncedo olukhawulelayo",
+    "backToMenu": "Buyela kumenyu",
+    "contactUs": "Sithinte",
+    "clearChat": "Cima ingxoxo"
+  },
   "errors": {
     "somethingWrong": "Into ethile ayihambanga kakuhle",
     "profileNotFound": "Iprofayili ayifumanekanga",

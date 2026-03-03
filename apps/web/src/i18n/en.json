@@ -355,6 +355,14 @@
     "goToNextPage": "Go to next page",
     "toggleSidebar": "Toggle Sidebar"
   },
+  "quickHelp": {
+    "title": "Quick Help",
+    "subtitle": "Computer Science • Stellenbosch University",
+    "openLabel": "Open Quick Help",
+    "backToMenu": "Back to menu",
+    "contactUs": "Contact us",
+    "clearChat": "Clear chat"
+  },
   "errors": {
     "somethingWrong": "Something went wrong",
     "profileNotFound": "Profile Not Found",

@@ -355,6 +355,14 @@
     "goToNextPage": "Gaan na volgende bladsy",
     "toggleSidebar": "Wissel kantbalk"
   },
+  "quickHelp": {
+    "title": "Vinnige Hulp",
+    "subtitle": "Rekenaarwetenskap • Universiteit Stellenbosch",
+    "openLabel": "Maak vinnige hulp oop",
+    "backToMenu": "Terug na kieslys",
+    "contactUs": "Kontak ons",
+    "clearChat": "Maak gesprek skoon"
+  },
   "errors": {
     "somethingWrong": "Iets het verkeerd geloop",
     "profileNotFound": "Profiel Nie Gevind Nie",
