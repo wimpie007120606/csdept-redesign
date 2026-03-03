@@ -20,6 +20,7 @@ import {
   type NormalizedPublication,
 } from '@/content/publications';
 import { peopleMeta, peopleById, peopleBySlug, type PersonMeta } from '@/content/people';
+import { getStudentBySlug } from '@/content/people/students';
 
 const campusBackground = '/realbackground3.jpeg';
 
@@ -45,6 +46,8 @@ interface GroupMemberView {
   name: string;
   role?: string;
   slug?: string;
+  /** Staff preferred: link to staff profile first, else student. */
+  linkTo?: 'staff' | 'student' | null;
 }
 
 function filterPublications(
@@ -73,25 +76,38 @@ function filterPublications(
 function buildGroupMembers(group: ResearchGroup): (GroupMemberView & { photo?: string | null })[] {
   return group.memberIds.map((id) => {
     const meta: PersonMeta | undefined = peopleById.get(id);
-      if (!meta) {
-      if (typeof import.meta !== 'undefined' && (import.meta as any).env?.DEV) {
-        // eslint-disable-next-line no-console
-        console.warn(`[research] Missing personMeta for id="${id}" in group "${group.slug}"`);
-      }
+    if (meta) {
+      return {
+        id: meta.id,
+        name: meta.name,
+        role: group.memberRoles?.[meta.id],
+        slug: meta.slug,
+        linkTo: 'staff' as const,
+        photo: meta.photo ?? null,
+      };
+    }
+    const student = getStudentBySlug(id);
+    if (student) {
       return {
         id,
-        name: id,
+        name: student.name,
         role: group.memberRoles?.[id],
-        slug: undefined,
+        slug: id,
+        linkTo: 'student' as const,
         photo: null,
       };
     }
+    if (typeof import.meta !== 'undefined' && (import.meta as any).env?.DEV) {
+      // eslint-disable-next-line no-console
+      console.warn(`[research] Missing personMeta for id="${id}" in group "${group.slug}"`);
+    }
     return {
-      id: meta.id,
-      name: meta.name,
-      role: group.memberRoles?.[meta.id],
-      slug: meta.slug,
-      photo: meta.photo ?? null,
+      id,
+      name: id,
+      role: group.memberRoles?.[id],
+      slug: undefined,
+      linkTo: null,
+      photo: null,
     };
   });
 }
@@ -347,8 +363,8 @@ export function ResearchPage() {
                       </h4>
                       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {buildGroupMembers(group).map((member) => {
-                          const hasProfile = Boolean(member.slug);
-                          const slug = member.slug;
+                          const hasProfile = Boolean(member.slug && member.linkTo);
+                          const profileUrl = member.linkTo === 'staff' ? `/people/${member.slug}` : member.linkTo === 'student' ? `/people/students/${member.slug}` : null;
                           const content = (
                             <>
                               <MemberAvatar
@@ -367,9 +383,9 @@ export function ResearchPage() {
                           );
                           return (
                             <li key={member.name}>
-                              {hasProfile && slug ? (
+                              {hasProfile && profileUrl ? (
                                 <LocalizedLink
-                                  to={`/people/${slug}`}
+                                  to={profileUrl}
                                   className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-border hover:border-[color:var(--research-card-accent)]/50 hover:bg-muted/50 transition-all focus:outline-none focus:ring-2 focus:ring-[color:var(--research-card-accent)] focus:ring-offset-2"
                                 >
                                   {content}

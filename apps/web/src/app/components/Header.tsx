@@ -23,7 +23,7 @@ const suLogo = '/brand/stellenbosch/su-logo-primary.jpeg';
 const navStructure = [
   { key: 'study', items: [{ key: 'undergraduate', href: '/study/undergraduate' }, { key: 'postgraduate', href: '/study/postgraduate' }, { key: 'courseCatalogue', href: '/courses' }] },
   { key: 'research', items: [{ key: 'researchOverview', href: '/research' }, { key: 'researchGroups', href: '/research#groups' }, { key: 'publications', href: '/research#publications' }] },
-  { key: 'people', items: [{ key: 'staff', href: '/people' }, { key: 'alumni', href: '/people/alumni' }] },
+  { key: 'people', items: [{ key: 'staff', href: '/people' }, { key: 'students', href: '/people/students' }, { key: 'alumni', href: '/people/alumni' }] },
   { key: 'news', href: '/news' },
   { key: 'events', href: '/events' },
   { key: 'resources', items: [{ key: 'links', href: '/resources/links' }, { key: 'faqs', href: '/resources#faq' }] },

@@ -12,6 +12,10 @@ import { ProspectiveStudentsPage } from "./pages/ProspectiveStudentsPage";
 import { PeoplePage } from "./pages/PeoplePage";
 import { AlumniPage } from "./pages/AlumniPage";
 import { ProfileDetailPage } from "./pages/ProfileDetailPage";
+import { StudentsLandingPage } from "./pages/StudentsLandingPage";
+import { DoctoralStudentsPage } from "./pages/DoctoralStudentsPage";
+import { MastersStudentsPage } from "./pages/MastersStudentsPage";
+import { StudentProfilePage } from "./pages/StudentProfilePage";
 import { ResearchPage } from "./pages/ResearchPage";
 import { NewsPage } from "./pages/NewsPage";
 import { NewsReaderPage } from "./pages/NewsReaderPage";
@@ -48,6 +52,10 @@ export const router = createBrowserRouter([
       { path: "postgraduate", element: <RedirectToStudyPostgraduate /> },
       { path: "people", Component: PeoplePage },
       { path: "people/alumni", Component: AlumniPage },
+      { path: "people/students", Component: StudentsLandingPage },
+      { path: "people/students/doctoral", Component: DoctoralStudentsPage },
+      { path: "people/students/masters", Component: MastersStudentsPage },
+      { path: "people/students/:studentSlug", Component: StudentProfilePage },
       { path: "people/:slug", Component: ProfileDetailPage },
       { path: "research", Component: ResearchPage },
       { path: "news", Component: NewsPage },

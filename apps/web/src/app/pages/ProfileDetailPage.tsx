@@ -14,6 +14,7 @@ import { getCorneliaInggsYearGroups } from '@/content/cornelia-inggs-publication
 import { getWillemVisserYearGroups } from '@/content/willem-visser-publications';
 import { getSteveKroonYearGroups, steveKroonFeaturedPublications } from '@/content/steve-kroon-publications';
 import { getPhotoForSlug, getFallbackCardBySlug } from '@/content/people';
+import { resolvePersonLink } from '@/app/utils/researchPeople';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const campusBackground = '/realbackground3.jpeg';
@@ -1337,12 +1338,22 @@ export function ProfileDetailPage() {
                     <div>
                       <h3 className="font-semibold text-lg text-foreground mb-3">Current Students</h3>
                       <ul className="space-y-2">
-                        {((profile.studentSupervision as any).currentStudents as Array<{ name: string; topic?: string; coSupervisor?: string; degree?: string; startYear?: number }>).map((s, i) => (
-                          <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
-                            <span className="font-medium">{s.name}</span>
-                            <span className="text-muted-foreground">{(s.topic || s.coSupervisor) ? ` – ${[s.topic, s.coSupervisor].filter(Boolean).join(', ')}` : ''}</span>
-                          </li>
-                        ))}
+                        {((profile.studentSupervision as any).currentStudents as Array<{ name: string; topic?: string; coSupervisor?: string; degree?: string; startYear?: number }>).map((s, i) => {
+                          const link = resolvePersonLink(s.name);
+                          const href = link?.type === 'staff' ? `/people/${link.slug}` : link?.type === 'student' ? `/people/students/${link.slug}` : null;
+                          return (
+                            <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
+                              {href ? (
+                                <LocalizedLink to={href} className="font-medium text-primary hover:underline">
+                                  {s.name}
+                                </LocalizedLink>
+                              ) : (
+                                <span className="font-medium">{s.name}</span>
+                              )}
+                              <span className="text-muted-foreground">{(s.topic || s.coSupervisor) ? ` – ${[s.topic, s.coSupervisor].filter(Boolean).join(', ')}` : ''}</span>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   )}
@@ -1350,12 +1361,22 @@ export function ProfileDetailPage() {
                     <div>
                       <h3 className="font-semibold text-lg text-foreground mb-3">MSc in progress</h3>
                       <ul className="space-y-2">
-                        {((profile.studentSupervision as any).mscInProgress as Array<{ name: string; topic?: string }>).map((s, i) => (
-                          <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
-                            <span className="font-medium">{s.name}</span>
-                            {s.topic && <span className="text-muted-foreground"> – {s.topic}</span>}
-                          </li>
-                        ))}
+                        {((profile.studentSupervision as any).mscInProgress as Array<{ name: string; topic?: string }>).map((s, i) => {
+                          const link = resolvePersonLink(s.name);
+                          const href = link?.type === 'staff' ? `/people/${link.slug}` : link?.type === 'student' ? `/people/students/${link.slug}` : null;
+                          return (
+                            <li key={i} className="bg-card rounded-lg p-4 border border-border text-foreground/90 text-sm">
+                              {href ? (
+                                <LocalizedLink to={href} className="font-medium text-primary hover:underline">
+                                  {s.name}
+                                </LocalizedLink>
+                              ) : (
+                                <span className="font-medium">{s.name}</span>
+                              )}
+                              {s.topic && <span className="text-muted-foreground"> – {s.topic}</span>}
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   )}

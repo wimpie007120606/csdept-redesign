@@ -1,21 +1,28 @@
 import { fallbackPeople } from '@/content/fallback';
+import { getStudentSlugByName } from '@/content/people/students';
+import { normalizeName as normalizeNameSlug } from '@/app/utils/slugifyName';
 
-/** Normalize display name for matching: strip titles, lowercase, collapse spaces. */
-function normalizeName(name: string): string {
-  return name
-    .replace(/\b(Prof\.|Dr\.|Mr\.|Ms\.)\s*/gi, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .toLowerCase();
-}
+/** Re-export for callers that need the same normalizer (strip titles, lowercase, collapse spaces). */
+export const normalizeName = normalizeNameSlug;
 
 /**
- * Resolve a member display name to a People profile slug, or null if not in People data.
+ * Resolve a member display name to a People (staff) profile slug, or null if not in People data.
  */
 export function getSlugForMemberName(displayName: string): string | null {
   const normalized = normalizeName(displayName);
   const person = fallbackPeople.find((p) => normalizeName(p.name) === normalized);
   return person?.slug ?? null;
+}
+
+/** Staff preferred: if name matches both staff and student, return staff. */
+export type ResolvedPersonLink = { type: 'staff'; slug: string } | { type: 'student'; slug: string };
+
+export function resolvePersonLink(displayName: string): ResolvedPersonLink | null {
+  const staffSlug = getSlugForMemberName(displayName);
+  if (staffSlug) return { type: 'staff', slug: staffSlug };
+  const studentSlug = getStudentSlugByName(displayName);
+  if (studentSlug) return { type: 'student', slug: studentSlug };
+  return null;
 }
 
 /** Known image paths under public/people (prefer resolving via content/people.ts peopleBySlug in UI). */
