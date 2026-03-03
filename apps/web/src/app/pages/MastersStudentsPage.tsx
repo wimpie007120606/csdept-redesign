@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { LocalizedLink } from '../components/LocalizedLink';
-import { ArrowLeft, Search, User } from 'lucide-react';
+import { ArrowLeft, Search } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { getMastersStudents, type Student } from '@/content/people/students';
 
 const campusBg = '/realbackground2.jpg';
-const PLACEHOLDER_PHOTO = '/people/placeholder.jpg';
+const SU_LOGO = '/brand/stellenbosch/su-logo-primary.jpeg';
 
 function filterStudents(students: Student[], query: string): Student[] {
   const q = query.trim().toLowerCase();
@@ -81,15 +81,16 @@ export function MastersStudentsPage() {
                     className="block bg-[#7B1E3A] rounded-2xl shadow-lg overflow-hidden"
                   >
                     <div className="flex flex-col md:flex-row">
-                      <div className="md:w-1/3 h-64 md:h-auto relative overflow-hidden bg-[#5a1630] flex items-center justify-center">
+                      <div className="md:w-1/3 min-h-[12rem] md:min-h-0 flex items-center justify-center bg-[#6d2540] p-6 transition-opacity hover:opacity-95">
                         <img
-                          src={PLACEHOLDER_PHOTO}
+                          src={SU_LOGO}
                           alt=""
-                          className="w-full h-full object-cover opacity-80"
+                          className="max-w-[120px] w-full h-auto object-contain"
+                          width={120}
+                          height={120}
                           loading="lazy"
+                          aria-hidden
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#7B1E3A]/60 to-transparent md:bg-gradient-to-r md:from-[#7B1E3A] md:to-transparent" />
-                        <User className="w-16 h-16 text-white/40 absolute inset-0 m-auto" aria-hidden />
                       </div>
                       <div className="md:w-2/3 p-8 lg:p-10 text-white">
                         <div className="space-y-6">
