@@ -9,6 +9,8 @@ export interface Env {
   RESEND_API_KEY?: string;
   /** From address for transactional emails (e.g. "CS Department <news@example.com>") */
   RESEND_FROM?: string;
+  /** Public site URL, used in emails for context links */
+  PUBLIC_SITE_URL?: string;
 }
 
 export interface Variables {

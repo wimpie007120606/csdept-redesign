@@ -9,6 +9,7 @@ import { eventsRoutes } from './routes/events.js';
 import { programmesRoutes } from './routes/programmes.js';
 import { adminRoutes } from './routes/admin.js';
 import { assetsRoutes } from './routes/assets.js';
+import { contactRoutes } from './routes/contact.js';
 import type { Env, Variables } from './bindings.js';
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>();
@@ -35,6 +36,7 @@ app.route('/api/events', eventsRoutes);
 app.route('/api/programmes', programmesRoutes);
 app.route('/api/admin', adminRoutes);
 app.route('/api/assets', assetsRoutes);
+app.route('/api/contact', contactRoutes);
 
 // Debug: list mounted routes (helpful to confirm deployment)
 app.get('/api/routes', (c) => {
@@ -51,6 +53,7 @@ app.get('/api/routes', (c) => {
     'GET /api/programmes',
     'GET /api/programmes/:slug',
     'GET /api/programmes/:slug/years',
+    'POST /api/contact',
     'POST /api/admin/login',
     'GET /api/admin/me',
     'GET /api/assets/*',

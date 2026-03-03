@@ -1,12 +1,86 @@
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
 import { LocationMapCard } from '../components/LocationMapCard';
 import { useTranslation } from '@/i18n/useTranslation';
+import { getApiBaseUrl } from '../api';
+import { toast } from 'sonner';
 
 const campusBackground = '/realbackground3.jpeg';
 
 export function ContactPage() {
   const { t } = useTranslation();
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [enquiryType, setEnquiryType] = useState('');
+  const [message, setMessage] = useState('');
+  // Honeypot field – hidden from real users
+  const [company, setCompany] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (submitting) return;
+
+    const trimmedMessage = message.trim();
+    if (trimmedMessage.length < 10) {
+      toast.error('Message is too short', {
+        description: 'Please provide at least 10 characters so we can assist you properly.',
+      });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const base = getApiBaseUrl();
+      const url = base ? `${base.replace(/\/$/, '')}/api/contact` : '/api/contact';
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          enquiryType,
+          message: trimmedMessage,
+          company,
+        }),
+      });
+
+      let data: any = null;
+      try {
+        data = await res.json();
+      } catch {
+        // ignore JSON errors; fall back to generic handling
+      }
+
+      if (res.ok && data?.ok) {
+        toast.success('Message sent', {
+          description: 'Thank you for contacting the Computer Science Division. We will get back to you soon.',
+        });
+        // Clear only the message by default so users can send a follow-up without retyping details.
+        setMessage('');
+        setCompany('');
+      } else {
+        const errorText: string =
+          (data?.error as string) ||
+          t('errors.somethingWrong') ||
+          'Something went wrong while sending your message.';
+        toast.error('Could not send message', {
+          description: errorText,
+        });
+      }
+    } catch {
+      toast.error('Network error', {
+        description: 'We could not reach the server. Please check your connection and try again.',
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <div className="pt-20">
       {/* Hero Section */}
@@ -158,7 +232,7 @@ export function ContactPage() {
                   {t('contact.sendMessage')}
                 </h2>
                 
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-semibold text-foreground mb-2">
@@ -167,6 +241,8 @@ export function ContactPage() {
                       <input
                         type="text"
                         required
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                         className="w-full px-4 py-3 bg-input-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                         placeholder={t('contact.placeholderFirstName')}
                       />
@@ -178,6 +254,8 @@ export function ContactPage() {
                       <input
                         type="text"
                         required
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                         className="w-full px-4 py-3 bg-input-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                         placeholder={t('contact.placeholderLastName')}
                       />
@@ -191,6 +269,8 @@ export function ContactPage() {
                     <input
                       type="email"
                       required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       className="w-full px-4 py-3 bg-input-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                       placeholder={t('contact.placeholderEmail')}
                     />
@@ -202,6 +282,8 @@ export function ContactPage() {
                     </label>
                     <select
                       required
+                      value={enquiryType}
+                      onChange={(e) => setEnquiryType(e.target.value)}
                       className="w-full px-4 py-3 bg-input-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all"
                     >
                       <option value="">{t('contact.selectOption')}</option>
@@ -220,17 +302,36 @@ export function ContactPage() {
                     <textarea
                       required
                       rows={6}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
                       className="w-full px-4 py-3 bg-input-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary transition-all resize-none"
                       placeholder={t('contact.placeholderMessage')}
                     />
                   </div>
 
+                  {/* Honeypot field: hidden from real users, used to catch bots */}
+                  <div className="hidden">
+                    <label htmlFor="contact-company" className="block text-sm font-semibold text-foreground mb-2">
+                      Company
+                    </label>
+                    <input
+                      id="contact-company"
+                      type="text"
+                      autoComplete="organization"
+                      value={company}
+                      onChange={(e) => setCompany(e.target.value)}
+                      className="w-full px-4 py-3 bg-input-background border border-border rounded-xl"
+                      tabIndex={-1}
+                    />
+                  </div>
+
                   <button
                     type="submit"
-                    className="w-full px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-all shadow-lg inline-flex items-center justify-center gap-2"
+                    disabled={submitting}
+                    className="w-full px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-lg inline-flex items-center justify-center gap-2"
                   >
                     <Send className="w-5 h-5" />
-                    {t('contact.sendButton')}
+                    {submitting ? 'Sending…' : t('contact.sendButton')}
                   </button>
                 </form>
               </div>

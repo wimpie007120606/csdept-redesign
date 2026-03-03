@@ -22,6 +22,8 @@ csdept-redesign/
 
 Header/hero background, logo, and people/undergraduate images are served from `apps/web/public/`. If you add or replace images (e.g. in repo root), copy them into `apps/web/public/` so the build can serve them at paths like `/background.jpg`, `/newlogo.jpeg`, `/WillemPeople.jpg`, etc.
 
+For **Cloudflare Pages** build settings (output directory, build command, “unable to submit build job”), see **[docs/CLOUDFLARE_PAGES_BUILD.md](docs/CLOUDFLARE_PAGES_BUILD.md)**.
+
 ## Prerequisites
 
 - Node.js ≥ 20 (see `.nvmrc`)
@@ -84,6 +86,26 @@ npm run dev:web
 ```
 
 Frontend runs at `http://localhost:5173`. Set `CORS_ORIGIN=http://localhost:5173` in `apps/api/.dev.vars` so the API accepts requests from the frontend.
+
+---
+
+## Contact API (POST /api/contact)
+
+The contact form on the website sends enquiries to the Worker API:
+
+```bash
+curl -X POST \"https://csdept-api.csdept.workers.dev/api/contact\" \\
+  -H \"Content-Type: application/json\" \\
+  -d '{\"firstName\":\"Ada\",\"lastName\":\"Lovelace\",\"email\":\"ada@example.com\",\"enquiryType\":\"general\",\"message\":\"I would like to know more about your computer science programmes.\"}'
+```
+
+On success, the API responds with:
+
+```json
+{ \"ok\": true }
+```
+
+If validation fails or email sending fails, the response is `{ \"ok\": false, \"error\": \"...\" }` with an appropriate HTTP status code.
 
 ---
 
