@@ -21,8 +21,6 @@ import { upcomingEvents as siteUpcomingEvents } from '@/content/events';
 import { MiniEventsCalendar } from '../components/events/MiniEventsCalendar';
 
 const heroBackground = '/realbackground2.jpg';
-/** Moving hero background (homepage only). Use local file so it always loads (no cross-origin block). */
-const HERO_VIDEO_URL = '/hero-video.mp4';
 
 /** Month name (short) to index for Home page event dates (e.g. "Mar" -> 2). */
 const HOME_MONTH_MAP: Record<string, number> = {
@@ -106,23 +104,12 @@ export function HomePage() {
 
   return (
     <div className="pt-20">
-      {/* Hero Section - same layout as other pages; moving video background (homepage only) */}
+      {/* Hero Section - same layout as other pages; static wallpaper background */}
       <section className="relative py-32 text-white overflow-hidden min-h-[500px] flex items-center">
-        {/* Fallback static background */}
+        {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${heroBackground})` }}
-          aria-hidden
-        />
-        {/* Moving hero video (SU official); muted autoplay for background use */}
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          src={HERO_VIDEO_URL}
-          poster={heroBackground}
-          muted
-          autoPlay
-          loop
-          playsInline
           aria-hidden
         />
         {/* Dark Overlay */}

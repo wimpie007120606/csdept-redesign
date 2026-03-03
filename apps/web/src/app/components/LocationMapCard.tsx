@@ -1,12 +1,12 @@
 import { MapPin, ExternalLink } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 
-/** Single source of truth for CS Division location (Stellenbosch University campus). */
+/** Single source of truth for CS Division location (Stellenbosch University campus). 33°55'30.9"S 18°51'55.1"E */
 export const LOCATION = {
   name: 'Computer Science Division, Stellenbosch University',
   addressLine: 'General Engineering Building, Banghoek Road, Stellenbosch',
-  lat: -33.933203,
-  lng: 18.864902,
+  lat: -33.925250,
+  lng: 18.865306,
 } as const;
 
 /** Google Maps: open location in new tab. Format: https://www.google.com/maps?q=lat,lng */

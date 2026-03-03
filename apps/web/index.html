@@ -16,8 +16,8 @@
       })();
     </script>
     <style>
-      /* Critical first-paint preloader — fullscreen + Mac animation */
-      #preloader {
+      /* Device-aware loading screen: iPhone & mobile phones = MacBook Air mockup; desktops = Mac Studio mockup */
+      #loading-screen {
         position: fixed;
         inset: 0;
         z-index: 2147483647;
@@ -26,11 +26,27 @@
         justify-content: center;
         background: radial-gradient(ellipse at center, #3a0c1a 0%, #21050f 45%, #140309 100%);
         overflow: hidden;
-        transition: opacity 0.4s ease-out;
+        animation: ls-fadeIn 0.3s ease-out;
+        transition: opacity 0.5s ease-in-out;
       }
-      #preloader.preloader--hide {
+      #loading-screen.loading-screen--hide {
         opacity: 0;
         pointer-events: none;
+      }
+      @keyframes ls-fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      /* iPhone & mobile phones: show MacBook Air (laptop) only; desktop: show Mac Studio only */
+      #loading-screen.loading-screen--mobile .macstudio-loader { display: none !important; }
+      #loading-screen.loading-screen--desktop .macbook-loader { display: none !important; }
+      /* Desktop: subtle floating animation for Mac Studio */
+      #loading-screen.loading-screen--desktop .pl-mac-container {
+        animation: ls-float 4s ease-in-out infinite;
+      }
+      @keyframes ls-float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
       }
       .pl-mac-container {
         perspective: 2000px;
@@ -170,83 +186,173 @@
         opacity: 0;
         animation: pl-textFadeIn 0.5s ease-out 2.8s forwards;
       }
+      .pl-loading-bar {
+        width: 120px;
+        height: 3px;
+        margin-top: 12px;
+        background: rgba(200,169,81,0.2);
+        border-radius: 999px;
+        overflow: hidden;
+        opacity: 0;
+        animation: pl-textFadeIn 0.4s ease-out 3s forwards;
+      }
+      .pl-loading-bar::after {
+        content: '';
+        display: block;
+        height: 100%;
+        width: 40%;
+        background: linear-gradient(90deg, #C8A951, #7B1E3A);
+        border-radius: 999px;
+        animation: pl-loadingBar 1.2s ease-in-out infinite;
+      }
+      @keyframes pl-loadingBar {
+        0% { transform: translateX(-100%); }
+        50% { transform: translateX(200%); }
+        100% { transform: translateX(-100%); }
+      }
       @keyframes pl-textFadeIn {
         from { opacity: 0; transform: translateY(8px); }
         to { opacity: 1; transform: translateY(0); }
       }
-      /* Mac Studio-style stand (neck + foot) */
-      .pl-base-bar {
+      /* Mac Studio (desktop): stand + foot */
+      .macstudio-loader .pl-base-bar {
         position: relative;
         width: 260px;
         max-width: 40vw;
         height: 40px;
-        margin: 24px auto 0;
+        margin: 56px auto 0;
         background: linear-gradient(180deg, #4b5563 0%, #111827 100%);
         border-radius: 999px;
-        box-shadow:
-          0 18px 45px rgba(0, 0, 0, 0.55),
-          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        box-shadow: 0 18px 45px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08);
       }
-      .pl-base-bar::before {
+      .macstudio-loader .pl-base-bar::before {
         content: '';
         position: absolute;
         bottom: 36px;
         left: 50%;
         transform: translateX(-50%);
         width: 70px;
-        height: 120px;
+        height: 88px;
         background: linear-gradient(180deg, #4b5563 0%, #020617 100%);
         border-radius: 20px;
-        box-shadow:
-          0 8px 24px rgba(0, 0, 0, 0.45),
-          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
       }
-      .pl-keyboard,
-      .pl-trackpad {
+      .macstudio-loader .pl-keyboard,
+      .macstudio-loader .pl-trackpad {
         display: none;
+      }
+      /* MacBook (mobile): laptop base bar with keyboard/trackpad */
+      .macbook-loader .pl-base-bar {
+        width: 840px;
+        max-width: calc(92vw + 40px);
+        height: 20px;
+        margin: 0 auto;
+        margin-top: 24px;
+        background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+        transform: translateY(-2px);
+      }
+      .macbook-loader .pl-base-bar::before {
+        display: none;
+      }
+      .macbook-loader .pl-keyboard {
+        display: block;
+        position: absolute;
+        top: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        height: 8px;
+        background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.02) 20%, rgba(255,255,255,0.02) 80%, transparent 100%);
+        border-radius: 2px;
+      }
+      .macbook-loader .pl-trackpad {
+        display: block;
+        position: absolute;
+        bottom: 2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: rgba(0,0,0,0.2);
+        border-radius: 2px;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
       }
       @media (max-width: 900px) {
         .pl-bezel { width: 90vw; height: 56.25vw; max-height: 437px; padding: 10px; }
-        .pl-base-bar { width: min(220px, 45vw); height: 36px; }
+        .macstudio-loader .pl-base-bar { width: min(220px, 45vw); height: 36px; }
+        .macbook-loader .pl-base-bar { width: calc(90vw + 40px); }
         .pl-logo { width: 80px; }
       }
       @media (max-width: 640px) {
         .pl-bezel { width: 92vw; height: 57.5vw; padding: 8px; border-radius: 12px; }
-        .pl-base-bar { width: min(200px, 55vw); height: 32px; border-radius: 999px; }
+        .macstudio-loader .pl-base-bar { width: min(200px, 55vw); height: 32px; border-radius: 999px; }
+        .macbook-loader .pl-base-bar { width: calc(92vw + 24px); height: 16px; border-radius: 0 0 16px 16px; }
         .pl-camera { width: 4px; height: 4px; top: 4px; }
         .pl-logo { width: 70px; }
         .pl-subtitle { font-size: 10px; letter-spacing: 1.5px; }
         .pl-loading-text { font-size: 10px; }
       }
       @media (prefers-reduced-motion: reduce) {
-        .pl-macbook, .pl-base, .pl-glow, .pl-line, .pl-logo, .pl-accent, .pl-subtitle, .pl-loading-text { animation: none; opacity: 1; }
+        .pl-macbook, .pl-base, .pl-glow, .pl-line, .pl-logo, .pl-accent, .pl-subtitle, .pl-loading-text, .pl-loading-bar { animation: none; opacity: 1; }
+        .pl-loading-bar::after { animation: none; transform: translateX(0); width: 100%; }
+        #loading-screen.loading-screen--desktop .pl-mac-container { animation: none; }
         .pl-line { width: 90%; max-width: 400px; }
         .pl-accent { width: 140px; }
-        #preloader { transition: opacity 0.3s ease-out; }
+        #loading-screen { transition: opacity 0.3s ease-out; }
       }
     </style>
   </head>
   <body>
-    <div id="preloader" role="status" aria-label="Loading">
-      <div class="pl-mac-container">
-        <div class="pl-macbook">
-          <div class="pl-bezel">
-            <div class="pl-camera" aria-hidden></div>
-            <div class="pl-screen">
-              <div class="pl-base" aria-hidden></div>
-              <div class="pl-glow" aria-hidden></div>
-              <div class="pl-line" aria-hidden></div>
-              <div class="pl-content">
-                <img src="/brand/stellenbosch/su-logo-primary.jpeg" alt="" class="pl-logo" width="100" height="100" />
-                <div class="pl-accent" aria-hidden></div>
-                <p class="pl-subtitle">Computer Science Division</p>
-                <p class="pl-loading-text">Loading...</p>
+    <div id="loading-screen" role="status" aria-label="Loading">
+      <div class="macbook-loader">
+        <div class="pl-mac-container">
+          <div class="pl-macbook">
+            <div class="pl-bezel">
+              <div class="pl-camera" aria-hidden></div>
+              <div class="pl-screen">
+                <div class="pl-base" aria-hidden></div>
+                <div class="pl-glow" aria-hidden></div>
+                <div class="pl-line" aria-hidden></div>
+                <div class="pl-content">
+                  <img src="/brand/stellenbosch/su-logo-primary.jpeg" alt="" class="pl-logo" width="100" height="100" />
+                  <div class="pl-accent" aria-hidden></div>
+                  <p class="pl-subtitle">Computer Science Division</p>
+                  <p class="pl-loading-text">Loading...</p>
+                  <div class="pl-loading-bar" aria-hidden></div>
+                </div>
               </div>
             </div>
+            <div class="pl-base-bar">
+              <div class="pl-keyboard" aria-hidden></div>
+              <div class="pl-trackpad" aria-hidden></div>
+            </div>
           </div>
-          <div class="pl-base-bar">
-            <div class="pl-keyboard" aria-hidden></div>
-            <div class="pl-trackpad" aria-hidden></div>
+        </div>
+      </div>
+      <div class="macstudio-loader">
+        <div class="pl-mac-container">
+          <div class="pl-macbook">
+            <div class="pl-bezel">
+              <div class="pl-camera" aria-hidden></div>
+              <div class="pl-screen">
+                <div class="pl-base" aria-hidden></div>
+                <div class="pl-glow" aria-hidden></div>
+                <div class="pl-line" aria-hidden></div>
+                <div class="pl-content">
+                  <img src="/brand/stellenbosch/su-logo-primary.jpeg" alt="" class="pl-logo" width="100" height="100" />
+                  <div class="pl-accent" aria-hidden></div>
+                  <p class="pl-subtitle">Computer Science Division</p>
+                  <p class="pl-loading-text">Loading...</p>
+                  <div class="pl-loading-bar" aria-hidden></div>
+                </div>
+              </div>
+            </div>
+            <div class="pl-base-bar">
+              <div class="pl-keyboard" aria-hidden></div>
+              <div class="pl-trackpad" aria-hidden></div>
+            </div>
           </div>
         </div>
       </div>
@@ -255,18 +361,21 @@
     <script type="module" src="/src/main.tsx"></script>
     <script>
       (function() {
-        var el = document.getElementById('preloader');
+        var el = document.getElementById('loading-screen');
         if (!el) return;
         document.body.style.overflow = 'hidden';
+        /* Viewport only: iPhone & mobile phones → MacBook Air; desktop/laptop → Mac Studio */
+        var isMobile = window.innerWidth <= 1024;
+        el.classList.add(isMobile ? 'loading-screen--mobile' : 'loading-screen--desktop');
         var start = Date.now();
         var MIN_LOADER_TIME = 5000;
-        var FADEOUT_MS = 400;
-        var MAX_WAIT = 10000;
+        var FADEOUT_MS = 500;
+        var MAX_WAIT = 12000;
         var done = false;
-        function removePreloader() {
+        function removeLoader() {
           if (done) return;
           done = true;
-          el.classList.add('preloader--hide');
+          el.classList.add('loading-screen--hide');
           setTimeout(function() {
             if (el.parentNode) el.parentNode.removeChild(el);
             document.body.style.overflow = '';
@@ -274,7 +383,7 @@
         }
         var elapsed = Date.now() - start;
         var remaining = Math.max(0, MIN_LOADER_TIME - elapsed);
-        setTimeout(removePreloader, remaining);
+        setTimeout(removeLoader, remaining);
         setTimeout(function() {
           if (!done && el.parentNode) {
             done = true;
