@@ -1,25 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import './WebsiteLoadingScreen.css';
 
-const STORAGE_KEY = 'csdept-loading-screen-done';
 const DISPLAY_MS = 3000;
 const FADEOUT_MS = 400;
 
-function isFullPageLoad(): boolean {
+/** Show loader on initial load and on every full page reload (not on client-side navigation). */
+function shouldShowLoader(): boolean {
   if (typeof window === 'undefined') return false;
   try {
     const nav = performance.getEntriesByType?.('navigation')?.[0] as PerformanceNavigationTiming | undefined;
     return nav?.type === 'reload' || nav?.type === 'navigate' || false;
-  } catch {
-    return true;
-  }
-}
-
-function shouldShowLoader(): boolean {
-  if (typeof window === 'undefined') return false;
-  try {
-    if (sessionStorage.getItem(STORAGE_KEY)) return false;
-    return isFullPageLoad();
   } catch {
     return true;
   }
@@ -37,12 +27,7 @@ export function WebsiteLoadingScreen() {
 
     timerRef.current = setTimeout(() => {
       setFadeOut(true);
-      fadeTimerRef.current = setTimeout(() => {
-        try {
-          sessionStorage.setItem(STORAGE_KEY, '1');
-        } catch {}
-        setUnmounted(true);
-      }, FADEOUT_MS);
+      fadeTimerRef.current = setTimeout(() => setUnmounted(true), FADEOUT_MS);
     }, DISPLAY_MS);
 
     return () => {
