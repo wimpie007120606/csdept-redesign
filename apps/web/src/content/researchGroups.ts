@@ -70,14 +70,7 @@ export const researchGroups: ResearchGroup[] = [
       'steyn-van-litsenborgh': 'Researcher',
       'lynette-van-zijl': 'Professor',
     },
-    links: [
-      {
-        label: 'Theory and Applications of Automata and Grammars',
-        url: '#automata-grammars',
-        external: false,
-      },
-      // Keep regular-expression project description link here if/when a stable URL exists.
-    ],
+    links: [], // No links: the only one was a self-ref to #automata-grammars (removed to avoid scroll-to-top).
   },
   {
     slug: 'software-verification',
