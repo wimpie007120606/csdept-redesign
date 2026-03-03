@@ -15,14 +15,14 @@ import {
   Briefcase,
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
-import { getGeneralCSCompulsoryByYear } from '@/content/bscComputerScienceProgramme';
+import { getGeneralCSAllModulesByYear } from '@/content/bscComputerScienceProgramme';
 
 const campusBackground = '/realbackground2.jpg';
 const classroomImage = '/first-year-science-student-asking-question-chemistry.jpg';
 
 export function UndergraduatePage() {
   const { t } = useTranslation();
-  const modules = getGeneralCSCompulsoryByYear();
+  const modules = getGeneralCSAllModulesByYear();
 
   const careerOutcomes = [
     { role: 'Software Engineer', companies: 'Google, Microsoft, Amazon', salary: 'R450k - R800k' },
@@ -229,17 +229,22 @@ export function UndergraduatePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {modules
                       .filter((m) => m.year === year)
-                      .map((module) => (
+                      .map((module, idx) => (
                         <div
-                          key={module.code}
+                          key={`${year}-${module.code}-${idx}`}
                           className="flex items-start gap-3 p-4 bg-muted rounded-xl hover:bg-accent/10 transition-colors"
                         >
                           <CheckCircle className="w-5 h-5 text-[#7B1E3A] flex-shrink-0 mt-0.5" />
-                          <div>
+                          <div className="min-w-0 flex-1">
                             <div className="font-semibold text-foreground">
                               {module.code}: {module.name}
                             </div>
-                            <div className="text-sm text-muted-foreground">{module.credits} {t('study.undergradCredits')}</div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-sm text-muted-foreground">{module.credits} {t('study.undergradCredits')}</span>
+                              {module.type === 'elective' && (
+                                <span className="text-xs px-2 py-0.5 rounded bg-[#7B1E3A]/10 text-[#7B1E3A] font-medium">Elective</span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       ))}

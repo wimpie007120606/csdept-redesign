@@ -464,6 +464,42 @@ export function getGeneralCSCompulsoryModulesFlat(): { year: number; subject: st
   return out;
 }
 
+/** Abbreviation for roadmap display (compulsory + elective). */
+function subjectAbbrev(subject: string): string {
+  if (subject.includes('Computer Science')) return 'CS';
+  if (subject.includes('Mathematics') && !subject.includes('Applied')) return 'MATH';
+  if (subject.includes('Probability') || subject.includes('Statistics')) return 'STAT';
+  if (subject.includes('Science in Context')) return 'SCI';
+  if (subject.includes('Applied Mathematics')) return 'AMATH';
+  if (subject.includes('Biology')) return 'BIO';
+  if (subject.includes('Chemistry')) return 'CHEM';
+  if (subject.includes('Economics')) return 'ECON';
+  if (subject.includes('General Linguistics')) return 'LING';
+  if (subject.includes('Geo-Environmental')) return 'GEOENV';
+  if (subject.includes('Geographical Information')) return 'GIT';
+  if (subject.includes('Mathematical Statistics')) return 'MSTAT';
+  if (subject.includes('Music Technology')) return 'MUS';
+  if (subject.includes('Physics')) return 'PHYS';
+  if (subject.includes('Biometry')) return 'BIOM';
+  if (subject.includes('Genetics')) return 'GEN';
+  if (subject.includes('Biomathematics')) return 'BIOMATH';
+  if (subject.includes('Operations Research')) return 'OR';
+  return subject.replace(/\s+/g, '').slice(0, 6).toUpperCase();
+}
+
+/** Parse "114(16), 144(16)" or "378(32)*" into [{ code, credits }]. */
+function parseCodes(codesStr: string): { code: string; credits: number }[] {
+  const out: { code: string; credits: number }[] = [];
+  const parts = codesStr.split(/[,]|\s+or\s+/).map((s) => s.trim().replace(/\*$/, ''));
+  for (const p of parts) {
+    const match = p.match(/^(\d+)\((\d+)\)/);
+    if (match) {
+      out.push({ code: match[1], credits: parseInt(match[2], 10) });
+    }
+  }
+  return out;
+}
+
 /** Simple list of compulsory modules for General CS by year (for Undergraduate page summary). */
 export function getGeneralCSCompulsoryByYear(): { year: number; code: string; name: string; credits: number; type: 'compulsory' }[] {
   const list: { year: number; code: string; name: string; credits: number; type: 'compulsory' }[] = [];
@@ -478,10 +514,48 @@ export function getGeneralCSCompulsoryByYear(): { year: number; code: string; na
           const credits = parseInt(match[2], 10);
           list.push({
             year: y.year,
-            code: `${m.subject.includes('Computer Science') ? 'CS' : m.subject.includes('Mathematics') ? 'MATH' : m.subject.includes('Probability') ? 'STAT' : m.subject.includes('Science in Context') ? 'SCI' : 'MOD'} ${code}`,
+            code: `${subjectAbbrev(m.subject)} ${code}`,
             name: `${m.subject} ${code}`,
             credits,
             type: 'compulsory',
+          });
+        }
+      }
+    }
+  }
+  return list;
+}
+
+export type RoadmapModule = { year: number; code: string; name: string; credits: number; type: 'compulsory' | 'elective' };
+
+/** All General CS modules by year (compulsory + elective) for undergraduate roadmap – matches Courses focal area. */
+export function getGeneralCSAllModulesByYear(): RoadmapModule[] {
+  const list: RoadmapModule[] = [];
+  const prog = generalCS;
+  for (const y of prog.years) {
+    for (const m of y.compulsory.modules) {
+      for (const { code, credits } of parseCodes(m.codes)) {
+        list.push({
+          year: y.year,
+          code: `${subjectAbbrev(m.subject)} ${code}`,
+          name: `${m.subject} ${code}`,
+          credits,
+          type: 'compulsory',
+        });
+      }
+    }
+    const elective = y.elective;
+    if (elective && 'modules' in elective) {
+      const chooseOneOf = elective.chooseOneOf ?? [];
+      const allRows = [...chooseOneOf, ...elective.modules];
+      for (const m of allRows) {
+        for (const { code, credits } of parseCodes(m.codes)) {
+          list.push({
+            year: y.year,
+            code: `${subjectAbbrev(m.subject)} ${code}`,
+            name: `${m.subject} ${code}`,
+            credits,
+            type: 'elective',
           });
         }
       }
