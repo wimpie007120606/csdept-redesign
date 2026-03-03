@@ -5,6 +5,7 @@ import { Footer } from './Footer';
 import { ScrollToTop } from './ScrollToTop';
 import { Toaster } from './ui/sonner';
 import { QuickHelpChatbot } from './QuickHelpChatbot';
+import { WebsiteLoadingScreen } from './WebsiteLoadingScreen';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { isSupportedLang } from '../utils/langPath';
 import { NewsletterModal, NewsletterModalProvider } from './newsletter/NewsletterModal';
@@ -36,6 +37,7 @@ export function Layout() {
         closeModal: () => setNewsletterOpen(false),
       }}
     >
+      <WebsiteLoadingScreen />
       <div className="min-h-screen flex flex-col font-sans relative">
         <ScrollToTop />
         {/* Background Image */}
