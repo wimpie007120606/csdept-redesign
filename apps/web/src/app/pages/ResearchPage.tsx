@@ -409,37 +409,6 @@ export function ResearchPage() {
                       </ul>
                     </div>
 
-                    {/* Links */}
-                    {group.links && group.links.length > 0 && (
-                      <div>
-                        <h4 className="font-['Spectral'] text-lg font-semibold text-foreground mb-3">{t('research.resourcesLinks')}</h4>
-                        <div className="flex flex-wrap gap-3">
-                          {group.links.map((link) => (
-                            link.external ?? link.url.startsWith('http') ? (
-                              <a
-                                key={link.url}
-                                href={link.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted text-foreground font-medium hover:bg-[color:var(--research-card-accent)] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[color:var(--research-card-accent)] focus:ring-offset-2"
-                              >
-                                {link.label}
-                                <ExternalLink className="w-4 h-4" />
-                              </a>
-                            ) : (
-                              <LocalizedLink
-                                key={link.url}
-                                to={link.url}
-                                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-muted text-foreground font-medium hover:bg-[color:var(--research-card-accent)] hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-[color:var(--research-card-accent)] focus:ring-offset-2"
-                              >
-                                {link.label}
-                              </LocalizedLink>
-                            )
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
                     {/* Back to top */}
                     <div className="mt-8 pt-6 border-t border-border">
                       <a
