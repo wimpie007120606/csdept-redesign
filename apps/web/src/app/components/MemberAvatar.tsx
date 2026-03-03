@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DEFAULT_PROFILE_IMAGE } from '../placeholder';
 
 /** Get initials from display name (e.g. "Lynette van Zijl" → "LvZ"). */
 function getInitials(name: string): string {
@@ -18,7 +19,7 @@ interface MemberAvatarProps {
 
 const sizeClasses = { sm: 'w-12 h-12 text-sm', md: 'w-16 h-16 text-lg', lg: 'w-24 h-24 text-xl' };
 const sizePx = { sm: 48, md: 64, lg: 96 };
-const PLACEHOLDER = '/people/placeholder.jpg';
+const PLACEHOLDER = DEFAULT_PROFILE_IMAGE;
 
 export function MemberAvatar({ displayName, photo, className = '', size = 'md' }: MemberAvatarProps) {
   const [errored, setErrored] = useState(false);

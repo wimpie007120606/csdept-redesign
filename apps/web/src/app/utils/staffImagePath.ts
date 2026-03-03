@@ -1,9 +1,11 @@
+import { DEFAULT_PROFILE_IMAGE } from '../placeholder';
+
 /**
  * Best-effort profile image path for a staff name.
- * Tries convention First_Last_People.ext; UI should fall back to placeholder on error.
+ * Tries convention First_Last_People.ext; UI should fall back to DEFAULT_PROFILE_IMAGE on error.
  */
 
-const PLACEHOLDER = '/people/placeholder.jpg';
+const PLACEHOLDER = DEFAULT_PROFILE_IMAGE;
 
 /** Known name -> path mappings for files that exist in public/people (e.g. different naming). */
 const KNOWN_PATHS: Record<string, string> = {

@@ -6,9 +6,10 @@ import { getPeople, assetUrl, type Person } from '../api';
 import { fallbackPeople } from '@/content/fallback';
 import { peopleBySlug } from '@/content/people';
 import { useTranslation } from '@/i18n/useTranslation';
+import { DEFAULT_PROFILE_IMAGE } from '../placeholder';
 
 const campusBg = '/realbackground2.jpg';
-const PLACEHOLDER_PHOTO = '/people/placeholder.jpg';
+const PLACEHOLDER_PHOTO = DEFAULT_PROFILE_IMAGE;
 
 /** Normalize slug for routing: lowercase, trim, replace spaces with hyphens. */
 function toCanonicalSlug(s: string): string {
@@ -129,6 +130,12 @@ export function PeoplePage() {
                           src={person.image || PLACEHOLDER_PHOTO}
                           alt={person.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          onError={(e) => {
+                            const img = e.currentTarget;
+                            if (img.src !== window.location.origin + PLACEHOLDER_PHOTO) {
+                              img.src = PLACEHOLDER_PHOTO;
+                            }
+                          }}
                           loading="lazy"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#7B1E3A]/60 to-transparent md:bg-gradient-to-r md:from-[#7B1E3A] md:to-transparent" />
