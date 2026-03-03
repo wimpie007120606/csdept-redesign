@@ -1,3 +1,8 @@
+import academicStaffJson from './academicStaff.json';
+import administrativeStaffJson from './administrativeStaff.json';
+import { buildStaffFromJson } from './staffFromJson';
+import { normalizedNameKey } from '../app/utils/slugifyName';
+
 const willemBesterImage = '/people/WillemPeople.jpg';
 const lynetteVanZijlImage = '/people/LynettePeople.webp';
 const brinkVanDerMerweImage = '/people/BrinkPeople.jpeg';
@@ -12,7 +17,25 @@ const steveKroonImage = '/people/Steve_Kroon_People.jpg';
 export const PEOPLE_SLUGS = ['whk-bester', 'lynette-van-zijl', 'brink-van-der-merwe', 'walter-schulze', 'bernd-fischer', 'jaco-geldenhuys', 'cornelia-inggs', 'willem-visser', 'steve-kroon'] as const;
 export type PeopleSlug = (typeof PEOPLE_SLUGS)[number];
 
-export const fallbackPeople = [
+type FallbackPerson = {
+  id: string;
+  slug: string;
+  name: string;
+  primaryTitle: string;
+  secondaryTitle: string | null;
+  department: string;
+  office: string;
+  email: string;
+  secondaryEmail?: string | null;
+  phone?: string | null;
+  phoneNote?: string | null;
+  image: string;
+  researchAreas: string[];
+  address?: string;
+  institution?: string;
+};
+
+const existingFallbackPeople: FallbackPerson[] = [
   { id: 'whk-bester', slug: 'whk-bester', name: 'W. H. K. Bester', primaryTitle: 'Technical Officer', secondaryTitle: 'Junior Lecturer (since 2014)', department: 'Computer Science Division, Department of Mathematical Sciences', office: 'A508, General Engineering Building', email: 'whkbester@cs.sun.ac.za', secondaryEmail: 'whkbester@gmail.com', phone: '+27 21 808 4232', image: willemBesterImage, researchAreas: ['Formal Languages & Automata Theory', 'Software Engineering (System Programming)', 'Regular Expression Matching', 'Algorithms & Data Structures Efficiency'] },
   { id: 'lynette-van-zijl', slug: 'lynette-van-zijl', name: 'Lynette van Zijl', primaryTitle: 'Professor', secondaryTitle: 'Academic Staff', department: 'Computer Science Division, Department of Mathematical Sciences', office: 'A520, General Engineering Building', email: 'lvzijl@cs.sun.ac.za', secondaryEmail: 'lvzijl@sun.ac.za', phone: '+27 21 808 4232', phoneNote: 'secretary', image: lynetteVanZijlImage, researchAreas: ['Automata Theory', 'Formal Languages', 'Nature Conservation Applications', 'Assistive Technologies'] },
   { id: 'brink-van-der-merwe', slug: 'brink-van-der-merwe', name: 'Prof. Brink van der Merwe', primaryTitle: 'Professor', secondaryTitle: 'Academic Staff', department: 'Computer Science Division, Department of Mathematical Sciences', office: 'General Engineering Building', email: 'abvdm@cs.sun.ac.za', image: brinkVanDerMerweImage, researchAreas: ['Automata Theory', 'Formal Languages', 'Regular Expression Matching', 'Program Verification'] },
@@ -23,6 +46,26 @@ export const fallbackPeople = [
   { id: 'willem-visser', slug: 'willem-visser', name: 'Prof. Willem Visser', primaryTitle: 'Professor', secondaryTitle: 'Academic Staff', department: 'Computer Science Division, Department of Mathematical Sciences', institution: 'Stellenbosch University', office: '', address: 'Computer Science Division, Stellenbosch University, Private Bag X1, 7602 Matieland, South Africa', email: 'wvisser@cs.sun.ac.za', secondaryEmail: 'visserw@sun.ac.za', phone: '+27 21 808 4232', image: willemVisserImage, researchAreas: ['Testing', 'Program analysis', 'Symbolic execution', 'Probabilistic symbolic execution', 'Model checking', 'Java PathFinder (JPF)', 'Symbolic PathFinder (SPF)'] },
   { id: 'steve-kroon', slug: 'steve-kroon', name: 'Prof. Steve Kroon', primaryTitle: 'Associate Professor', secondaryTitle: 'Academic Staff', department: 'Computer Science Division, Department of Mathematical Sciences', institution: 'Stellenbosch University', office: 'A515, General Engineering Building', email: 'kroon@sun.ac.za', phone: '+27 21 808 9375', image: steveKroonImage, researchAreas: ['Artificial intelligence / machine learning', 'Statistical learning theory', 'Probability and computing', 'Generative modeling', 'Bayesian methods', 'Planning under uncertainty'] },
 ];
+
+const existingKeys = new Set(existingFallbackPeople.map((p) => normalizedNameKey(p.name)));
+const staffFromJson = buildStaffFromJson(academicStaffJson as { name: string; contact: string; research?: string }[], administrativeStaffJson as { name: string; contact: string }[]);
+const newPeople: FallbackPerson[] = staffFromJson
+  .filter((card) => !existingKeys.has(normalizedNameKey(card.name)))
+  .map((card) => ({
+    id: card.id,
+    slug: card.slug,
+    name: card.name,
+    primaryTitle: card.primaryTitle,
+    secondaryTitle: card.secondaryTitle,
+    department: card.department,
+    office: card.office,
+    email: card.email,
+    phone: card.phone ?? undefined,
+    image: card.image,
+    researchAreas: card.researchAreas,
+  }));
+
+export const fallbackPeople: FallbackPerson[] = [...existingFallbackPeople, ...newPeople];
 
 const fallbackSlugs = fallbackPeople.map((p) => p.slug);
 if (new Set(fallbackSlugs).size !== fallbackSlugs.length) {

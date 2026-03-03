@@ -157,14 +157,18 @@ export function PeoplePage() {
 
                           {/* Contact Information */}
                           <div className="space-y-2">
-                            <div className="flex items-start gap-3 text-white/80">
-                              <MapPin className="w-4 h-4 text-[#C8A951] flex-shrink-0 mt-1" />
-                              <span className="text-sm">{person.office}</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-white/80">
-                              <Mail className="w-4 h-4 text-[#C8A951] flex-shrink-0" />
-                              <span className="text-sm">{person.email}</span>
-                            </div>
+                            {person.office && (
+                              <div className="flex items-start gap-3 text-white/80">
+                                <MapPin className="w-4 h-4 text-[#C8A951] flex-shrink-0 mt-1" />
+                                <span className="text-sm">{person.office}</span>
+                              </div>
+                            )}
+                            {person.email && (
+                              <div className="flex items-center gap-3 text-white/80">
+                                <Mail className="w-4 h-4 text-[#C8A951] flex-shrink-0" />
+                                <span className="text-sm">{person.email}</span>
+                              </div>
+                            )}
                             {person.phone && (
                               <div className="flex items-center gap-3 text-white/80">
                                 <Phone className="w-4 h-4 text-[#C8A951] flex-shrink-0" />
@@ -177,19 +181,21 @@ export function PeoplePage() {
                           </div>
 
                           {/* Research Areas */}
-                          <div>
-                            <p className="text-white/60 text-xs uppercase tracking-wider mb-3">{t('people.researchAreas')}</p>
-                            <div className="flex flex-wrap gap-2">
-                              {person.researchAreas.map((area, i) => (
-                                <span
-                                  key={i}
-                                  className="px-3 py-1.5 bg-white/10 text-white text-sm rounded-lg backdrop-blur-sm border border-white/20"
-                                >
-                                  {area}
-                                </span>
-                              ))}
+                          {person.researchAreas && person.researchAreas.length > 0 && (
+                            <div>
+                              <p className="text-white/60 text-xs uppercase tracking-wider mb-3">{t('people.researchAreas')}</p>
+                              <div className="flex flex-wrap gap-2">
+                                {person.researchAreas.map((area, i) => (
+                                  <span
+                                    key={i}
+                                    className="px-3 py-1.5 bg-white/10 text-white text-sm rounded-lg backdrop-blur-sm border border-white/20"
+                                  >
+                                    {area}
+                                  </span>
+                                ))}
+                              </div>
                             </div>
-                          </div>
+                          )}
 
                           {/* View Profile Link */}
                           <div className="pt-2">

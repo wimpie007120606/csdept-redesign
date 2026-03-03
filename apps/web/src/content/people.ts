@@ -11,7 +11,7 @@ export interface PersonMeta {
   photo?: string | null;
 }
 
-// Seed from fallbackPeople so core profiles stay in sync with People + Profile pages.
+// Seed from fallbackPeople (includes staff from academic + administrative JSON; no duplicates).
 const basePeople: PersonMeta[] = fallbackPeople.map((p) => ({
   id: p.id,
   name: p.name,
@@ -19,9 +19,10 @@ const basePeople: PersonMeta[] = fallbackPeople.map((p) => ({
   photo: p.image ?? null,
 }));
 
+const baseIds = new Set(basePeople.map((p) => p.id));
+
 // Additional people that appear in research groups but may not yet have full profiles.
-// Slugs are only provided where we know they exist; otherwise we omit slug so the UI
-// can fall back to a “profile coming soon” state instead of a broken link.
+// Only include if not already in fallback (avoids duplicates).
 const extraPeople: PersonMeta[] = [
   { id: 'steyn-van-litsenborgh', name: 'Steyn van Litsenborgh' },
   { id: 'andrew-collett', name: 'Andrew Collett', photo: '/people/Andrew_ColletPeople.jpg' },
@@ -37,7 +38,7 @@ const extraPeople: PersonMeta[] = [
   { id: 'charl-steyl', name: 'Charl Steyl', photo: '/people/Charl_Steyl_People.jpg' },
   { id: 'elan-van-biljon', name: 'Elan van Biljon', photo: '/people/Elan_van Biljon_People.jpg' },
   { id: 'anthony-e-krzesinski', name: 'Anthony E Krzesinski' },
-];
+].filter((p) => !baseIds.has(p.id));
 
 export const peopleMeta: PersonMeta[] = [...basePeople, ...extraPeople];
 
@@ -52,6 +53,11 @@ export function getPersonMetaById(id: string): PersonMeta | undefined {
 /** Resolve photo path for a person by slug (for profile/detail pages). */
 export function getPhotoForSlug(slug: string): string | null {
   return peopleBySlug.get(slug)?.photo ?? null;
+}
+
+/** Get fallback card data by slug for minimal profile detail when API has no data. */
+export function getFallbackCardBySlug(slug: string): typeof fallbackPeople[number] | undefined {
+  return fallbackPeople.find((p) => p.slug === slug);
 }
 
 export const peopleBySlug: Map<string, PersonMeta> = new Map(

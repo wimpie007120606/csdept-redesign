@@ -13,7 +13,7 @@ import { getJacoGeldenhuysYearGroups } from '@/content/jaco-geldenhuys-publicati
 import { getCorneliaInggsYearGroups } from '@/content/cornelia-inggs-publications';
 import { getWillemVisserYearGroups } from '@/content/willem-visser-publications';
 import { getSteveKroonYearGroups, steveKroonFeaturedPublications } from '@/content/steve-kroon-publications';
-import { getPhotoForSlug } from '@/content/people';
+import { getPhotoForSlug, getFallbackCardBySlug } from '@/content/people';
 import { useTranslation } from '@/i18n/useTranslation';
 
 const campusBackground = '/realbackground3.jpeg';
@@ -707,6 +707,32 @@ export function ProfileDetailPage() {
     setProfile(fallback ? { ...fallback } : null);
     getPerson(normalizedSlug).then((apiPerson) => {
       if (!apiPerson) {
+        const card = getFallbackCardBySlug(normalizedSlug);
+        if (card) {
+          setProfile({
+            id: card.id,
+            name: card.name,
+            primaryTitle: card.primaryTitle,
+            secondaryTitle: card.secondaryTitle ?? null,
+            department: card.department,
+            office: card.office ?? null,
+            address: null,
+            campusLocation: null,
+            email: card.email ?? null,
+            secondaryEmail: card.secondaryEmail ?? null,
+            phone: card.phone ?? null,
+            phoneNote: card.phoneNote ?? null,
+            image: card.image ?? getPhotoForSlug(normalizedSlug) ?? PLACEHOLDER_IMAGE,
+            bio: [],
+            researchInterests: card.researchAreas ?? [],
+            teaching: null,
+            programmeCommittees: null,
+            qualifications: null,
+            selectedPublications: null,
+            scholarMetrics: null,
+            collaborators: null,
+          });
+        }
         setLoaded(true);
         return;
       }
