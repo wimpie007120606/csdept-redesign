@@ -634,6 +634,11 @@
     "qualifications": "Kwalifikasies",
     "programmeCommittees": "Programkomitees (Laaste 5 Jaar)",
     "scholarMetrics": "Geleerde Metrieke",
-    "metricsAsOf": "Geleerde metrieke vanaf 2023:"
+    "metricsAsOf": "Geleerde metrieke vanaf 2023:",
+    "noBioYet": "Nog geen biografie bygevoeg nie.",
+    "noResearchYet": "Nog geen navorsingsbelangstellings gelys nie.",
+    "noPublicationsYet": "Nog geen publikasies gelys nie.",
+    "noTeachingYet": "Nog geen onderriginligting nie.",
+    "noTimelineYet": "Nog geen tydlyninskrywings nie."
   }
 }

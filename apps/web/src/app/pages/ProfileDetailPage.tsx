@@ -13,7 +13,7 @@ import { getJacoGeldenhuysYearGroups } from '@/content/jaco-geldenhuys-publicati
 import { getCorneliaInggsYearGroups } from '@/content/cornelia-inggs-publications';
 import { getWillemVisserYearGroups } from '@/content/willem-visser-publications';
 import { getSteveKroonYearGroups, steveKroonFeaturedPublications } from '@/content/steve-kroon-publications';
-import { getPhotoForSlug, getFallbackCardBySlug } from '@/content/people';
+import { getPhotoForSlug, getFallbackCardBySlug, getMinimalProfileForSlug } from '@/content/people';
 import { resolvePersonLink } from '@/app/utils/researchPeople';
 import { getStudentBySlug } from '@/content/people/students';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -705,98 +705,95 @@ export function ProfileDetailPage() {
       setLoaded(true);
       return;
     }
+    let cancelled = false;
     const fallback = staticProfiles[normalizedSlug] ?? null;
     setProfile(fallback ? { ...fallback } : null);
-    getPerson(normalizedSlug).then((apiPerson) => {
-      if (!apiPerson) {
-        const card = getFallbackCardBySlug(normalizedSlug);
-        if (card) {
-          setProfile({
-            id: card.id,
-            name: card.name,
-            primaryTitle: card.primaryTitle,
-            secondaryTitle: card.secondaryTitle ?? null,
-            department: card.department,
-            office: card.office ?? null,
+
+    function setProfileFromMinimal() {
+      const minimal = getMinimalProfileForSlug(normalizedSlug, PLACEHOLDER_IMAGE);
+      if (minimal && !cancelled) setProfile(minimal);
+    }
+
+    getPerson(normalizedSlug)
+      .then((apiPerson) => {
+        if (cancelled) return;
+        if (!apiPerson) {
+          setProfileFromMinimal();
+          return;
+        }
+        try {
+          let researchInterests: string[] = [];
+          try {
+            if (apiPerson.research_interests_json) researchInterests = JSON.parse(apiPerson.research_interests_json);
+          } catch {}
+          const imageUrl = apiPerson.image_key ? assetUrl(apiPerson.image_key) : null;
+          const fallbackImg = fallback?.image as string | undefined;
+          const mapped: Record<string, unknown> = {
+            id: apiPerson.slug,
+            name: apiPerson.full_name,
+            primaryTitle: apiPerson.title ?? '',
+            secondaryTitle: apiPerson.role ?? null,
+            department: apiPerson.division ?? null,
+            institution: 'Stellenbosch University',
+            office: apiPerson.office ?? null,
             address: null,
             campusLocation: null,
-            email: card.email ?? null,
-            secondaryEmail: card.secondaryEmail ?? null,
-            phone: card.phone ?? null,
-            phoneNote: card.phoneNote ?? null,
-            image: card.image ?? getPhotoForSlug(normalizedSlug) ?? PLACEHOLDER_IMAGE,
-            bio: [],
-            researchInterests: card.researchAreas ?? [],
+            email: apiPerson.email_primary ?? null,
+            secondaryEmail: apiPerson.email_secondary ?? null,
+            phone: apiPerson.phone ?? null,
+            phoneNote: null,
+            image: (imageUrl || fallbackImg || getPhotoForSlug(normalizedSlug)) ?? PLACEHOLDER_IMAGE,
+            bio: apiPerson.bio ? apiPerson.bio.split('\n\n').filter(Boolean) : [],
+            researchInterests,
             teaching: null,
             programmeCommittees: null,
-            qualifications: null,
+            qualifications: apiPerson.qualifications ?? null,
             selectedPublications: null,
             scholarMetrics: null,
             collaborators: null,
-          });
+          };
+          if (normalizedSlug === 'lynette-van-zijl') {
+            mapped.hasPublicationsTimeline = true;
+            mapped.useLynetteFullAchievements = true;
+          } else if (apiPerson.publications_by_year && apiPerson.publications_by_year.length > 0) {
+            mapped.hasPublicationsTimeline = true;
+            mapped.publicationsTimeline = apiPerson.publications_by_year.map((y) => ({
+              year: y.year,
+              publications: y.publications.map((p: { citation: string; venue?: string; tags_json?: string }) => ({
+                title: p.citation.split(',')[0] || p.citation,
+                authors: '',
+                venue: p.venue || '',
+                type: (() => {
+                  try {
+                    const t = p.tags_json ? JSON.parse(p.tags_json) : [];
+                    return Array.isArray(t) ? (t[0] ?? 'journal') : 'journal';
+                  } catch { return 'journal'; }
+                })(),
+              })),
+            }));
+          } else if (apiPerson.publications && apiPerson.publications.length > 0) {
+            mapped.publications = apiPerson.publications.map((p: { year: number; citation: string; venue?: string }) => ({
+              title: p.citation.split(',')[0] || p.citation,
+              authors: '',
+              venue: p.venue ?? '',
+              year: p.year,
+            }));
+          }
+          setProfile(mapped);
+        } catch (err) {
+          console.error('[ProfileDetailPage] Error building profile for slug:', normalizedSlug, err);
+          setProfileFromMinimal();
         }
-        setLoaded(true);
-        return;
-      }
-      let researchInterests: string[] = [];
-      try {
-        if (apiPerson.research_interests_json) researchInterests = JSON.parse(apiPerson.research_interests_json);
-      } catch {}
-      const imageUrl = apiPerson.image_key ? assetUrl(apiPerson.image_key) : null;
-      const fallbackImg = fallback?.image as string | undefined;
-      const mapped: Record<string, unknown> = {
-        id: apiPerson.slug,
-        name: apiPerson.full_name,
-        primaryTitle: apiPerson.title ?? '',
-        secondaryTitle: apiPerson.role ?? null,
-        department: apiPerson.division ?? null,
-        institution: 'Stellenbosch University',
-        office: apiPerson.office ?? null,
-        address: null,
-        campusLocation: null,
-        email: apiPerson.email_primary ?? null,
-        secondaryEmail: apiPerson.email_secondary ?? null,
-        phone: apiPerson.phone ?? null,
-        phoneNote: null,
-        image: (imageUrl || fallbackImg || getPhotoForSlug(normalizedSlug)) ?? PLACEHOLDER_IMAGE,
-        bio: apiPerson.bio ? apiPerson.bio.split('\n\n').filter(Boolean) : [],
-        researchInterests,
-        teaching: null,
-        programmeCommittees: null,
-        qualifications: apiPerson.qualifications ?? null,
-        selectedPublications: null,
-        scholarMetrics: null,
-        collaborators: null,
-      };
-      if (normalizedSlug === 'lynette-van-zijl') {
-        mapped.hasPublicationsTimeline = true;
-        mapped.useLynetteFullAchievements = true;
-      } else if (apiPerson.publications_by_year && apiPerson.publications_by_year.length > 0) {
-        mapped.hasPublicationsTimeline = true;
-        mapped.publicationsTimeline = apiPerson.publications_by_year.map((y) => ({
-          year: y.year,
-          publications: y.publications.map((p: { citation: string; venue?: string; tags_json?: string }) => ({
-            title: p.citation.split(',')[0] || p.citation,
-            authors: '',
-            venue: p.venue || '',
-            type: (() => {
-              try {
-                const t = p.tags_json ? JSON.parse(p.tags_json) : [];
-                return Array.isArray(t) ? (t[0] ?? 'journal') : 'journal';
-              } catch { return 'journal'; }
-            })(),
-          })),
-        }));
-      } else if (apiPerson.publications && apiPerson.publications.length > 0) {
-        mapped.publications = apiPerson.publications.map((p: { year: number; citation: string; venue?: string }) => ({
-          title: p.citation.split(',')[0] || p.citation,
-          authors: '',
-          venue: p.venue ?? '',
-          year: p.year,
-        }));
-      }
-      setProfile(mapped);
-    }).finally(() => setLoaded(true));
+      })
+      .catch((err) => {
+        console.error('[ProfileDetailPage] getPerson failed for slug:', normalizedSlug, err);
+        if (!cancelled) setProfileFromMinimal();
+      })
+      .finally(() => {
+        if (!cancelled) setLoaded(true);
+      });
+
+    return () => { cancelled = true; };
   }, [normalizedSlug]);
 
   // Guard rendering while loading or when no matching profile exists.
@@ -984,46 +981,68 @@ export function ProfileDetailPage() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
           <div className="space-y-16">
-            {/* Bio */}
-            {profile.bio && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
-                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
-                  {t('profile.about')}
-                </h2>
+            {/* Bio — always show; empty state when no content */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                {t('profile.about')}
+              </h2>
+              {profile.bio && Array.isArray(profile.bio) && (profile.bio as string[]).length > 0 ? (
                 <div className="prose prose-lg max-w-none">
-                  {profile.bio.map((paragraph: string, index: number) => (
+                  {(profile.bio as string[]).map((paragraph: string, index: number) => (
                     <p key={index} className="text-foreground/80 leading-relaxed mb-4">
                       {paragraph}
                     </p>
                   ))}
                 </div>
-              </motion.div>
-            )}
+              ) : (
+                <p className="text-muted-foreground italic">{t('profile.noBioYet')}</p>
+              )}
+            </motion.div>
 
-            {/* Research Interests */}
-            {profile.researchInterests && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
-                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
-                  {t('profile.researchInterests')}
-                </h2>
+            {/* Research Interests — always show; empty state when no content */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                {t('profile.researchInterests')}
+              </h2>
+              {profile.researchInterests && Array.isArray(profile.researchInterests) && (profile.researchInterests as string[]).length > 0 ? (
                 <ul className="space-y-3">
-                  {profile.researchInterests.map((interest: string, index: number) => (
+                  {(profile.researchInterests as string[]).map((interest: string, index: number) => (
                     <li key={index} className="flex items-start gap-3 text-foreground/80">
                       <span className="w-2 h-2 bg-[#7B1E3A] rounded-full mt-2 flex-shrink-0"></span>
                       <span>{interest}</span>
                     </li>
                   ))}
                 </ul>
+              ) : (
+                <p className="text-muted-foreground italic">{t('profile.noResearchYet')}</p>
+              )}
+            </motion.div>
+
+            {/* Publications — empty state when no publication data */}
+            {!(profile.featuredPublications && (profile.featuredPublications as unknown[]).length) &&
+             !profile.publicationsTimeline &&
+             !(profile.selectedPublications && (profile.selectedPublications as unknown[]).length) &&
+             !profile.hasPublicationsTimeline && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.publications')}
+                </h2>
+                <p className="text-muted-foreground italic">{t('profile.noPublicationsYet')}</p>
               </motion.div>
             )}
 
@@ -1222,7 +1241,7 @@ export function ProfileDetailPage() {
             )}
 
             {/* Teaching */}
-            {((profile.teachingUndergraduate || profile.teachingPostgraduate) || profile.teaching) && (
+            {((profile.teachingUndergraduate || profile.teachingPostgraduate) || profile.teaching) ? (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1275,6 +1294,18 @@ export function ProfileDetailPage() {
                     </>
                   )}
                 </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="font-['Spectral'] text-3xl font-bold text-foreground mb-6 flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#7B1E3A]"></div>
+                  {t('profile.teaching')}
+                </h2>
+                <p className="text-muted-foreground italic">{t('profile.noTeachingYet')}</p>
               </motion.div>
             )}
 

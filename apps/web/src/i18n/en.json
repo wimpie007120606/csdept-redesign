@@ -644,6 +644,11 @@
     "qualifications": "Qualifications",
     "programmeCommittees": "Programme Committees (Last 5 Years)",
     "scholarMetrics": "Scholar Metrics",
-    "metricsAsOf": "Scholar metrics as of 2023:"
+    "metricsAsOf": "Scholar metrics as of 2023:",
+    "noBioYet": "No biography added yet.",
+    "noResearchYet": "No research interests listed yet.",
+    "noPublicationsYet": "No publications listed yet.",
+    "noTeachingYet": "No teaching information yet.",
+    "noTimelineYet": "No timeline entries yet."
   }
 }

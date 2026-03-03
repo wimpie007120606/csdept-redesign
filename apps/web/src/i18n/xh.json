@@ -634,6 +634,11 @@
     "qualifications": "Iziqu",
     "programmeCommittees": "Amakomiti eenkqubo (Iminyaka emi-5 iphelileyo)",
     "scholarMetrics": "Iimetrics zeScholar",
-    "metricsAsOf": "Iimetrics zeScholar ukusuka ku-2023:"
+    "metricsAsOf": "Iimetrics zeScholar ukusuka ku-2023:",
+    "noBioYet": "Akukabikho ubomi obungezelwanga.",
+    "noResearchYet": "Akukazange kudweliswe iintlobo zophando.",
+    "noPublicationsYet": "Akukazange kudweliswe iincwadi.",
+    "noTeachingYet": "Akukho lukciko lwezifundo.",
+    "noTimelineYet": "Akukho maziko omgca wexesha."
   }
 }

@@ -60,6 +60,61 @@ export function getFallbackCardBySlug(slug: string): typeof fallbackPeople[numbe
   return fallbackPeople.find((p) => p.slug === slug);
 }
 
+/** Build a minimal profile (for resilient rendering) from PersonMeta when no API or fallback card exists. */
+export function getMinimalProfileForSlug(slug: string, placeholderImage: string): Record<string, unknown> | undefined {
+  const card = getFallbackCardBySlug(slug);
+  if (card) {
+    return {
+      id: card.id,
+      name: card.name,
+      primaryTitle: card.primaryTitle,
+      secondaryTitle: card.secondaryTitle ?? null,
+      department: card.department,
+      office: card.office ?? null,
+      address: (card as { address?: string }).address ?? null,
+      campusLocation: null,
+      email: card.email ?? null,
+      secondaryEmail: card.secondaryEmail ?? null,
+      phone: card.phone ?? null,
+      phoneNote: card.phoneNote ?? null,
+      image: card.image ?? getPhotoForSlug(slug) ?? placeholderImage,
+      bio: [],
+      researchInterests: card.researchAreas ?? [],
+      teaching: null,
+      programmeCommittees: null,
+      qualifications: null,
+      selectedPublications: null,
+      scholarMetrics: null,
+      collaborators: null,
+    };
+  }
+  const meta = peopleBySlug.get(slug);
+  if (!meta) return undefined;
+  return {
+    id: meta.id,
+    name: meta.name,
+    primaryTitle: 'Staff',
+    secondaryTitle: null,
+    department: 'Computer Science Division, Department of Mathematical Sciences',
+    office: null,
+    address: null,
+    campusLocation: null,
+    email: null,
+    secondaryEmail: null,
+    phone: null,
+    phoneNote: null,
+    image: meta.photo ?? placeholderImage,
+    bio: [],
+    researchInterests: [],
+    teaching: null,
+    programmeCommittees: null,
+    qualifications: null,
+    selectedPublications: null,
+    scholarMetrics: null,
+    collaborators: null,
+  };
+}
+
 export const peopleBySlug: Map<string, PersonMeta> = new Map(
   peopleMeta
     .filter((p) => p.slug)
@@ -84,6 +139,18 @@ if (typeof import.meta !== 'undefined' && (import.meta as any).env?.DEV) {
         console.warn(`[people] Duplicate person slug detected: "${p.slug}"`);
       }
       slugs.add(p.slug);
+    }
+  }
+
+  // Ensure every staff slug has profile data (profile route must not crash).
+  const placeholder = '/people/placeholder.jpg';
+  for (const p of peopleMeta) {
+    if (p.slug) {
+      const minimal = getMinimalProfileForSlug(p.slug, placeholder);
+      if (!minimal) {
+        // eslint-disable-next-line no-console
+        console.warn(`[people] No profile data for slug "${p.slug}" — profile page may show "Not found".`);
+      }
     }
   }
 }
