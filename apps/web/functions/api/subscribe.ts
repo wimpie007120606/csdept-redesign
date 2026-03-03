@@ -1,5 +1,11 @@
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** Absolute URL for SU/CS logo in emails (must be publicly accessible). */
+function getWelcomeEmailLogoUrl(siteUrl: string): string {
+  const base = (siteUrl || '').replace(/\/+$/, '');
+  return base ? `${base}/brand/stellenbosch/su-logo-primary.jpeg` : '';
+}
+
 function buildWelcomeEmailContent(
   unsubscribeUrl: string,
   siteUrl: string,
@@ -14,31 +20,42 @@ function buildWelcomeEmailContent(
     ? "You're back on our list. We'll send you updates about events, seminars and news from the Computer Science Division."
     : 'Thank you for subscribing. You’ll receive updates about events, seminars and news from the Computer Science Division.';
 
-  const siteLabel = siteUrl ? siteUrl.replace(/^https?:\/\//, '').replace(/\/+$/, '') : 'our website';
+  const visitUrl = siteUrl || 'https://www.sun.ac.za';
+  const logoUrl = getWelcomeEmailLogoUrl(siteUrl);
+
+  // Email-safe: table layout, inline CSS only. Mac-style window bar + centered card.
+  const logoBlock = logoUrl
+    ? `<tr><td style="padding:24px 24px 8px 24px;text-align:center;"><img src="${logoUrl}" alt="Stellenbosch University Computer Science" width="140" height="140" style="display:block;margin:0 auto;max-width:140px;height:auto;" /></td></tr>`
+    : '';
 
   const html = `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:#faf8f3;color:#2c2a29;padding:24px;">
-  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
-    <div style="background:#61223b;color:#fff;padding:24px 28px;">
-      <h1 style="margin:0;font-size:1.5rem;font-weight:700;">Stellenbosch University</h1>
-      <p style="margin:8px 0 0;font-size:0.95rem;opacity:0.95;">Computer Science Division</p>
-    </div>
-    <div style="padding:28px;">
-      <p style="margin:0 0 16px;line-height:1.6;">${message}</p>
-      <p style="margin:0 0 20px;line-height:1.6;">Visit ${siteLabel} for the latest events and news.</p>
-      <p style="margin:0 0 20px;"><a href="${siteUrl || 'https://www.sun.ac.za'}" style="display:inline-block;padding:12px 24px;background:#caa258;color:#fff;text-decoration:none;font-weight:600;border-radius:8px;">Visit site</a></p>
-      <p style="margin:0;line-height:1.6;font-size:0.9rem;">If you no longer wish to receive these emails, you can <a href="${unsubscribeUrl}" style="color:#61223b;font-weight:600;">unsubscribe here</a>.</p>
-    </div>
-    <div style="border-top:1px solid #eee;padding:16px 28px;font-size:12px;color:#666;">
-      Stellenbosch University · Computer Science Division
-    </div>
-  </div>
+<body style="margin:0;font-family:'Segoe UI',Tahoma,system-ui,sans-serif;background:#f5f5f5;color:#2c2a29;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;">
+<tr><td align="center" style="padding:24px 16px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.08);overflow:hidden;">
+<tr><td style="background:#2d3748;padding:10px 16px;border-radius:12px 12px 0 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+<td width="28"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#e74c3c;"></span></td>
+<td width="28"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#f1c40f;"></span></td>
+<td width="28"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#2ecc71;"></span></td>
+<td></td>
+</tr></table>
+</td></tr>
+${logoBlock}
+<tr><td style="padding:8px 24px 16px 24px;text-align:center;"><h1 style="margin:0;font-size:1.5rem;font-weight:700;color:#61223b;">Welcome to the Computer Science Division</h1></td></tr>
+<tr><td style="padding:0 24px 16px 24px;line-height:1.6;color:#2c2a29;">${message}</td></tr>
+<tr><td style="padding:0 24px 8px 24px;line-height:1.6;color:#2c2a29;">Stay updated on events, seminars and news from Stellenbosch University's Computer Science Division.</td></tr>
+<tr><td style="padding:16px 24px 24px 24px;text-align:center;"><a href="${visitUrl}" style="display:inline-block;padding:12px 28px;background:#c8a951;color:#ffffff;text-decoration:none;font-weight:600;border-radius:8px;">Visit the Website</a></td></tr>
+<tr><td style="border-top:1px solid #eeeeee;padding:16px 24px;font-size:12px;color:#666666;line-height:1.5;">Computer Science Division<br/>Stellenbosch University<br/><a href="${unsubscribeUrl}" style="color:#61223b;font-weight:600;">Unsubscribe</a></td></tr>
+</table>
+</td></tr>
+</table>
 </body>
 </html>`;
 
-  const text = `${message}\n\nVisit ${siteUrl || 'https://www.sun.ac.za'} for the latest events and news.\n\nTo unsubscribe: ${unsubscribeUrl}\n\n— Stellenbosch University · Computer Science Division`;
+  const text = `Welcome to the Computer Science Division\n\n${message}\n\nStay updated on events, seminars and news from Stellenbosch University's Computer Science Division.\n\nVisit the website: ${visitUrl}\n\nTo unsubscribe: ${unsubscribeUrl}\n\n— Computer Science Division\nStellenbosch University`;
 
   return { subject, html, text };
 }
