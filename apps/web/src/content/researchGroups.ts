@@ -13,6 +13,7 @@ export const RESEARCH_GROUP_IMAGES: Record<string, string> = {
   'networks-broadband': 'BroadbandandMobileNetworkswallpaper.jpg',
   'robotics-vision': 'RoboticsandComputerVision.webp',
   nlp: 'NaturalLanguageProcessingWallpaper.webp',
+  'pleased': 'PlanningLearningSearchResearchGroupWallpaper.webp',
 };
 
 /** Fallback image for research group cards/sections when the group image fails to load. */
