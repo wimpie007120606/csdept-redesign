@@ -1,0 +1,3 @@
+# Force Science Yearbook PDF to download (correct filename, not open in browser)
+/science-yearbook.pdf
+  Content-Disposition: attachment; filename="science-yearbook.pdf"

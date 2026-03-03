@@ -11,7 +11,6 @@ import {
   Globe,
   Code,
   Briefcase,
-  ExternalLink,
 } from 'lucide-react';
 import { useTranslation } from '@/i18n/useTranslation';
 import { getGeneralCSAllModulesByYear } from '@/content/bscComputerScienceProgramme';
@@ -277,17 +276,8 @@ export function UndergraduatePage() {
                     <div className="flex flex-col sm:flex-row gap-3">
                       <a
                         href={SCIENCE_YEARBOOK_PDF_PATH}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        download="science-yearbook.pdf"
                         className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#7B1E3A] text-white text-sm font-medium hover:bg-[#7B1E3A]/90 transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
-                      >
-                        <ExternalLink className="w-4 h-4" aria-hidden />
-                        {t('study.scienceYearbookView')}
-                      </a>
-                      <a
-                        href={SCIENCE_YEARBOOK_PDF_PATH}
-                        download
-                        className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-muted/50 text-foreground text-sm font-medium hover:bg-muted transition-colors focus:outline-none focus:ring-2 focus:ring-[#7B1E3A] focus:ring-offset-2"
                       >
                         <Download className="w-4 h-4" aria-hidden />
                         {t('study.scienceYearbookDownload')}
