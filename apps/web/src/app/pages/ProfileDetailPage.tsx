@@ -14,6 +14,7 @@ import { getCorneliaInggsYearGroups } from '@/content/cornelia-inggs-publication
 import { getWillemVisserYearGroups } from '@/content/willem-visser-publications';
 import { getSteveKroonYearGroups, steveKroonFeaturedPublications } from '@/content/steve-kroon-publications';
 import { getPhotoForSlug, getFallbackCardBySlug, getMinimalProfileForSlug } from '@/content/people';
+import { ENRICHMENT_NOT_REQUIRED } from '@/content/profileEnrichment';
 import { resolvePersonLink } from '@/app/utils/researchPeople';
 import { getStudentBySlug } from '@/content/people/students';
 import { useTranslation } from '@/i18n/useTranslation';
@@ -788,7 +789,14 @@ export function ProfileDetailPage() {
               year: p.year,
             }));
           }
-          setProfile(mapped);
+          // Preserve full static profile for the first 9 staff (bio, publications, awards, etc.); only overlay image from API if present.
+          if (fallback && ENRICHMENT_NOT_REQUIRED.has(normalizedSlug)) {
+            const merged = { ...fallback } as Record<string, unknown>;
+            if (imageUrl) merged.image = imageUrl;
+            setProfile(merged);
+          } else {
+            setProfile(mapped);
+          }
         } catch (err) {
           console.error('[ProfileDetailPage] Error building profile for slug:', normalizedSlug, err);
           setProfileFromMinimal();
